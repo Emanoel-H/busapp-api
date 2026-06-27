@@ -4,6 +4,7 @@ import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
 import br.com.javamastery.busapp_api.dto.BusCompanyResponse;
 import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
 import br.com.javamastery.busapp_api.dto.BusCompanyUpdateResponse;
+import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class BusCompanyService {
 
     public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest) {
         BusCompany busCompany = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found"));
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
 
         busCompany.BusCompanyUpdate(busCompanyUpdateRequest);
 
