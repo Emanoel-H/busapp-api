@@ -33,4 +33,19 @@ public class BusCompanyService {
                 .createdAt(busCompany.getCreatedAt())
                 .build();
     }
+
+    public BusCompanyResponse findById(Long id) {
+        BusCompany busCompany = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found"));
+
+        return BusCompanyResponse.builder()
+                .id(busCompany.getId())
+                .legalName(busCompany.getLegalName())
+                .tradingName(busCompany.getTradingName())
+                .cnpj(busCompany.getCnpj())
+                .telephone(busCompany.getTelephone())
+                .email(busCompany.getEmail())
+                .createdAt(busCompany.getCreatedAt())
+                .build();
+    }
 }
