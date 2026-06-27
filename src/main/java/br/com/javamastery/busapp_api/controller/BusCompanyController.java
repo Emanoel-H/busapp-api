@@ -26,8 +26,15 @@ public class BusCompanyController {
     public ResponseEntity<BusCompanyResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<BusCompanyUpdateResponse> updateById(@PathVariable Long id, @RequestBody BusCompanyUpdateRequest busCompanyUpdateRequest) {
         return ResponseEntity.ok(service.update(id, busCompanyUpdateRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
