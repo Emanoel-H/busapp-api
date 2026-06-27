@@ -71,7 +71,7 @@ public class BusCompanyService {
 
     public void deleteById(Long id){
         if (!repository.existsById(id))
-            throw new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
+            throw new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND");
 
         repository.deleteById(id);
     }
