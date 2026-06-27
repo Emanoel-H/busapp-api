@@ -2,6 +2,8 @@ package br.com.javamastery.busapp_api.controller;
 
 import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
 import br.com.javamastery.busapp_api.dto.BusCompanyResponse;
+import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
+import br.com.javamastery.busapp_api.dto.BusCompanyUpdateResponse;
 import br.com.javamastery.busapp_api.service.BusCompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +25,9 @@ public class BusCompanyController {
     @GetMapping("/{id}")
     public ResponseEntity<BusCompanyResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<BusCompanyUpdateResponse> updateById(@PathVariable Long id, @RequestBody BusCompanyUpdateRequest busCompanyUpdateRequest) {
+        return ResponseEntity.ok(service.update(id, busCompanyUpdateRequest));
     }
 }
