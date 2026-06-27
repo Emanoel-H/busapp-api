@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.model;
 
+import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,18 @@ public class BusCompany {
     @Column(nullable = false,  updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public BusCompany() {
+    }
+
+    public BusCompany(BusCompanyRequest busCompanyRequest) {
+        this.legalName = busCompanyRequest.getLegalName();
+        this.tradingName = busCompanyRequest.getTradingName();
+        this.cnpj = busCompanyRequest.getCnpj();
+        this.email = busCompanyRequest.getEmail();
+        this.password = busCompanyRequest.getPassword();
+        this.telephone = busCompanyRequest.getTelephone();
+    }
 
     @PrePersist
     public void prePersist() {
