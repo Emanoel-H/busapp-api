@@ -63,7 +63,7 @@ public class BusCompanyService {
                 .id(busCompany.getId())
                 .legalName(busCompany.getLegalName())
                 .tradingName(busCompany.getTradingName())
-                .cnpj(busCompanyUpdateRequest.getCnpj())
+                .cnpj(busCompany.getCnpj())
                 .telephone(busCompany.getTelephone())
                 .build();
     }
