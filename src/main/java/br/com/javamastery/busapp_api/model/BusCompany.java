@@ -1,6 +1,7 @@
 package br.com.javamastery.busapp_api.model;
 
 import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
+import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,6 +42,13 @@ public class BusCompany {
         this.email = busCompanyRequest.getEmail();
         this.password = busCompanyRequest.getPassword();
         this.telephone = busCompanyRequest.getTelephone();
+    }
+
+    public BusCompany(BusCompanyUpdateRequest busCompanyUpdateRequest) {
+        this.legalName = busCompanyUpdateRequest.getLegalName();
+        this.tradingName = busCompanyUpdateRequest.getTradingName();
+        this.cnpj = busCompanyUpdateRequest.getCnpj();
+        this.telephone = busCompanyUpdateRequest.getTelephone();
     }
 
     @PrePersist
