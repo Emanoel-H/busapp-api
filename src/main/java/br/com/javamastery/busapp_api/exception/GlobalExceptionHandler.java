@@ -14,15 +14,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(HandlerConfig.class)
-    public ResponseEntity<Object> customHandlerException(HandlerConfig ex){
-        Map<String,Object> map = new HashMap<>();
-
-        map.put("TimeStamp", LocalDateTime.now());
-        map.put("Message",ex.getMessage());
-        map.put("Error","REVIEW THE DATA!" );
-        map.put("Status",ex.getStatus().value());
-
-        return ResponseEntity.status(ex.getStatus()).body(map);
+    public ResponseEntity<Map<String, Object>> customHandlerException(HandlerConfig ex){
+        return buildResponse(ex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
