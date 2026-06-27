@@ -67,4 +67,11 @@ public class BusCompanyService {
                 .telephone(busCompany.getTelephone())
                 .build();
     }
+
+    public void deleteById(Long id){
+        if (!repository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found");
+        
+        repository.deleteById(id);
+    }
 }
