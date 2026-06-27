@@ -19,10 +19,10 @@ public class BusCompanyService {
 
     public BusCompanyResponse register(BusCompanyRequest busCompanyRequest) {
         if (repository.existsByEmail(busCompanyRequest.getEmail()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+            throw new HandlerConfig(HttpStatus.CONFLICT, "Email already exists");
 
         if (repository.existsByCnpj(busCompanyRequest.getCnpj()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cnpj already exists");
+            throw new HandlerConfig(HttpStatus.CONFLICT, "Cnpj already exists");
 
         BusCompany busCompany = repository.save(new BusCompany(busCompanyRequest));
 
