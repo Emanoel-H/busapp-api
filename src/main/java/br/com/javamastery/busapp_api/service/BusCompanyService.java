@@ -2,6 +2,8 @@ package br.com.javamastery.busapp_api.service;
 
 import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
 import br.com.javamastery.busapp_api.dto.BusCompanyResponse;
+import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
+import br.com.javamastery.busapp_api.dto.BusCompanyUpdateResponse;
 import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,23 @@ public class BusCompanyService {
                 .telephone(busCompany.getTelephone())
                 .email(busCompany.getEmail())
                 .createdAt(busCompany.getCreatedAt())
+                .build();
+    }
+
+    public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest) {
+        BusCompany busCompany = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found"));
+
+        busCompany.BusCompanyUpdate(busCompanyUpdateRequest);
+
+        repository.save(busCompany);
+
+        return BusCompanyUpdateResponse.builder()
+                .id(busCompany.getId())
+                .legalName(busCompany.getLegalName())
+                .tradingName(busCompany.getTradingName())
+                .cnpj(busCompanyUpdateRequest.getCnpj())
+                .telephone(busCompany.getTelephone())
                 .build();
     }
 }
