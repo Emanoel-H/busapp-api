@@ -23,7 +23,7 @@ public class BusCompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BusCompanyResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<BusCompanyResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
     @PutMapping("/{id}")
