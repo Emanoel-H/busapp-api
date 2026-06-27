@@ -65,6 +65,7 @@ public class BusCompanyService {
                 .tradingName(busCompany.getTradingName())
                 .cnpj(busCompany.getCnpj())
                 .telephone(busCompany.getTelephone())
+                .updatedAt(busCompany.getUpdatedAt())
                 .build();
     }
 
