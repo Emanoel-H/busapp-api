@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -13,4 +15,5 @@ public class BusCompanyUpdateResponse {
     private String tradingName;
     private String cnpj;
     private String telephone;
+    private LocalDateTime updatedAt;
 }
