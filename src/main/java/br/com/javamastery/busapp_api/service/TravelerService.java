@@ -62,7 +62,7 @@ public class TravelerService {
         traveler.travelerUpdateRequest(travelerUpdateRequest);
 
         repository.save(traveler);
-        
+
         return TravelerUpdateResponse.builder()
                 .id(traveler.getId())
                 .name(traveler.getName())
@@ -71,5 +71,12 @@ public class TravelerService {
                 .age(traveler.getAge())
                 .updatedAt(traveler.getUpdatedAt())
                 .build();
+    }
+
+    public void deleteById(Long id) {
+        if (!repository.existsById(id))
+            throw new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND");
+
+        repository.deleteById(id);
     }
 }
