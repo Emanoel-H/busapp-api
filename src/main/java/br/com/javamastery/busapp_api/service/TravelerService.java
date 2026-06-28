@@ -36,5 +36,20 @@ public class TravelerService {
                 .build();
     }
 
-    
+    public TravelerResponse findById(Long id) {
+        Traveler traveler = repository.findById(id)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND"));
+
+        return TravelerResponse.builder()
+                .id(traveler.getId())
+                .name(traveler.getName())
+                .cpf(traveler.getCpf())
+                .birthDate(traveler.getBirthDate())
+                .age(traveler.getAge())
+                .email(traveler.getEmail())
+                .telephone(traveler.getTelephone())
+                .creditsBalance(traveler.getCreditsBalance())
+                .createdAt(traveler.getCreatedAt())
+                .build();
+    }
 }
