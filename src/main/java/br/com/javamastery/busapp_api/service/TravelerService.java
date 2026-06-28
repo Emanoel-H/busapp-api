@@ -2,6 +2,8 @@ package br.com.javamastery.busapp_api.service;
 
 import br.com.javamastery.busapp_api.dto.TravelerRequest;
 import br.com.javamastery.busapp_api.dto.TravelerResponse;
+import br.com.javamastery.busapp_api.dto.TravelerUpdateRequest;
+import br.com.javamastery.busapp_api.dto.TravelerUpdateResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
@@ -50,6 +52,22 @@ public class TravelerService {
                 .telephone(traveler.getTelephone())
                 .creditsBalance(traveler.getCreditsBalance())
                 .createdAt(traveler.getCreatedAt())
+                .build();
+    }
+
+    public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest) {
+        Traveler traveler = repository.findById(id)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND"));
+
+        traveler.travelerUpdateRequest(travelerUpdateRequest);
+
+        return TravelerUpdateResponse.builder()
+                .id(traveler.getId())
+                .name(traveler.getName())
+                .cpf(traveler.getCpf())
+                .birthDate(traveler.getBirthDate())
+                .age(traveler.getAge())
+                .updatedAt(traveler.getUpdatedAt())
                 .build();
     }
 }
