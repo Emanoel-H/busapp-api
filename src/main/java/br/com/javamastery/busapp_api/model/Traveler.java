@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.model;
 
+import br.com.javamastery.busapp_api.dto.TravelerRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +39,15 @@ public class Traveler {
     private LocalDateTime updatedAt;
 
     public Traveler() {
+    }
+
+    public Traveler(TravelerRequest  travelerRequest) {
+        this.name = travelerRequest.getName();
+        this.birthDate = travelerRequest.getBirthDate();
+        this.cpf = travelerRequest.getCpf();
+        this.email = travelerRequest.getEmail();
+        this.password = travelerRequest.getPassword();
+        this.telephone = travelerRequest.getTelephone();
     }
 
     @PrePersist
