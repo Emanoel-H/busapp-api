@@ -16,7 +16,6 @@ public class TravelerRequest {
     @Past(message = "Birth Date must be in the past")
     private LocalDate birthDate;
     @NotBlank(message = "CPF is required!")
-    @Pattern(regexp = "\\d{11}", message = "CPF must contain 11 digits!")
     @ValidCpf
     private String cpf;
     @Pattern(regexp = "\\d{10,11}", message = "Telephone must contain 10 or 11 digits!")
