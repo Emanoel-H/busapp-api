@@ -1,9 +1,6 @@
 package br.com.javamastery.busapp_api.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +12,7 @@ public class TravelerRequest {
     @NotBlank(message = "Name is required!")
     private String name;
     @NotBlank(message = "Birth Date is required!")
+    @Past(message = "Birth Date must be in the past")
     private LocalDate birthDate;
     @NotBlank(message = "CPF is required!")
     @Pattern(regexp = "\\d{11}", message = "CPF must contain 11 digits!")
