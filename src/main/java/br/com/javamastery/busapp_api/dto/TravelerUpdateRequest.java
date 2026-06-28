@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class TravelerUpdateRequest {
     @NotBlank(message = "Name is required!")
     private String name;
-    @NotBlank(message = "Birth Date is required!")
+    @NotNull(message = "Birth Date is required!")
     @Past(message = "Birth Date must be in the past")
     private LocalDate birthDate;
     @NotBlank(message = "CPF is required!")
