@@ -1,6 +1,7 @@
 package br.com.javamastery.busapp_api.model;
 
 import br.com.javamastery.busapp_api.dto.TravelerRequest;
+import br.com.javamastery.busapp_api.dto.TravelerUpdateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +49,13 @@ public class Traveler {
         this.email = travelerRequest.getEmail();
         this.password = travelerRequest.getPassword();
         this.telephone = travelerRequest.getTelephone();
+    }
+
+    public void travelerUpdateRequest(TravelerUpdateRequest travelerUpdateRequest) {
+        this.name = travelerUpdateRequest.getName();
+        this.birthDate = travelerUpdateRequest.getBirthDate();
+        this.cpf = travelerUpdateRequest.getCpf();
+        this.telephone = travelerUpdateRequest.getTelephone();
     }
 
     @PrePersist
