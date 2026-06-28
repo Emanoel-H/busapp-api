@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.dto;
 
+import br.com.javamastery.busapp_api.validation.ValidCpf;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ public class TravelerRequest {
     private LocalDate birthDate;
     @NotBlank(message = "CPF is required!")
     @Pattern(regexp = "\\d{11}", message = "CPF must contain 11 digits!")
+    @ValidCpf
     private String cpf;
     @Pattern(regexp = "\\d{10,11}", message = "Telephone must contain 10 or 11 digits!")
     @NotBlank(message = "Telephone is required!")
