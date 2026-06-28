@@ -1,6 +1,6 @@
 # 🚌 busapp-api
 
-A RESTful API for bus ticket management built with Spring Boot. This project is the REST evolution of [BusApp](https://github.com/Emanoel-H/Java-Mastery), a console-based Java application, now rebuilt as a production-grade API with proper layered architecture, validation, and error handling.
+A RESTful API for bus ticket management built with Spring Boot. This project is the REST evolution of [BusApp](https://github.com/Emanoel-H/Java-Mastery), rebuilt as a production-grade API with proper layered architecture, Bean Validation, custom validators, and centralized error handling.
 
 ---
 
@@ -10,9 +10,9 @@ A RESTful API for bus ticket management built with Spring Boot. This project is 
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Endpoints](#endpoints)
+- [Validation](#validation)
 - [Error Handling](#error-handling)
 - [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
 - [Roadmap](#roadmap)
 
 ---
@@ -34,7 +34,7 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 | Framework | Spring Boot 3 |
 | ORM | Spring Data JPA / Hibernate |
 | Database | PostgreSQL |
-| Validation | Jakarta Bean Validation (`@Valid`) |
+| Validation | Jakarta Bean Validation (`@Valid`, custom `@ValidCpf`) |
 | Build | Maven |
 | Utilities | Lombok |
 
@@ -45,27 +45,39 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 ```
 src/main/java/br/com/javamastery/busapp_api/
 │
-├── controller/         # REST endpoints — delegates to service, no business logic
-│   └── BusCompanyController.java
+├── controller/
+│   ├── BusCompanyController.java
+│   └── TravelerController.java
 │
-├── dto/                # Request and response objects
+├── dto/
 │   ├── BusCompanyRequest.java
 │   ├── BusCompanyResponse.java
 │   ├── BusCompanyUpdateRequest.java
-│   └── BusCompanyUpdateResponse.java
+│   ├── BusCompanyUpdateResponse.java
+│   ├── TravelerRequest.java
+│   ├── TravelerResponse.java
+│   ├── TravelerUpdateRequest.java
+│   └── TravelerUpdateResponse.java
 │
-├── exception/          # Global error handling
-│   ├── GlobalExceptionHandler.java   # @RestControllerAdvice
-│   └── HandlerConfig.java            # Base runtime exception with HTTP status
+├── exception/
+│   ├── GlobalExceptionHandler.java    # @RestControllerAdvice
+│   └── HandlerConfig.java             # Base exception with HTTP status
 │
-├── model/              # JPA Entities
-│   └── BusCompany.java
+├── model/
+│   ├── BusCompany.java
+│   └── Traveler.java                  # @Formula age, creditsBalance initialized in @PrePersist
 │
-├── repository/         # Spring Data JPA repositories
-│   └── BusCompanyRepository.java
+├── repository/
+│   ├── BusCompanyRepository.java
+│   └── TravelerRepository.java
 │
-└── service/            # Business logic
-    └── BusCompanyService.java
+├── service/
+│   ├── BusCompanyService.java
+│   └── TravelerService.java
+│
+└── validation/
+    ├── ValidCpf.java                  # Custom annotation
+    └── CpfValidator.java              # Digit-verifier algorithm
 ```
 
 ---
@@ -81,59 +93,74 @@ src/main/java/br/com/javamastery/busapp_api/
 | `PUT` | `/companies/{id}` | Update company profile | `200 OK` |
 | `DELETE` | `/companies/{id}` | Delete company | `204 No Content` |
 
-#### POST `/companies` — Request body
+### Traveler — `/travelers`
+
+| Method | Path | Description | Status |
+|---|---|---|---|
+| `POST` | `/travelers` | Register a new traveler | `201 Created` |
+| `GET` | `/travelers/{id}` | Find traveler by ID | `200 OK` |
+| `PUT` | `/travelers/{id}` | Update traveler profile | `200 OK` |
+| `DELETE` | `/travelers/{id}` | Delete traveler | `204 No Content` |
+
+#### POST `/travelers` — Request body
 ```json
 {
-  "legalName": "Transportes ABC Ltda",
-  "tradingName": "ABC Bus",
-  "cnpj": "12345678000195",
+  "name": "João Silva",
+  "birthDate": "1990-05-15",
+  "cpf": "12345678909",
   "telephone": "21987654321",
-  "email": "contato@abcbus.com.br",
+  "email": "joao@email.com",
   "password": "senha123"
 }
 ```
 
-#### POST `/companies` — Response `201`
+#### POST `/travelers` — Response `201`
 ```json
 {
   "id": 1,
-  "legalName": "Transportes ABC Ltda",
-  "tradingName": "ABC Bus",
-  "cnpj": "12345678000195",
+  "name": "João Silva",
+  "cpf": "12345678909",
+  "birthDate": "1990-05-15",
+  "age": 35,
+  "email": "joao@email.com",
   "telephone": "21987654321",
-  "email": "contato@abcbus.com.br",
-  "createdAt": "2026-06-27T10:00:00"
-}
-```
-
-#### PUT `/companies/{id}` — Request body
-```json
-{
-  "legalName": "Transportes ABC Ltda",
-  "tradingName": "ABC Bus Novo Nome",
-  "cnpj": "12345678000195",
-  "telephone": "21912345678"
+  "creditsBalance": 0.00,
+  "createdAt": "2026-06-28T10:00:00"
 }
 ```
 
 ---
 
+## Validation
+
+| Field | Rule |
+|---|---|
+| `cpf` | Custom `@ValidCpf` — validates length, all-same-digit rejection, and both verifier digits |
+| `cnpj` | `@Pattern(regexp = "\\d{14}")` |
+| `telephone` | `@Pattern(regexp = "\\d{10,11}")` |
+| `email` | `@Email` |
+| `password` | `@Size(min = 6, max = 16)` |
+| `birthDate` | `@NotNull` + `@Past` |
+| text fields | `@NotBlank` |
+
+---
+
 ## Error Handling
 
-All errors return a consistent JSON structure:
+All errors return a consistent JSON structure via `GlobalExceptionHandler`:
 
 ```json
 {
-  "TimeStamp": "2026-06-27T10:00:00",
+  "TimeStamp": "2026-06-28T10:00:00",
   "Status": 404,
-  "Message": "COMPANY NOT FOUND"
+  "Message": "TRAVELER NOT FOUND"
 }
 ```
 
 | Scenario | HTTP Status |
 |---|---|
 | Resource not found | `404 Not Found` |
-| Email or CNPJ already registered | `409 Conflict` |
+| Email or CNPJ/CPF already registered | `409 Conflict` |
 | Validation failure (`@Valid`) | `400 Bad Request` |
 | Invalid argument | `400 Bad Request` |
 
@@ -147,18 +174,14 @@ All errors return a consistent JSON structure:
 - Maven 3.8+
 - PostgreSQL 14+
 
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/Emanoel-H/Java-Mastery.git
 cd busapp-api
 ```
 
-### 2. Set up the database
-
-Create a PostgreSQL database named `busapp`.
-
-### 3. Configure `application.properties`
+### 2. Configure `application.properties`
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/busapp
@@ -166,34 +189,19 @@ spring.datasource.username=your_user
 spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 ```
 
-### 4. Run
+### 3. Run
 
 ```bash
 mvn spring-boot:run
 ```
 
-The API will be available at `http://localhost:8080`.
-
----
-
-### In Progress
-- [ ] Traveler module — register, findById, update, delete
-- [ ] Trip module — create, search by origin/destination, update, delete
-
-### Planned
-- [ ] Authentication (Spring Security + JWT)
-- [ ] Ticket module — buy, cancel, view
-- [ ] OSRM integration for real-route distance and price suggestion
-- [ ] Password hashing (BCrypt)
-- [ ] Unit tests (JUnit 5 + Mockito)
-- [ ] Docker
-- [ ] MongoDB audit logging
-- [ ] AWS deployment
+API available at `http://localhost:8080`.
 
 ---
 
 ## Author
 
-Developed by [Emanoel H](https://github.com/Emanoel-H) as part of a Java learning journey focused on Spring Boot, REST API design, JPA, and professional software architecture.
+Developed by [Emanoel H](https://github.com/Emanoel-H) as part of a Java learning journey focused on Spring Boot, REST API design, JPA/Hibernate, and professional software architecture.
