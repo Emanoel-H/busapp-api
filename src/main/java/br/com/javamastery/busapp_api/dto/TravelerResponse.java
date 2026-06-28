@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,5 +19,6 @@ public class TravelerResponse {
     private int age;
     private String email;
     private String telephone;
+    private BigDecimal creditsBalance;
     private LocalDateTime createdAt;
 }
