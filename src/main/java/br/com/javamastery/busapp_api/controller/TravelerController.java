@@ -32,7 +32,7 @@ public class TravelerController {
         return ResponseEntity.ok(service.updateById(id, travelerUpdateRequest));
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
