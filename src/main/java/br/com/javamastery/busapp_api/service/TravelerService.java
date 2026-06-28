@@ -61,6 +61,8 @@ public class TravelerService {
 
         traveler.travelerUpdateRequest(travelerUpdateRequest);
 
+        repository.save(traveler);
+        
         return TravelerUpdateResponse.builder()
                 .id(traveler.getId())
                 .name(traveler.getName())
