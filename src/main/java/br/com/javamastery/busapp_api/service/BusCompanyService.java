@@ -56,17 +56,8 @@ public class BusCompanyService {
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
 
         busCompany.busCompanyUpdateRequest(busCompanyUpdateRequest);
-
-        repository.save(busCompany);
-
-        return BusCompanyUpdateResponse.builder()
-                .id(busCompany.getId())
-                .legalName(busCompany.getLegalName())
-                .tradingName(busCompany.getTradingName())
-                .cnpj(busCompany.getCnpj())
-                .telephone(busCompany.getTelephone())
-                .updatedAt(busCompany.getUpdatedAt())
-                .build();
+        
+        return toUpdateResponse(repository.save(busCompany));
     }
 
     public void deleteById(Long id){
