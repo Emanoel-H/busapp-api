@@ -61,16 +61,7 @@ public class TravelerService {
 
         traveler.travelerUpdateRequest(travelerUpdateRequest);
 
-        repository.save(traveler);
-
-        return TravelerUpdateResponse.builder()
-                .id(traveler.getId())
-                .name(traveler.getName())
-                .cpf(traveler.getCpf())
-                .birthDate(traveler.getBirthDate())
-                .age(traveler.getAge())
-                .updatedAt(traveler.getUpdatedAt())
-                .build();
+        return toUpdateResponse(repository.save(traveler));
     }
 
     public void deleteById(Long id) {
