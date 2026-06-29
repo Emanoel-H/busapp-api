@@ -30,17 +30,7 @@ public class TravelerService {
         Traveler traveler = repository.findById(id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND"));
 
-        return TravelerResponse.builder()
-                .id(traveler.getId())
-                .name(traveler.getName())
-                .cpf(traveler.getCpf())
-                .birthDate(traveler.getBirthDate())
-                .age(traveler.getAge())
-                .email(traveler.getEmail())
-                .telephone(traveler.getTelephone())
-                .creditsBalance(traveler.getCreditsBalance())
-                .createdAt(traveler.getCreatedAt())
-                .build();
+        return toResponse(traveler);
     }
 
     public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest) {
