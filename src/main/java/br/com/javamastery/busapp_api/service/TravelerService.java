@@ -23,19 +23,7 @@ public class TravelerService {
         if (repository.existsByCpf(travelerRequest.getCpf()))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cpf already exists");
 
-        Traveler traveler = repository.save(new Traveler(travelerRequest));
-
-        return TravelerResponse.builder()
-                .id(traveler.getId())
-                .name(traveler.getName())
-                .cpf(traveler.getCpf())
-                .birthDate(traveler.getBirthDate())
-                .age(traveler.getAge())
-                .email(traveler.getEmail())
-                .telephone(traveler.getTelephone())
-                .creditsBalance(traveler.getCreditsBalance())
-                .createdAt(traveler.getCreatedAt())
-                .build();
+        return toResponse(repository.save(new Traveler(travelerRequest)));
     }
 
     public TravelerResponse findById(Long id) {
