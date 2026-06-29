@@ -27,10 +27,7 @@ public class TravelerService {
     }
 
     public TravelerResponse findById(Long id) {
-        Traveler traveler = repository.findById(id)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND"));
-
-        return toResponse(traveler);
+        return toResponse(findOrThrow(id));
     }
 
     public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest) {
