@@ -12,7 +12,7 @@ import lombok.Getter;
 public class State {
     @Id
     @Column(name = "state_code")
-    Long state_code;
+    Long code;
     String uf;
     String name;
     String region;
