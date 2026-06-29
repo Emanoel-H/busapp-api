@@ -9,13 +9,13 @@ import lombok.Getter;
 public class City {
     @Id
     @Column(name = "ibge_code")
-    Long ibgeCode;
-    String city;
-    double latitude;
-    double longitude;
-    int ddd;
+    private Long ibgeCode;
+    private String city;
+    private double latitude;
+    private double longitude;
+    private int ddd;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_code")
-    State state;
+    private State state;
 
 }
