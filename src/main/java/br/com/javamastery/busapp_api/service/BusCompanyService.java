@@ -75,4 +75,15 @@ public class BusCompanyService {
 
         repository.deleteById(id);
     }
+
+    public BusCompanyUpdateResponse toUpdateResponse(BusCompany busCompany){
+        return BusCompanyUpdateResponse.builder()
+                .id(busCompany.getId())
+                .legalName(busCompany.getLegalName())
+                .tradingName(busCompany.getTradingName())
+                .cnpj(busCompany.getCnpj())
+                .telephone(busCompany.getTelephone())
+                .updatedAt(busCompany.getUpdatedAt())
+                .build();
+    }
 }
