@@ -52,13 +52,7 @@ public class TravelerService {
 
         traveler.addCredits(credits);
 
-        repository.save(traveler);
-
-        return TravelerCreditsResponse.builder()
-                .id(traveler.getId())
-                .creditsBalance(traveler.getCreditsBalance())
-                .updatedAt(traveler.getUpdatedAt())
-                .build();
+        return toCreditsResponse(repository.save(traveler));
     }
 
     public TravelerUpdateResponse toUpdateResponse(Traveler  traveler) {
