@@ -58,6 +58,10 @@ public class Traveler {
         this.telephone = travelerUpdateRequest.getTelephone();
     }
 
+    public void addCredits(BigDecimal credits) {
+        this.creditsBalance = this.creditsBalance.add(credits);
+    }
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
