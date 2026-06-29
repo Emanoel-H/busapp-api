@@ -1,15 +1,14 @@
 package br.com.javamastery.busapp_api.service;
 
-import br.com.javamastery.busapp_api.dto.TravelerRequest;
-import br.com.javamastery.busapp_api.dto.TravelerResponse;
-import br.com.javamastery.busapp_api.dto.TravelerUpdateRequest;
-import br.com.javamastery.busapp_api.dto.TravelerUpdateResponse;
+import br.com.javamastery.busapp_api.dto.*;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +42,23 @@ public class TravelerService {
             throw new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND");
 
         repository.deleteById(id);
+    }
+
+    public TravelerCreditsResponse addCredits(Long id, BigDecimal credits) {
+        if (credits == null || credits.compareTo(BigDecimal.ZERO) <= 0)
+            throw new HandlerConfig(HttpStatus.CONFLICT, "CREDIT AMOUNT MUST BE GREATER THAN ZERO");
+
+        Traveler traveler = findOrThrow(id);
+
+        traveler.addCredits(credits);
+
+        repository.save(traveler);
+
+        return TravelerCreditsResponse.builder()
+                .id(traveler.getId())
+                .creditsBalance(traveler.getCreditsBalance())
+                .updatedAt(traveler.getUpdatedAt())
+                .build();
     }
 
     public TravelerUpdateResponse toUpdateResponse(Traveler  traveler) {
