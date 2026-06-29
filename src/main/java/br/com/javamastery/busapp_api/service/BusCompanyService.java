@@ -27,10 +27,7 @@ public class BusCompanyService {
     }
 
     public BusCompanyResponse findById(Long id) {
-        BusCompany busCompany = repository.findById(id)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
-
-        return toResponse(busCompany);
+        return toResponse(findOrThrow(id));
     }
 
     public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest) {
