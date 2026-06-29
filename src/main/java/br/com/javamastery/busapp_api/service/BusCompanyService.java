@@ -55,7 +55,7 @@ public class BusCompanyService {
         BusCompany busCompany = repository.findById(id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
 
-        busCompany.BusCompanyUpdate(busCompanyUpdateRequest);
+        busCompany.busCompanyUpdateRequest(busCompanyUpdateRequest);
 
         repository.save(busCompany);
 
