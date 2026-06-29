@@ -81,4 +81,18 @@ public class TravelerService {
                 .updatedAt(traveler.getUpdatedAt())
                 .build();
     }
+
+    public TravelerResponse toResponse(Traveler traveler) {
+        return TravelerResponse.builder()
+                .id(traveler.getId())
+                .name(traveler.getName())
+                .cpf(traveler.getCpf())
+                .birthDate(traveler.getBirthDate())
+                .age(traveler.getAge())
+                .email(traveler.getEmail())
+                .telephone(traveler.getTelephone())
+                .creditsBalance(traveler.getCreditsBalance())
+                .createdAt(traveler.getCreatedAt())
+                .build();
+    }
 }
