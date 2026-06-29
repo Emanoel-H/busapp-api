@@ -23,17 +23,7 @@ public class BusCompanyService {
         if (repository.existsByCnpj(busCompanyRequest.getCnpj()))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cnpj already exists");
 
-        BusCompany busCompany = repository.save(new BusCompany(busCompanyRequest));
-
-        return BusCompanyResponse.builder()
-                .id(busCompany.getId())
-                .legalName(busCompany.getLegalName())
-                .tradingName(busCompany.getTradingName())
-                .cnpj(busCompany.getCnpj())
-                .telephone(busCompany.getTelephone())
-                .email(busCompany.getEmail())
-                .createdAt(busCompany.getCreatedAt())
-                .build();
+        return toResponse(repository.save(new BusCompany(busCompanyRequest)));
     }
 
     public BusCompanyResponse findById(Long id) {
