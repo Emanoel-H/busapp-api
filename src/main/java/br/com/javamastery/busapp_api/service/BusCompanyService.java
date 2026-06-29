@@ -56,7 +56,7 @@ public class BusCompanyService {
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
 
         busCompany.busCompanyUpdateRequest(busCompanyUpdateRequest);
-        
+
         return toUpdateResponse(repository.save(busCompany));
     }
 
@@ -75,6 +75,18 @@ public class BusCompanyService {
                 .cnpj(busCompany.getCnpj())
                 .telephone(busCompany.getTelephone())
                 .updatedAt(busCompany.getUpdatedAt())
+                .build();
+    }
+
+    public BusCompanyResponse toResponse(BusCompany busCompany){
+        return BusCompanyResponse.builder()
+                .id(busCompany.getId())
+                .legalName(busCompany.getLegalName())
+                .tradingName(busCompany.getTradingName())
+                .cnpj(busCompany.getCnpj())
+                .telephone(busCompany.getTelephone())
+                .email(busCompany.getEmail())
+                .createdAt(busCompany.getCreatedAt())
                 .build();
     }
 }
