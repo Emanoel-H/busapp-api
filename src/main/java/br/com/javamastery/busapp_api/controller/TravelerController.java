@@ -1,15 +1,14 @@
 package br.com.javamastery.busapp_api.controller;
 
-import br.com.javamastery.busapp_api.dto.TravelerRequest;
-import br.com.javamastery.busapp_api.dto.TravelerResponse;
-import br.com.javamastery.busapp_api.dto.TravelerUpdateRequest;
-import br.com.javamastery.busapp_api.dto.TravelerUpdateResponse;
+import br.com.javamastery.busapp_api.dto.*;
 import br.com.javamastery.busapp_api.service.TravelerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/travelers")
@@ -38,4 +37,8 @@ public class TravelerController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/credits")
+    public ResponseEntity<TravelerCreditsResponse> addCredits(@PathVariable Long id, @RequestParam BigDecimal credits) {
+        return ResponseEntity.ok(service.addCredits(id, credits));
+    }
 }
