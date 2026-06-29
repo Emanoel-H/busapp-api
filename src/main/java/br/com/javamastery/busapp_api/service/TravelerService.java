@@ -83,4 +83,9 @@ public class TravelerService {
                 .createdAt(traveler.getCreatedAt())
                 .build();
     }
+
+    public Traveler findOrThrow(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND"));
+    }
 }
