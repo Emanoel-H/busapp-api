@@ -90,4 +90,12 @@ public class TravelerService {
         return repository.findById(id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND"));
     }
+
+    public TravelerCreditsResponse toCreditsResponse(Traveler traveler) {
+        return TravelerCreditsResponse.builder()
+                .id(traveler.getId())
+                .creditsBalance(traveler.getCreditsBalance())
+                .updatedAt(traveler.getUpdatedAt())
+                .build();
+    }
 }
