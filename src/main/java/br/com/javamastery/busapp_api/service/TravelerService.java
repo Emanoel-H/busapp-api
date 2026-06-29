@@ -44,8 +44,7 @@ public class TravelerService {
     }
 
     public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest) {
-        Traveler traveler = repository.findById(id)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND"));
+        Traveler traveler = findOrThrow(id);
 
         traveler.travelerUpdateRequest(travelerUpdateRequest);
 
