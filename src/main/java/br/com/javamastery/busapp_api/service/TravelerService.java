@@ -79,4 +79,15 @@ public class TravelerService {
 
         repository.deleteById(id);
     }
+
+    public TravelerUpdateResponse toUpdateResponse(Traveler  traveler) {
+        return TravelerUpdateResponse.builder()
+                .id(traveler.getId())
+                .name(traveler.getName())
+                .cpf(traveler.getCpf())
+                .birthDate(traveler.getBirthDate())
+                .age(traveler.getAge())
+                .updatedAt(traveler.getUpdatedAt())
+                .build();
+    }
 }
