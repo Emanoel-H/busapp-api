@@ -12,8 +12,8 @@ import lombok.Getter;
 public class State {
     @Id
     @Column(name = "state_code")
-    Long code;
-    String uf;
-    String name;
-    String region;
+    private Long code;
+    private String uf;
+    private String name;
+    private String region;
 }
