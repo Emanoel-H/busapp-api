@@ -30,15 +30,7 @@ public class BusCompanyService {
         BusCompany busCompany = repository.findById(id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
 
-        return BusCompanyResponse.builder()
-                .id(busCompany.getId())
-                .legalName(busCompany.getLegalName())
-                .tradingName(busCompany.getTradingName())
-                .cnpj(busCompany.getCnpj())
-                .telephone(busCompany.getTelephone())
-                .email(busCompany.getEmail())
-                .createdAt(busCompany.getCreatedAt())
-                .build();
+        return toResponse(busCompany);
     }
 
     public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest) {
