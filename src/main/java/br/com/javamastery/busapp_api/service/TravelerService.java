@@ -46,7 +46,7 @@ public class TravelerService {
 
     public TravelerCreditsResponse addCredits(Long id, BigDecimal credits) {
         if (credits == null || credits.compareTo(BigDecimal.ZERO) <= 0)
-            throw new HandlerConfig(HttpStatus.CONFLICT, "CREDIT AMOUNT MUST BE GREATER THAN ZERO");
+            throw new HandlerConfig(HttpStatus.BAD_REQUEST, "CREDIT AMOUNT MUST BE GREATER THAN ZERO");
 
         Traveler traveler = findOrThrow(id);
 
