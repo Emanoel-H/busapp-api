@@ -79,4 +79,9 @@ public class BusCompanyService {
                 .createdAt(busCompany.getCreatedAt())
                 .build();
     }
+
+    public BusCompany findOrThrow(Long id){
+        return repository.findById(id)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "COMPANY NOT FOUND"));
+    }
 }
