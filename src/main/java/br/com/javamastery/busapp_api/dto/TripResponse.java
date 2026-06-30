@@ -11,7 +11,6 @@ import java.time.LocalTime;
 @Setter
 @Builder
 public class TripResponse {
-    private Long id;
     private String code;
     private String originCity;
     private String originState;
@@ -22,5 +21,4 @@ public class TripResponse {
     private LocalTime departureTime;
     private double distanceKM;
     private String category;
-    private boolean active;
 }
