@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.model;
 
+import br.com.javamastery.busapp_api.dto.TripRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +40,17 @@ public class Trip {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public Trip() {
+    }
+
+    public Trip(TripRequest tripRequest, City origin, City destination, BusCompany busCompany) {
+        this.origin = origin;
+        this.destination = destination;
+        this.busCompany = busCompany;
+        this.departureTime = tripRequest.getDepartureTime();
+        this.price = tripRequest.getPrice();
+    }
 
     @PrePersist
     public void prePersist() {
