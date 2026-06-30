@@ -1,6 +1,5 @@
 package br.com.javamastery.busapp_api.repository;
 
-import br.com.javamastery.busapp_api.model.City;
 import br.com.javamastery.busapp_api.model.Trip;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
