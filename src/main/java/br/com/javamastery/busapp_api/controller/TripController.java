@@ -47,4 +47,10 @@ public class TripController {
     public ResponseEntity<TripUpdateResponse> update(@PathVariable String code, @RequestBody TripUpdateRequest tripUpdateRequest) {
         return ResponseEntity.ok(tripService.update(code, tripUpdateRequest));
     }
+
+    @DeleteMapping("/{code}")
+    public ResponseEntity<Void> delete(@PathVariable String code) {
+        tripService.delete(code);
+        return ResponseEntity.noContent().build();
+    }
 }
