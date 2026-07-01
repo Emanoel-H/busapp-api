@@ -2,6 +2,8 @@ package br.com.javamastery.busapp_api.controller;
 
 import br.com.javamastery.busapp_api.dto.TripRequest;
 import br.com.javamastery.busapp_api.dto.TripResponse;
+import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
+import br.com.javamastery.busapp_api.dto.TripUpdateResponse;
 import br.com.javamastery.busapp_api.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,5 +41,10 @@ public class TripController {
     @GetMapping("/{code}")
     public ResponseEntity<TripResponse> findByCode(@PathVariable String code) {
         return ResponseEntity.ok(tripService.findByCode(code));
+    }
+
+    @PutMapping("/{code}")
+    public ResponseEntity<TripUpdateResponse> update(@PathVariable String code, @RequestBody TripUpdateRequest tripUpdateRequest) {
+        return ResponseEntity.ok(tripService.update(code, tripUpdateRequest));
     }
 }
