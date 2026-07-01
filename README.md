@@ -46,86 +46,113 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 src/main/java/br/com/javamastery/busapp_api/
 │
 ├── controller/
+│   ├── AddressController.java         # Read-only: states, cities by UF, city search
 │   ├── BusCompanyController.java
-│   └── TravelerController.java
+│   ├── TravelerController.java
+│   └── TripController.java
 │
 ├── dto/
-│   ├── BusCompanyRequest.java
-│   ├── BusCompanyResponse.java
-│   ├── BusCompanyUpdateRequest.java
-│   ├── BusCompanyUpdateResponse.java
-│   ├── TravelerRequest.java
-│   ├── TravelerResponse.java
-│   ├── TravelerUpdateRequest.java
-│   └── TravelerUpdateResponse.java
+│   ├── BusCompanyRequest/Response/UpdateRequest/UpdateResponse
+│   ├── CityResponse, StateResponse
+│   ├── TravelerRequest/Response/UpdateRequest/UpdateResponse/CreditsResponse
+│   └── TripRequest/Response/UpdateRequest/UpdateResponse
 │
 ├── exception/
-│   ├── GlobalExceptionHandler.java    # @RestControllerAdvice
+│   ├── GlobalExceptionHandler.java    # @RestControllerAdvice, unified buildResponse
 │   └── HandlerConfig.java             # Base exception with HTTP status
 │
 ├── model/
 │   ├── BusCompany.java
-│   └── Traveler.java                  # @Formula age, creditsBalance initialized in @PrePersist
+│   ├── Category.java (enum)
+│   ├── City.java                      # Read-only, FetchType.LAZY
+│   ├── State.java                     # Read-only
+│   ├── Traveler.java                  # @Formula age, creditsBalance, addCredits()
+│   └── Trip.java                      # Soft delete, Haversine, auto code, category
 │
 ├── repository/
 │   ├── BusCompanyRepository.java
-│   └── TravelerRepository.java
+│   ├── CityRepository.java            # JOIN FETCH queries, search by name/UF/IBGE
+│   ├── StateRepository.java
+│   ├── TravelerRepository.java
+│   └── TripRepository.java            # JOIN FETCH, filter by route/company/active
 │
 ├── service/
-│   ├── BusCompanyService.java
-│   └── TravelerService.java
+│   ├── BusCompanyService.java         # findOrThrow(), toResponse(), toUpdateResponse()
+│   ├── TravelerService.java           # findOrThrow(), toResponse(), addCredits()
+│   └── TripService.java               # findCityOrThrow(), findTripOrThrow(), toResponse()
 │
 └── validation/
-    ├── ValidCpf.java                  # Custom annotation
-    └── CpfValidator.java              # Digit-verifier algorithm
+    ├── ValidCpf.java                  # Custom constraint annotation
+    └── CpfValidator.java              # Full digit-verifier algorithm
 ```
 
 ---
 
 ## Endpoints
 
+### Address — `/address` (read-only)
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/address/states` | List all states |
+| `GET` | `/address/states/{uf}/cities` | List cities by state UF |
+| `GET` | `/address/cities?city=nome` | Search cities by name prefix |
+
 ### Bus Company — `/companies`
 
 | Method | Path | Description | Status |
 |---|---|---|---|
-| `POST` | `/companies` | Register a new bus company | `201 Created` |
-| `GET` | `/companies/{id}` | Find company by ID | `200 OK` |
-| `PUT` | `/companies/{id}` | Update company profile | `200 OK` |
-| `DELETE` | `/companies/{id}` | Delete company | `204 No Content` |
+| `POST` | `/companies` | Register | `201 Created` |
+| `GET` | `/companies/{id}` | Find by ID | `200 OK` |
+| `PUT` | `/companies/{id}` | Update | `200 OK` |
+| `DELETE` | `/companies/{id}` | Delete | `204 No Content` |
 
 ### Traveler — `/travelers`
 
 | Method | Path | Description | Status |
 |---|---|---|---|
-| `POST` | `/travelers` | Register a new traveler | `201 Created` |
-| `GET` | `/travelers/{id}` | Find traveler by ID | `200 OK` |
-| `PUT` | `/travelers/{id}` | Update traveler profile | `200 OK` |
-| `DELETE` | `/travelers/{id}` | Delete traveler | `204 No Content` |
+| `POST` | `/travelers` | Register | `201 Created` |
+| `GET` | `/travelers/{id}` | Find by ID | `200 OK` |
+| `PUT` | `/travelers/{id}` | Update | `200 OK` |
+| `DELETE` | `/travelers/{id}` | Delete | `204 No Content` |
+| `PATCH` | `/travelers/{id}/credits` | Add credits | `200 OK` |
 
-#### POST `/travelers` — Request body
+### Trip — `/trips`
+
+| Method | Path | Description | Status |
+|---|---|---|---|
+| `POST` | `/trips` | Create trip | `201 Created` |
+| `GET` | `/trips` | List all active trips | `200 OK` |
+| `GET` | `/trips?originCode=X&destinationCode=Y` | Filter by route | `200 OK` |
+| `GET` | `/trips?companyId=X` | Filter by company | `200 OK` |
+| `GET` | `/trips/{code}` | Find by code | `200 OK` |
+| `PUT` | `/trips/{code}` | Update trip | `200 OK` |
+| `DELETE` | `/trips/{code}` | Soft delete (deactivate) | `204 No Content` |
+
+#### POST `/trips` — Request body
 ```json
 {
-  "name": "João Silva",
-  "birthDate": "1990-05-15",
-  "cpf": "12345678909",
-  "telephone": "21987654321",
-  "email": "joao@email.com",
-  "password": "senha123"
+  "originCityIbgeCode": 3304557,
+  "destinationCityIbgeCode": 3550308,
+  "busCompanyId": 1,
+  "price": 89.90,
+  "departureTime": "14:30"
 }
 ```
 
-#### POST `/travelers` — Response `201`
+#### GET `/trips/{code}` — Response `200`
 ```json
 {
-  "id": 1,
-  "name": "João Silva",
-  "cpf": "12345678909",
-  "birthDate": "1990-05-15",
-  "age": 35,
-  "email": "joao@email.com",
-  "telephone": "21987654321",
-  "creditsBalance": 0.00,
-  "createdAt": "2026-06-28T10:00:00"
+  "code": "ABC1234567",
+  "originCity": "Rio de Janeiro",
+  "originState": "Rio de Janeiro",
+  "destinationCity": "São Paulo",
+  "destinationState": "São Paulo",
+  "busCompany": "ABC Bus",
+  "price": 89.90,
+  "departureTime": "14:30",
+  "distanceKM": 429.5,
+  "category": "INTERSTATE"
 }
 ```
 
@@ -135,19 +162,20 @@ src/main/java/br/com/javamastery/busapp_api/
 
 | Field | Rule |
 |---|---|
-| `cpf` | Custom `@ValidCpf` — validates length, all-same-digit rejection, and both verifier digits |
+| `cpf` | `@ValidCpf` — validates length, all-same-digit rejection, and both verifier digits |
 | `cnpj` | `@Pattern(regexp = "\\d{14}")` |
 | `telephone` | `@Pattern(regexp = "\\d{10,11}")` |
 | `email` | `@Email` |
 | `password` | `@Size(min = 6, max = 16)` |
 | `birthDate` | `@NotNull` + `@Past` |
+| `price` | `@DecimalMin("0.01")` |
 | text fields | `@NotBlank` |
 
 ---
 
 ## Error Handling
 
-All errors return a consistent JSON structure via `GlobalExceptionHandler`:
+All errors return a consistent JSON structure:
 
 ```json
 {
@@ -160,8 +188,8 @@ All errors return a consistent JSON structure via `GlobalExceptionHandler`:
 | Scenario | HTTP Status |
 |---|---|
 | Resource not found | `404 Not Found` |
-| Email or CNPJ/CPF already registered | `409 Conflict` |
-| Validation failure (`@Valid`) | `400 Bad Request` |
+| Duplicate email / CNPJ / CPF | `409 Conflict` |
+| Validation failure | `400 Bad Request` |
 | Invalid argument | `400 Bad Request` |
 
 ---
@@ -177,7 +205,7 @@ All errors return a consistent JSON structure via `GlobalExceptionHandler`:
 ### 1. Clone
 
 ```bash
-git clone https://github.com/Emanoel-H/Java-Mastery.git
+git clone https://github.com/Emanoel-H/busapp-api.git
 cd busapp-api
 ```
 
