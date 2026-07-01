@@ -38,10 +38,8 @@ public class TravelerService {
     }
 
     public void deleteById(Long id) {
-        if (!repository.existsById(id))
-            throw new HandlerConfig(HttpStatus.NOT_FOUND, "TRAVELER NOT FOUND");
-
-        repository.deleteById(id);
+        Traveler traveler = findOrThrow(id);
+        repository.delete(traveler);
     }
 
     public TravelerCreditsResponse addCredits(Long id, BigDecimal credits) {
