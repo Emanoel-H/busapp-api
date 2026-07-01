@@ -65,6 +65,7 @@ public class Trip {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
         calculateCategory();
+        calculateDistance();
     }
 
     private void generateCode(){
