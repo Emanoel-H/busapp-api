@@ -32,25 +32,6 @@ public class TripService {
         return toResponse(tripRepository.save(new Trip(tripRequest, origin, destination, busCompany)));
     }
 
-    public City findCityOrThrow (Long ibgeCode) {
-        return cityRepository.findByIBGECode(ibgeCode)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "City not found for the code: " + ibgeCode));
-    }
-
-    public BusCompany findBusCompanyOrThrow (Long id) {
-        return busCompanyRepository.findById(id)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Company not found for the id: " + id));
-    }
-
-    public Trip findTripOrThrow (Long id) {
-        return tripRepository.findById(id)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found for the id: " + id));
-    }
-
-    public Trip findTripOrThrow(String code){
-        return tripRepository.findByCode(code)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found for the code: " + code));
-    }
 
     public List<TripResponse> listByRoute(Long originCode, Long destinationCode) {
         List<Trip> trips = tripRepository.findAllByOriginAndDestination(originCode, destinationCode);
@@ -96,6 +77,26 @@ public class TripService {
         Trip trip = findTripOrThrow(code);
         trip.deactivate();
         tripRepository.save(trip);
+    }
+
+    public City findCityOrThrow (Long ibgeCode) {
+        return cityRepository.findByIBGECode(ibgeCode)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "City not found for the code: " + ibgeCode));
+    }
+
+    public BusCompany findBusCompanyOrThrow (Long id) {
+        return busCompanyRepository.findById(id)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Company not found for the id: " + id));
+    }
+
+    public Trip findTripOrThrow (Long id) {
+        return tripRepository.findById(id)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found for the id: " + id));
+    }
+
+    public Trip findTripOrThrow(String code){
+        return tripRepository.findByCode(code)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found for the code: " + code));
     }
 
     public TripResponse toResponse(Trip trip) {
