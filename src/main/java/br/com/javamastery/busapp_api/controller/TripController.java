@@ -16,37 +16,37 @@ import java.util.List;
 @RequestMapping("/trips")
 @RequiredArgsConstructor
 public class TripController {
-    private final TripService tripService;
+    private final TripService service;
 
     @PostMapping
     public ResponseEntity<TripResponse> create(@RequestBody TripRequest tripRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(tripService.create(tripRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(tripRequest));
     }
 
     @GetMapping
     public ResponseEntity<List<TripResponse>> listAll(@RequestParam(required = false) Long originCode, @RequestParam(required = false) Long destinationCode, @RequestParam(required = false) Long companyId) {
         if (originCode != null && destinationCode != null)
-            return ResponseEntity.ok(tripService.listByRoute(originCode, destinationCode));
+            return ResponseEntity.ok(service.listByRoute(originCode, destinationCode));
 
         if (companyId != null)
-            return ResponseEntity.ok(tripService.listByCompany(companyId));
+            return ResponseEntity.ok(service.listByCompany(companyId));
 
-        return ResponseEntity.ok(tripService.listAll());
+        return ResponseEntity.ok(service.listAll());
     }
-    
+
     @GetMapping("/{code}")
     public ResponseEntity<TripResponse> findByCode(@PathVariable String code) {
-        return ResponseEntity.ok(tripService.findByCode(code));
+        return ResponseEntity.ok(service.findByCode(code));
     }
 
     @PutMapping("/{code}")
     public ResponseEntity<TripUpdateResponse> update(@PathVariable String code, @RequestBody TripUpdateRequest tripUpdateRequest) {
-        return ResponseEntity.ok(tripService.update(code, tripUpdateRequest));
+        return ResponseEntity.ok(service.update(code, tripUpdateRequest));
     }
 
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> delete(@PathVariable String code) {
-        tripService.delete(code);
+        service.delete(code);
         return ResponseEntity.noContent().build();
     }
 }
