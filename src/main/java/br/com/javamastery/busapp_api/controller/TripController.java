@@ -30,4 +30,9 @@ public class TripController {
     public ResponseEntity<List<TripResponse>> listAll() {
         return ResponseEntity.ok(tripService.listAll());
     }
+
+    @GetMapping("/company")
+    public ResponseEntity<List<TripResponse>> listByCompany(@RequestParam Long companyId) {
+        return ResponseEntity.ok(tripService.listByCompany(companyId));
+    }
 }
