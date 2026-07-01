@@ -23,11 +23,6 @@ public class TripController {
         return ResponseEntity.status(HttpStatus.CREATED).body(tripService.create(tripRequest));
     }
 
-    @GetMapping("/route")
-    public ResponseEntity<List<TripResponse>> listByRoute(@RequestParam Long originCode, @RequestParam Long destinationCode) {
-        return ResponseEntity.ok(tripService.listByRoute(originCode, destinationCode));
-    }
-
     @GetMapping
     public ResponseEntity<List<TripResponse>> listAll(@RequestParam(required = false) Long originCode, @RequestParam(required = false) Long destinationCode, @RequestParam(required = false) Long companyId) {
         if (originCode != null && destinationCode != null)
@@ -38,12 +33,7 @@ public class TripController {
 
         return ResponseEntity.ok(tripService.listAll());
     }
-
-    @GetMapping("/company")
-    public ResponseEntity<List<TripResponse>> listByCompany(@RequestParam Long companyId) {
-        return ResponseEntity.ok(tripService.listByCompany(companyId));
-    }
-
+    
     @GetMapping("/{code}")
     public ResponseEntity<TripResponse> findByCode(@PathVariable String code) {
         return ResponseEntity.ok(tripService.findByCode(code));
