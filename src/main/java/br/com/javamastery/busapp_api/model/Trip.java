@@ -81,6 +81,10 @@ public class Trip {
         }
     }
 
+    private void calculateDistance(){
+        if (this.origin != null && this.destination != null)
+            this.distanceKM = haversine(origin.getLatitude(), origin.getLongitude(), destination.getLatitude(), destination.getLongitude());
+    }
     private double haversine(double lat1,  double lon1, double lat2, double lon2) {
         final int R = 6371;
         double latDistance = Math.toRadians(lat2 - lat1);
