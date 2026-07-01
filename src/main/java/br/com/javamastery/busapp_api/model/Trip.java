@@ -59,6 +59,7 @@ public class Trip {
         this.updatedAt = LocalDateTime.now();
         generateCode();
         calculateCategory();
+        calculateDistance();
     }
 
     @PreUpdate
