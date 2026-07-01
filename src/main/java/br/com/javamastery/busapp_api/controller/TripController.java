@@ -29,7 +29,13 @@ public class TripController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TripResponse>> listAll() {
+    public ResponseEntity<List<TripResponse>> listAll(@RequestParam(required = false) Long originCode, @RequestParam(required = false) Long destinationCode, @RequestParam(required = false) Long companyId) {
+        if (originCode != null && destinationCode != null)
+            return ResponseEntity.ok(tripService.listByRoute(originCode, destinationCode));
+
+        if (companyId != null)
+            return ResponseEntity.ok(tripService.listByCompany(companyId));
+
         return ResponseEntity.ok(tripService.listAll());
     }
 
