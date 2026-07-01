@@ -96,7 +96,7 @@ public class Trip {
         }
     }
 
-    private void deactivate(){
+    public void deactivate(){
         this.active = false;
     }
 
