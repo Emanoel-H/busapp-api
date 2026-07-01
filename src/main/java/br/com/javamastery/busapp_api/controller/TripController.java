@@ -6,10 +6,9 @@ import br.com.javamastery.busapp_api.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/trips")
@@ -20,5 +19,10 @@ public class TripController {
     @PostMapping
     public ResponseEntity<TripResponse> create(@RequestBody TripRequest tripRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(tripService.create(tripRequest));
+    }
+
+    @GetMapping("/route")
+    public ResponseEntity<List<TripResponse>> listByRoute(@RequestParam Long originCode, @RequestParam Long destinationCode) {
+        return ResponseEntity.ok(tripService.listByRoute(originCode, destinationCode));
     }
 }
