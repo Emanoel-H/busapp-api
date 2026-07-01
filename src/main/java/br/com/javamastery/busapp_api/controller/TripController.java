@@ -35,4 +35,9 @@ public class TripController {
     public ResponseEntity<List<TripResponse>> listByCompany(@RequestParam Long companyId) {
         return ResponseEntity.ok(tripService.listByCompany(companyId));
     }
+
+    @GetMapping("/{code}")
+    public ResponseEntity<TripResponse> findByCode(@PathVariable String code) {
+        return ResponseEntity.ok(tripService.findByCode(code));
+    }
 }
