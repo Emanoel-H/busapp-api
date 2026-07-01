@@ -1,6 +1,7 @@
 package br.com.javamastery.busapp_api.model;
 
 import br.com.javamastery.busapp_api.dto.TripRequest;
+import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -78,6 +79,13 @@ public class Trip {
             this.code = stringBuilder.toString();
 
         }
+    }
+
+    public void tripUpdateRequest(TripUpdateRequest tripUpdateRequest, City origin, City destination) {
+        this.origin = origin;
+        this.destination = destination;
+        this.departureTime = tripUpdateRequest.getDepartureTime();
+        this.price = tripUpdateRequest.getPrice();
     }
 
     private void calculateCategory(){
