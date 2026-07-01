@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping("/address")
 @RequiredArgsConstructor
 public class AddressController {
-    private CityRepository cityRepository;
-    private StateRepository stateRepository;
+    private final CityRepository cityRepository;
+    private final StateRepository stateRepository;
 
     @GetMapping("/states")
     public ResponseEntity<List<StateResponse>> listStates(){
