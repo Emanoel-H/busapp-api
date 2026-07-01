@@ -40,6 +40,7 @@ public class BusTicket {
     private void prePersist() {
         this.saleDate = LocalDate.now();
         this.updatedAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
 
         if (this.price == null)
             this.price = this.trip.getPrice();
