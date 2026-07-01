@@ -25,4 +25,9 @@ public class TripController {
     public ResponseEntity<List<TripResponse>> listByRoute(@RequestParam Long originCode, @RequestParam Long destinationCode) {
         return ResponseEntity.ok(tripService.listByRoute(originCode, destinationCode));
     }
+
+    @GetMapping
+    public ResponseEntity<List<TripResponse>> listAll() {
+        return ResponseEntity.ok(tripService.listAll());
+    }
 }
