@@ -32,6 +32,7 @@ public class BusTicket {
     private LocalDate saleDate;
     private LocalDateTime cancelDate;
     private boolean canceled = false;
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
