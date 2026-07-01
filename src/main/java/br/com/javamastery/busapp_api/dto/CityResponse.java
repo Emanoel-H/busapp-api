@@ -9,6 +9,6 @@ import lombok.Getter;
 public class CityResponse {
     private Long ibgeCode;
     private String city;
-    private State state;
+    private String state;
     private int ddd;
 }
