@@ -89,11 +89,6 @@ public class TripService {
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Company not found for the id: " + id));
     }
 
-    public Trip findTripOrThrow (Long id) {
-        return tripRepository.findById(id)
-                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found for the id: " + id));
-    }
-
     public Trip findTripOrThrow(String code){
         return tripRepository.findByCode(code)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found for the code: " + code));
