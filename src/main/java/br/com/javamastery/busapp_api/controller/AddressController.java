@@ -59,7 +59,7 @@ public class AddressController {
         return CityResponse.builder()
                 .ibgeCode(city.getIbgeCode())
                 .city(city.getCity())
-                .state(city.getState())
+                .state(city.getState().getUf())
                 .ddd(city.getDdd())
                 .build();
     }
