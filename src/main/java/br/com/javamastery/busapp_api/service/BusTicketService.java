@@ -3,6 +3,7 @@ package br.com.javamastery.busapp_api.service;
 import br.com.javamastery.busapp_api.dto.BusTicketRequest;
 import br.com.javamastery.busapp_api.dto.BusTicketResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
+import br.com.javamastery.busapp_api.model.BusTicket;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.model.Trip;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
@@ -28,5 +29,21 @@ public class BusTicketService {
     public Trip findTripOrThrow(String trip_code) {
         return tripRepository.findByCode(trip_code)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found!"));
+    }
+
+    public BusTicketResponse toResponse(BusTicket busTicket) {
+        return BusTicketResponse.builder()
+                .code(busTicket.getCode())
+                .price(busTicket.getPrice())
+                .departureDate(busTicket.getDepartureDate())
+                .travelerName(busTicket.getTraveler().getName())
+                .cpf(busTicket.getTraveler().getCpf())
+                .originCity(busTicket.getTrip().getOrigin().getCity())
+                .originState(busTicket.getTrip().getOrigin().getState().getName())
+                .destinationCity(busTicket.getTrip().getDestination().getCity())
+                .destinationState(busTicket.getTrip().getDestination().getState().getName())
+                .saleDate(busTicket.getSaleDate())
+                .createdAt(busTicket.getCreatedAt())
+                .build();
     }
 }
