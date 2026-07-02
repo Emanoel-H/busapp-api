@@ -33,7 +33,9 @@ public class BusTicketService {
     }
 
     public List<BusTicketResponse> listAllByTraveler(Long traveler_id, boolean includeCanceled){
-        List<BusTicket> tickets = busTicketRepository.findAllByTravelerId(traveler_id);
+        List<BusTicket> tickets = includeCanceled
+                ? busTicketRepository.findAllByTravelerId(traveler_id)
+                : busTicketRepository.findAllActiveByTravelerId(traveler_id);
 
         if (tickets.isEmpty())
            throw new HandlerConfig(HttpStatus.NOT_FOUND, "Tickets not found for the traveler id: " + traveler_id);
