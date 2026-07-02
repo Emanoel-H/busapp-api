@@ -4,6 +4,7 @@ import br.com.javamastery.busapp_api.dto.BusTicketRequest;
 import br.com.javamastery.busapp_api.dto.BusTicketResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.Traveler;
+import br.com.javamastery.busapp_api.model.Trip;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import br.com.javamastery.busapp_api.repository.TripRepository;
@@ -22,5 +23,10 @@ public class BusTicketService {
     public Traveler findTravelerOrThrow(Long traveler_id) {
         return travelerRepository.findById(traveler_id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Traveler not found!"));
+    }
+
+    public Trip findTripOrThrow(String trip_code) {
+        return tripRepository.findByCode(trip_code)
+                .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found!"));
     }
 }
