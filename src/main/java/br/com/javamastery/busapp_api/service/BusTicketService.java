@@ -26,6 +26,9 @@ public class BusTicketService {
         Trip trip = findTripOrThrow(busTicketRequest.getTrip_code());
         Traveler traveler = findTravelerOrThrow(busTicketRequest.getTraveler_id());
 
+        if (!trip.isActive())
+            throw new HandlerConfig(HttpStatus.BAD_REQUEST, "Trip is no longer active");
+
         return toResponse(new BusTicket(busTicketRequest, traveler, trip));
     }
 
