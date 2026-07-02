@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/tickets")
 @RequiredArgsConstructor
@@ -22,5 +24,10 @@ public class BusTicketController {
     @GetMapping("/{code}")
     public ResponseEntity<BusTicketResponse> findByCode(@PathVariable String code) {
         return ResponseEntity.ok(busTicketService.findByCode(code));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BusTicketResponse>> listAllByTraveler(@RequestParam Long traveler_id, @RequestParam(required = false) boolean includeCanceled) {
+        return ResponseEntity.ok(busTicketService.listAllByTraveler(traveler_id, includeCanceled));
     }
 }
