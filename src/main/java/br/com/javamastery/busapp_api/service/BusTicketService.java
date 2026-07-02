@@ -48,6 +48,11 @@ public class BusTicketService {
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Trip not found!"));
     }
 
+    public BusTicket findBusTicketOrThrow(String code){
+        return busTicketRepository.findByCode(code)
+                .orElseThrow(()  -> new HandlerConfig(HttpStatus.NOT_FOUND, "BusTicket not found!"));
+    }
+
     public BusTicketResponse toResponse(BusTicket busTicket) {
         return BusTicketResponse.builder()
                 .code(busTicket.getCode())
