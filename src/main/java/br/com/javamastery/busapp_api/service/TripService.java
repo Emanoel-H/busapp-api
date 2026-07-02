@@ -80,7 +80,7 @@ public class TripService {
 
         if (busTicketRepository.existsByTripId(trip.getId()))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cannot deactivate trip: " + code + ": it has tickets associated.");
-        
+
         trip.deactivate();
         tripRepository.save(trip);
     }
