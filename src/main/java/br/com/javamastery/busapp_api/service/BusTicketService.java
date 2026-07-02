@@ -31,7 +31,7 @@ public class BusTicketService {
         if (!trip.isActive())
             throw new HandlerConfig(HttpStatus.BAD_REQUEST, "Trip is no longer active");
 
-        return toResponse(new BusTicket(busTicketRequest, traveler, trip));
+        return toResponse(busTicketRepository.save(new BusTicket(busTicketRequest, traveler, trip)));
     }
 
     public List<BusTicketResponse> listAllByTraveler(Long traveler_id, boolean includeCanceled){
