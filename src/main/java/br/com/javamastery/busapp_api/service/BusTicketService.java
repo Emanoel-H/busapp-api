@@ -49,7 +49,7 @@ public class BusTicketService {
         return toResponse(findBusTicketOrThrow(code));
     }
 
-    public void cancelTicket(String code){
+    public BusTicketCanceledResponse cancelTicket(String code){
         BusTicket busTicket = findBusTicketOrThrow(code);
 
         if (busTicket.isCanceled())
@@ -63,7 +63,7 @@ public class BusTicketService {
         busTicket.cancelTicket();
         findTravelerOrThrow(busTicket.getTraveler().getId()).addCredits(busTicket.getPrice());
 
-        busTicketRepository.save(busTicket);
+        return toCanceledResponse(busTicketRepository.save(busTicket));
     }
 
     public Traveler findTravelerOrThrow(Long traveler_id) {
