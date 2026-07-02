@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.controller;
 
+import br.com.javamastery.busapp_api.dto.BusTicketCanceledResponse;
 import br.com.javamastery.busapp_api.dto.BusTicketRequest;
 import br.com.javamastery.busapp_api.dto.BusTicketResponse;
 import br.com.javamastery.busapp_api.service.BusTicketService;
@@ -29,5 +30,10 @@ public class BusTicketController {
     @GetMapping
     public ResponseEntity<List<BusTicketResponse>> listAllByTraveler(@RequestParam Long traveler_id, @RequestParam(required = false) boolean includeCanceled) {
         return ResponseEntity.ok(busTicketService.listAllByTraveler(traveler_id, includeCanceled));
+    }
+
+    @DeleteMapping("/{code}")
+    public ResponseEntity<BusTicketCanceledResponse> cancelTicket(@PathVariable String code) {
+        return ResponseEntity.ok(busTicketService.cancelTicket(code));
     }
 }
