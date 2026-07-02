@@ -28,7 +28,7 @@ public class BusTicketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BusTicketResponse>> listAllByTraveler(@RequestParam Long traveler_id, @RequestParam(required = false) boolean includeCanceled) {
+    public ResponseEntity<List<BusTicketResponse>> listAllByTraveler(@RequestParam Long traveler_id, @RequestParam(defaultValue = "false") boolean includeCanceled) {
         return ResponseEntity.ok(busTicketService.listAllByTraveler(traveler_id, includeCanceled));
     }
 
