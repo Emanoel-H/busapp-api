@@ -77,6 +77,10 @@ public class TripService {
 
     public void delete(String code){
         Trip trip = findTripOrThrow(code);
+
+        if (busTicketRepository.existsByTripId(trip.getId()))
+            throw new HandlerConfig(HttpStatus.CONFLICT, "Cannot deactivate trip: " + code + ": it has tickets associated.");
+        
         trip.deactivate();
         tripRepository.save(trip);
     }
