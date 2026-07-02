@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.dto.BusTicketCanceledResponse;
 import br.com.javamastery.busapp_api.dto.BusTicketRequest;
 import br.com.javamastery.busapp_api.dto.BusTicketResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
@@ -61,7 +62,7 @@ public class BusTicketService {
 
         busTicket.cancelTicket();
         findTravelerOrThrow(busTicket.getTraveler().getId()).addCredits(busTicket.getPrice());
-        
+
         busTicketRepository.save(busTicket);
     }
 
@@ -93,6 +94,23 @@ public class BusTicketService {
                 .destinationState(busTicket.getTrip().getDestination().getState().getName())
                 .saleDate(busTicket.getSaleDate())
                 .createdAt(busTicket.getCreatedAt())
+                .build();
+    }
+
+    public BusTicketCanceledResponse toCanceledResponse(BusTicket busTicket) {
+        return BusTicketCanceledResponse.builder()
+                .code(busTicket.getCode())
+                .price(busTicket.getPrice())
+                .departureDate(busTicket.getDepartureDate())
+                .travelerName(busTicket.getTraveler().getName())
+                .travelerCreditsBalance(busTicket.getTraveler().getCreditsBalance())
+                .cpf(busTicket.getTraveler().getCpf())
+                .originCity(busTicket.getTrip().getOrigin().getCity())
+                .originState(busTicket.getTrip().getOrigin().getState().getName())
+                .destinationCity(busTicket.getTrip().getDestination().getCity())
+                .destinationState(busTicket.getTrip().getDestination().getState().getName())
+                .cancelDate(busTicket.getCancelDate())
+                .canceled(busTicket.isCanceled())
                 .build();
     }
 }
