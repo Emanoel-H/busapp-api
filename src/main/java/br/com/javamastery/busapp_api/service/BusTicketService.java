@@ -38,6 +38,10 @@ public class BusTicketService {
         return tickets.stream().map(this::toResponse).toList();
     }
 
+    public BusTicketResponse findByCode(String code){
+        return toResponse(findBusTicketOrThrow(code));
+    }
+
     public Traveler findTravelerOrThrow(Long traveler_id) {
         return travelerRepository.findById(traveler_id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Traveler not found!"));
