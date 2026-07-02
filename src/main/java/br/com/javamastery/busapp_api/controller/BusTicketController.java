@@ -6,9 +6,7 @@ import br.com.javamastery.busapp_api.service.BusTicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tickets")
@@ -19,5 +17,10 @@ public class BusTicketController {
     @PostMapping
     public ResponseEntity<BusTicketResponse> buy(BusTicketRequest busTicketRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(busTicketService.buy(busTicketRequest));
+    }
+
+    @GetMapping("/{code}")
+    public ResponseEntity<BusTicketResponse> findByCode(@PathVariable String code) {
+        return ResponseEntity.ok(busTicketService.findByCode(code));
     }
 }
