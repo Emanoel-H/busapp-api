@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,6 +22,6 @@ public class BusTicketCanceledResponse {
     private String originState;
     private String destinationCity;
     private String destinationState;
-    private LocalDate cancelDate;
+    private LocalDateTime cancelDate;
     private boolean canceled;
 }
