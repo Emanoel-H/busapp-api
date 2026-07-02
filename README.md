@@ -48,11 +48,13 @@ src/main/java/br/com/javamastery/busapp_api/
 ├── controller/
 │   ├── AddressController.java         # Read-only: states, cities by UF, city search
 │   ├── BusCompanyController.java
+│   ├── BusTicketController.java
 │   ├── TravelerController.java
 │   └── TripController.java
 │
 ├── dto/
 │   ├── BusCompanyRequest/Response/UpdateRequest/UpdateResponse
+│   ├── BusTicketRequest/Response/CanceledResponse
 │   ├── CityResponse, StateResponse
 │   ├── TravelerRequest/Response/UpdateRequest/UpdateResponse/CreditsResponse
 │   └── TripRequest/Response/UpdateRequest/UpdateResponse
@@ -63,6 +65,7 @@ src/main/java/br/com/javamastery/busapp_api/
 │
 ├── model/
 │   ├── BusCompany.java
+│   ├── BusTicket.java                 # cancelTicket(), price copied at persist, auto code
 │   ├── Category.java (enum)
 │   ├── City.java                      # Read-only, FetchType.LAZY
 │   ├── State.java                     # Read-only
@@ -71,19 +74,21 @@ src/main/java/br/com/javamastery/busapp_api/
 │
 ├── repository/
 │   ├── BusCompanyRepository.java
+│   ├── BusTicketRepository.java       # JOIN FETCH, findByCode, findAllByTravelerId, existsByTripId
 │   ├── CityRepository.java            # JOIN FETCH queries, search by name/UF/IBGE
 │   ├── StateRepository.java
 │   ├── TravelerRepository.java
 │   └── TripRepository.java            # JOIN FETCH, filter by route/company/active
 │
 ├── service/
-│   ├── BusCompanyService.java         # findOrThrow(), toResponse(), toUpdateResponse()
-│   ├── TravelerService.java           # findOrThrow(), toResponse(), addCredits()
-│   └── TripService.java               # findCityOrThrow(), findTripOrThrow(), toResponse()
+│   ├── BusCompanyService.java
+│   ├── BusTicketService.java          # buy(), findByCode(), listAllByTraveler(), cancelTicket()
+│   ├── TravelerService.java
+│   └── TripService.java               # existsByTripId guard on delete
 │
 └── validation/
-    ├── ValidCpf.java                  # Custom constraint annotation
-    └── CpfValidator.java              # Full digit-verifier algorithm
+    ├── ValidCpf.java
+    └── CpfValidator.java
 ```
 
 ---
@@ -122,39 +127,59 @@ src/main/java/br/com/javamastery/busapp_api/
 | Method | Path | Description | Status |
 |---|---|---|---|
 | `POST` | `/trips` | Create trip | `201 Created` |
-| `GET` | `/trips` | List all active trips | `200 OK` |
+| `GET` | `/trips` | List all active | `200 OK` |
 | `GET` | `/trips?originCode=X&destinationCode=Y` | Filter by route | `200 OK` |
 | `GET` | `/trips?companyId=X` | Filter by company | `200 OK` |
 | `GET` | `/trips/{code}` | Find by code | `200 OK` |
-| `PUT` | `/trips/{code}` | Update trip | `200 OK` |
-| `DELETE` | `/trips/{code}` | Soft delete (deactivate) | `204 No Content` |
+| `PUT` | `/trips/{code}` | Update | `200 OK` |
+| `DELETE` | `/trips/{code}` | Soft delete | `204 No Content` |
 
-#### POST `/trips` — Request body
+### Ticket — `/tickets`
+
+| Method | Path | Description | Status |
+|---|---|---|---|
+| `POST` | `/tickets` | Buy ticket | `201 Created` |
+| `GET` | `/tickets/{code}` | Find by code | `200 OK` |
+| `GET` | `/tickets?traveler_id=X` | List by traveler | `200 OK` |
+| `GET` | `/tickets?traveler_id=X&includeCanceled=true` | Include canceled | `200 OK` |
+| `PATCH` | `/tickets/{code}/cancel` | Cancel ticket | `200 OK` |
+
+#### POST `/tickets` — Request body
 ```json
 {
-  "originCityIbgeCode": 3304557,
-  "destinationCityIbgeCode": 3550308,
-  "busCompanyId": 1,
-  "price": 89.90,
-  "departureTime": "14:30"
+  "traveler_id": 1,
+  "trip_code": "ABC1234567",
+  "departureDate": "2026-08-15"
 }
 ```
 
-#### GET `/trips/{code}` — Response `200`
+#### PATCH `/tickets/{code}/cancel` — Response `200`
 ```json
 {
-  "code": "ABC1234567",
+  "code": "XYZ9876543",
+  "price": 89.90,
+  "departureDate": "2026-08-15",
+  "travelerName": "João Silva",
+  "travelerCreditsBalance": 89.90,
+  "cpf": "123.456.789-09",
   "originCity": "Rio de Janeiro",
   "originState": "Rio de Janeiro",
   "destinationCity": "São Paulo",
   "destinationState": "São Paulo",
-  "busCompany": "ABC Bus",
-  "price": 89.90,
-  "departureTime": "14:30",
-  "distanceKM": 429.5,
-  "category": "INTERSTATE"
+  "cancelDate": "2026-08-14T10:00:00",
+  "canceled": true
 }
 ```
+
+---
+
+## Business Rules
+
+- Tickets can only be canceled up to **1 hour before departure**
+- Cancellation refunds the full ticket price as **credits** to the traveler
+- Trips with associated tickets **cannot be deactivated**
+- Ticket price is **locked at purchase time** (copied from the trip's current price)
+- Only **active trips** can be booked
 
 ---
 
@@ -162,12 +187,13 @@ src/main/java/br/com/javamastery/busapp_api/
 
 | Field | Rule |
 |---|---|
-| `cpf` | `@ValidCpf` — validates length, all-same-digit rejection, and both verifier digits |
+| `cpf` | `@ValidCpf` — length, all-same-digit rejection, both verifier digits |
 | `cnpj` | `@Pattern(regexp = "\\d{14}")` |
 | `telephone` | `@Pattern(regexp = "\\d{10,11}")` |
 | `email` | `@Email` |
 | `password` | `@Size(min = 6, max = 16)` |
 | `birthDate` | `@NotNull` + `@Past` |
+| `departureDate` | `@NotNull` + `@Future` |
 | `price` | `@DecimalMin("0.01")` |
 | text fields | `@NotBlank` |
 
@@ -189,8 +215,11 @@ All errors return a consistent JSON structure:
 |---|---|
 | Resource not found | `404 Not Found` |
 | Duplicate email / CNPJ / CPF | `409 Conflict` |
+| Trip has associated tickets | `409 Conflict` |
+| Cancellation window expired | `400 Bad Request` |
+| Ticket already canceled | `400 Bad Request` |
+| Trip inactive | `400 Bad Request` |
 | Validation failure | `400 Bad Request` |
-| Invalid argument | `400 Bad Request` |
 
 ---
 
