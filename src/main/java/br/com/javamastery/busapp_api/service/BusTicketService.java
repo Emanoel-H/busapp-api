@@ -61,8 +61,11 @@ public class BusTicketService {
             throw new HandlerConfig(HttpStatus.BAD_REQUEST, "Cancellation window has closed. Tickets must be canceled at least 1 hour before departure");
 
         busTicket.cancelTicket();
-        findTravelerOrThrow(busTicket.getTraveler().getId()).addCredits(busTicket.getPrice());
+        Traveler traveler = findTravelerOrThrow(busTicket.getTraveler().getId());
 
+        traveler.addCredits(busTicket.getPrice());
+
+        travelerRepository.save(traveler);
         return toCanceledResponse(busTicketRepository.save(busTicket));
     }
 
