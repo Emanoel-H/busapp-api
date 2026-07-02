@@ -11,7 +11,6 @@ import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import br.com.javamastery.busapp_api.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +19,13 @@ public class BusTicketService {
     private final BusTicketRepository busTicketRepository;
     private final TravelerRepository travelerRepository;
     private final TripRepository tripRepository;
+
+    public BusTicketResponse create(BusTicketRequest busTicketRequest){
+        Trip trip = findTripOrThrow(busTicketRequest.getTrip_code());
+        Traveler traveler = findTravelerOrThrow(busTicketRequest.getTraveler_id());
+
+        return toResponse(new BusTicket(busTicketRequest, traveler, trip));
+    }
 
     public Traveler findTravelerOrThrow(Long traveler_id) {
         return travelerRepository.findById(traveler_id)
