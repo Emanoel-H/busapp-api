@@ -44,4 +44,6 @@ public interface BusTicketRepository extends JpaRepository<BusTicket, Long> {
     List<BusTicket> findAllByTravelerId(@Param("travelerId")Long travelerId);
 
     boolean existsByCode(String code);
+
+    boolean existsByTripId(Long tripId);
 }
