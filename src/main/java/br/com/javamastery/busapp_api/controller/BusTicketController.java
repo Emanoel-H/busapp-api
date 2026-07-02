@@ -32,7 +32,7 @@ public class BusTicketController {
         return ResponseEntity.ok(busTicketService.listAllByTraveler(traveler_id, includeCanceled));
     }
 
-    @DeleteMapping("/{code}")
+    @DeleteMapping("/{code}/cancel")
     public ResponseEntity<BusTicketCanceledResponse> cancelTicket(@PathVariable String code) {
         return ResponseEntity.ok(busTicketService.cancelTicket(code));
     }
