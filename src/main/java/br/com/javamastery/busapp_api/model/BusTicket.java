@@ -76,4 +76,9 @@ public class BusTicket {
 
         }
     }
+
+    public void cancelTicket(){
+        this.cancelDate = LocalDateTime.now();
+        this.canceled = true;
+    }
 }
