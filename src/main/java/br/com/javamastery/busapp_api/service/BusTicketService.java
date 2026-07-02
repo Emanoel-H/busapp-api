@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -49,7 +50,18 @@ public class BusTicketService {
 
     public void cancelTicket(String code){
         BusTicket busTicket = findBusTicketOrThrow(code);
+
+        if (busTicket.isCanceled())
+            throw new HandlerConfig(HttpStatus.BAD_REQUEST, "Ticket is already canceled");
+
+        LocalDateTime departureDateTime = LocalDateTime.of(busTicket.getDepartureDate(), busTicket.getTrip().getDepartureTime());
+
+        if (!LocalDateTime.now().isBefore(departureDateTime.minusHours(1)))
+            throw new HandlerConfig(HttpStatus.BAD_REQUEST, "Cancellation window has closed. Tickets must be canceled at least 1 hour before departure");
+
         busTicket.cancelTicket();
+        findTravelerOrThrow(busTicket.getTraveler().getId()).addCredits(busTicket.getPrice());
+        
         busTicketRepository.save(busTicket);
     }
 
