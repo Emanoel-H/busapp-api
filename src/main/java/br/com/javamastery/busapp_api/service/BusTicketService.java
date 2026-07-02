@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BusTicketService {
@@ -25,6 +27,15 @@ public class BusTicketService {
         Traveler traveler = findTravelerOrThrow(busTicketRequest.getTraveler_id());
 
         return toResponse(new BusTicket(busTicketRequest, traveler, trip));
+    }
+
+    public List<BusTicketResponse> findAllActiveByTravelerId(Long traveler_id){
+        List<BusTicket> tickets = busTicketRepository.findAllByTravelerId(traveler_id);
+
+        if (tickets.isEmpty())
+           throw new HandlerConfig(HttpStatus.NOT_FOUND, "Tickets not found for the traveler id: " + traveler_id);
+
+        return tickets.stream().map(this::toResponse).toList();
     }
 
     public Traveler findTravelerOrThrow(Long traveler_id) {
