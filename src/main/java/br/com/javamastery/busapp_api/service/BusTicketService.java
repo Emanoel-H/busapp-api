@@ -42,6 +42,12 @@ public class BusTicketService {
         return toResponse(findBusTicketOrThrow(code));
     }
 
+    public void cancelTicket(String code){
+        BusTicket busTicket = findBusTicketOrThrow(code);
+        busTicket.cancelTicket();
+        busTicketRepository.save(busTicket);
+    }
+
     public Traveler findTravelerOrThrow(Long traveler_id) {
         return travelerRepository.findById(traveler_id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Traveler not found!"));
