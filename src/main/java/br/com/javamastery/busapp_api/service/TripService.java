@@ -9,6 +9,7 @@ import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.model.City;
 import br.com.javamastery.busapp_api.model.Trip;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
+import br.com.javamastery.busapp_api.repository.BusTicketRepository;
 import br.com.javamastery.busapp_api.repository.CityRepository;
 import br.com.javamastery.busapp_api.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class TripService {
     private final TripRepository tripRepository;
     private final BusCompanyRepository busCompanyRepository;
     private final CityRepository cityRepository;
+    private final BusTicketRepository busTicketRepository;
 
     public TripResponse create(TripRequest tripRequest) {
         City origin = findCityOrThrow(tripRequest.getOriginCityIbgeCode());
