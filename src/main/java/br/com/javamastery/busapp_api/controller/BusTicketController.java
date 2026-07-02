@@ -18,7 +18,7 @@ public class BusTicketController {
     private final BusTicketService busTicketService;
 
     @PostMapping
-    public ResponseEntity<BusTicketResponse> buy(BusTicketRequest busTicketRequest) {
+    public ResponseEntity<BusTicketResponse> buy(@RequestBody BusTicketRequest busTicketRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(busTicketService.buy(busTicketRequest));
     }
 
