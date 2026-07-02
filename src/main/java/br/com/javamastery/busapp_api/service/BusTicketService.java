@@ -32,7 +32,7 @@ public class BusTicketService {
         return toResponse(new BusTicket(busTicketRequest, traveler, trip));
     }
 
-    public List<BusTicketResponse> findAllActiveByTravelerId(Long traveler_id){
+    public List<BusTicketResponse> listAllByTraveler(Long traveler_id){
         List<BusTicket> tickets = busTicketRepository.findAllByTravelerId(traveler_id);
 
         if (tickets.isEmpty())
