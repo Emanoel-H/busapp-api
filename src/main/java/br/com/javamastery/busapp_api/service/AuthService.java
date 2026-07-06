@@ -1,6 +1,7 @@
 package br.com.javamastery.busapp_api.service;
 
 import br.com.javamastery.busapp_api.dto.LoginResponse;
+import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
@@ -20,6 +21,14 @@ public class AuthService {
                 .token(jwtService.generateToken(traveler.getEmail(), "TRAVELER"))
                 .email(traveler.getEmail())
                 .role("TRAVELER")
+                .build();
+    }
+
+    public LoginResponse companyToResponse(BusCompany company){
+        return LoginResponse.builder()
+                .token(jwtService.generateToken(company.getEmail(), "COMPANY"))
+                .email(company.getEmail())
+                .role("COMPANY")
                 .build();
     }
 }
