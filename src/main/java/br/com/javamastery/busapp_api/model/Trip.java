@@ -1,10 +1,12 @@
 package br.com.javamastery.busapp_api.model;
 
+import br.com.javamastery.busapp_api.client.OsrmClient;
 import br.com.javamastery.busapp_api.dto.TripRequest;
 import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -85,8 +87,9 @@ public class Trip {
 
     private void calculateDistance(){
         if (this.origin != null && this.destination != null)
-            this.distanceKM = haversine(origin.getLatitude(), origin.getLongitude(), destination.getLatitude(), destination.getLongitude());
+            this.distanceKM = new OsrmClient(new ObjectMapper()).getRealDistanceKM(this.origin, this.destination);
     }
+
     private double haversine(double lat1,  double lon1, double lat2, double lon2) {
         final int R = 6371;
         double latDistance = Math.toRadians(lat2 - lat1);
