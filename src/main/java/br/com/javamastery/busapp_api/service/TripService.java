@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.client.OsrmClient;
 import br.com.javamastery.busapp_api.dto.TripRequest;
 import br.com.javamastery.busapp_api.dto.TripResponse;
 import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
@@ -15,6 +16,7 @@ import br.com.javamastery.busapp_api.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -83,6 +85,12 @@ public class TripService {
 
         trip.deactivate();
         tripRepository.save(trip);
+    }
+
+    public double suggestPrice(Long originCode, Long destinationCode){
+        City origin = findCityOrThrow(originCode);
+        City destination = findCityOrThrow(destinationCode);
+        return new OsrmClient(new ObjectMapper()).getRealDistanceKM(origin, destination) * 0.35;
     }
 
     public City findCityOrThrow (Long ibgeCode) {
