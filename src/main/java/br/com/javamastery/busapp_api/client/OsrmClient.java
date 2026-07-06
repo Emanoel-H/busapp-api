@@ -37,8 +37,7 @@ public class OsrmClient {
             return haversine(origin, destination);
         }
     }
-
-
+    
     private double haversine(City origin, City destination) {
         final int R = 6371;
         double latDistance = Math.toRadians(destination.getLatitude() - origin.getLatitude());
