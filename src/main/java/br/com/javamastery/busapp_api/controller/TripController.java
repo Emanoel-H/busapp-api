@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/trips")
@@ -37,6 +38,15 @@ public class TripController {
     @GetMapping("/{code}")
     public ResponseEntity<TripResponse> findByCode(@PathVariable String code) {
         return ResponseEntity.ok(service.findByCode(code));
+    }
+
+    @GetMapping("/suggested-price")
+    public ResponseEntity<Map<String, Object>> suggestPrice(@RequestParam Long originCode,@RequestParam Long destinationCode) {
+        double price = service.suggestPrice(originCode, destinationCode);
+        return ResponseEntity.ok(Map.of("originCity", service.findCityOrThrow(originCode).getCity(),
+                "destinationCity", service.findCityOrThrow(destinationCode).getCity(),
+                "suggestedPrice", String.format("%.2f", price),
+                "distanceKM", String.format("%.2f", price / 0.35)));
     }
 
     @PutMapping("/{code}")
