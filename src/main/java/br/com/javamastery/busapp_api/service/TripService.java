@@ -16,7 +16,6 @@ import br.com.javamastery.busapp_api.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
