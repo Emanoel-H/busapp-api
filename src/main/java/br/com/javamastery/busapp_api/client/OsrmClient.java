@@ -4,7 +4,7 @@ import br.com.javamastery.busapp_api.client.dto.OsrmResponse;
 import br.com.javamastery.busapp_api.model.City;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.net.http.HttpClient;

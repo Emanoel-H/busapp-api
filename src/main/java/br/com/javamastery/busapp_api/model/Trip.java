@@ -6,7 +6,7 @@ import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
