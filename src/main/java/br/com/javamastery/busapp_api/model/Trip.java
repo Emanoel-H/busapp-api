@@ -1,12 +1,10 @@
 package br.com.javamastery.busapp_api.model;
 
-import br.com.javamastery.busapp_api.client.OsrmClient;
 import br.com.javamastery.busapp_api.dto.TripRequest;
 import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -62,14 +60,12 @@ public class Trip {
         this.updatedAt = LocalDateTime.now();
         generateCode();
         calculateCategory();
-        calculateDistance();
     }
 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
         calculateCategory();
-        calculateDistance();
     }
 
     private void generateCode(){
@@ -84,11 +80,6 @@ public class Trip {
             this.code = stringBuilder.toString();
 
         }
-    }
-
-    private void calculateDistance(){
-        if (this.origin != null && this.destination != null)
-            this.distanceKM = new OsrmClient(new ObjectMapper()).getRealDistanceKM(this.origin, this.destination);
     }
 
     public void tripUpdateRequest(TripUpdateRequest tripUpdateRequest, City origin, City destination, double distanceKM) {
