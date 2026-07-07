@@ -11,9 +11,9 @@ import java.util.Date;
 
 @Service
 public class JwtService {
-    @Value("/{jwt.secret}")
+    @Value("{jwt.secret}")
     private String secret;
-    @Value("/{jwt.expiration}")
+    @Value("{jwt.expiration}")
     private String expiration;
 
     public String generateToken(String email, String role){
