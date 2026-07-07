@@ -92,7 +92,7 @@ public class TripService {
     public double suggestPrice(Long originCode, Long destinationCode){
         City origin = findCityOrThrow(originCode);
         City destination = findCityOrThrow(destinationCode);
-        return new OsrmClient(new ObjectMapper()).getRealDistanceKM(origin, destination) * 0.35;
+        return osrmClient.getRealDistanceKM(origin, destination) * 0.35;
     }
 
     public City findCityOrThrow (Long ibgeCode) {
