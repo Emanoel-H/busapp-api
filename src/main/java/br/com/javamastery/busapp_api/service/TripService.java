@@ -9,6 +9,7 @@ import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.model.City;
 import br.com.javamastery.busapp_api.model.Trip;
+import br.com.javamastery.busapp_api.model.policy.TripPolicy;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
 import br.com.javamastery.busapp_api.repository.CityRepository;
@@ -28,6 +29,7 @@ public class TripService {
     private final CityRepository cityRepository;
     private final BusTicketRepository busTicketRepository;
     private final OsrmClient osrmClient;
+    private final TripPolicy policy;
 
     public TripResponse create(TripRequest tripRequest) {
         City origin = findCityOrThrow(tripRequest.getOriginCityIbgeCode());
