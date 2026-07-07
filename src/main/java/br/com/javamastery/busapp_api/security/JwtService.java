@@ -14,7 +14,7 @@ public class JwtService {
     @Value("{jwt.secret}")
     private String secret;
     @Value("{jwt.expiration}")
-    private String expiration;
+    private long expiration;
 
     public String generateToken(String email, String role){
         return Jwts.builder()
