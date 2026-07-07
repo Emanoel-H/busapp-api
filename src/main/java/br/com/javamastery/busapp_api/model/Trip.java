@@ -47,12 +47,13 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(TripRequest tripRequest, City origin, City destination, BusCompany busCompany) {
+    public Trip(TripRequest tripRequest, City origin, City destination, BusCompany busCompany, double distanceKM) {
         this.origin = origin;
         this.destination = destination;
         this.busCompany = busCompany;
         this.departureTime = tripRequest.getDepartureTime();
         this.price = tripRequest.getPrice();
+        this.distanceKM = distanceKM;
     }
 
     @PrePersist
