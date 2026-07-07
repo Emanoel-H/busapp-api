@@ -75,7 +75,8 @@ public class TripService {
         Trip trip  = findTripOrThrow(code);
         City origin = findCityOrThrow(tripUpdateRequest.getOriginCityIbgeCode());
         City destination = findCityOrThrow(tripUpdateRequest.getDestinationCityIbgeCode());
-        trip.tripUpdateRequest(tripUpdateRequest, origin, destination);
+        double distanceKm = policy.calculateDistance(origin, destination, osrmClient);
+        trip.tripUpdateRequest(tripUpdateRequest, origin, destination, distanceKm);
 
         return toUpdateResponse(tripRepository.save(trip));
     }
