@@ -15,7 +15,7 @@ import java.net.http.HttpResponse;
 @RequiredArgsConstructor
 public class OsrmClient {
     public static final String BASE_URL = "http://router.project-osrm.org/route/v1/driving/";
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public double getRealDistanceKM(City origin, City destination) {
