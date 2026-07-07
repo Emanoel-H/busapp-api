@@ -91,11 +91,12 @@ public class Trip {
             this.distanceKM = new OsrmClient(new ObjectMapper()).getRealDistanceKM(this.origin, this.destination);
     }
 
-    public void tripUpdateRequest(TripUpdateRequest tripUpdateRequest, City origin, City destination) {
+    public void tripUpdateRequest(TripUpdateRequest tripUpdateRequest, City origin, City destination, double distanceKM) {
         this.origin = origin;
         this.destination = destination;
         this.departureTime = tripUpdateRequest.getDepartureTime();
         this.price = tripUpdateRequest.getPrice();
+        this.distanceKM = distanceKM;
     }
 
     private void calculateCategory(){
