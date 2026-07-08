@@ -1,6 +1,6 @@
 # 🚌 busapp-api
 
-A RESTful API for bus ticket management built with Spring Boot. This project is the REST evolution of [BusApp](https://github.com/Emanoel-H/Java-Mastery), rebuilt as a production-grade API with proper layered architecture, Bean Validation, custom validators, and centralized error handling.
+A RESTful API for bus ticket management built with Spring Boot. This project is the REST evolution of [BusApp](https://github.com/Emanoel-H/Java-Mastery), rebuilt as a production-grade API with proper layered architecture, JWT authentication, Bean Validation, custom validators, and centralized error handling.
 
 ---
 
@@ -10,6 +10,7 @@ A RESTful API for bus ticket management built with Spring Boot. This project is 
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Endpoints](#endpoints)
+- [Authentication](#authentication)
 - [Validation](#validation)
 - [Error Handling](#error-handling)
 - [Getting Started](#getting-started)
@@ -34,9 +35,11 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 | Framework | Spring Boot 3 |
 | ORM | Spring Data JPA / Hibernate |
 | Database | PostgreSQL |
+| Security | Spring Security + JWT (jjwt) |
+| Distance API | OSRM (real-route), Haversine fallback |
 | Validation | Jakarta Bean Validation (`@Valid`, custom `@ValidCpf`) |
 | Build | Maven |
-| Utilities | Lombok |
+| Utilities | Lombok, Jackson |
 
 ---
 
@@ -45,17 +48,25 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 ```
 src/main/java/br/com/javamastery/busapp_api/
 │
+├── client/
+│   ├── OsrmClient.java                # @Component: real-route distance + Haversine fallback
+│   └── dto/
+│       ├── OsrmResponse.java
+│       └── OsrmRoute.java
+│
 ├── controller/
 │   ├── AddressController.java         # Read-only: states, cities by UF, city search
+│   ├── AuthController.java            # POST /auth/login
 │   ├── BusCompanyController.java
 │   ├── BusTicketController.java
 │   ├── TravelerController.java
-│   └── TripController.java
+│   └── TripController.java            # Includes GET /trips/suggested-price
 │
 ├── dto/
 │   ├── BusCompanyRequest/Response/UpdateRequest/UpdateResponse
 │   ├── BusTicketRequest/Response/CanceledResponse
 │   ├── CityResponse, StateResponse
+│   ├── LoginRequest, LoginResponse
 │   ├── TravelerRequest/Response/UpdateRequest/UpdateResponse/CreditsResponse
 │   └── TripRequest/Response/UpdateRequest/UpdateResponse
 │
@@ -67,24 +78,30 @@ src/main/java/br/com/javamastery/busapp_api/
 │   ├── BusCompany.java
 │   ├── BusTicket.java                 # cancelTicket(), price copied at persist, auto code
 │   ├── Category.java (enum)
-│   ├── City.java                      # Read-only, FetchType.LAZY
-│   ├── State.java                     # Read-only
+│   ├── City.java
+│   ├── State.java
 │   ├── Traveler.java                  # @Formula age, creditsBalance, addCredits()
-│   └── Trip.java                      # Soft delete, Haversine, auto code, category
+│   └── Trip.java                      # Soft delete, OSRM distance, auto code, category
 │
 ├── repository/
 │   ├── BusCompanyRepository.java
 │   ├── BusTicketRepository.java       # JOIN FETCH, findByCode, findAllByTravelerId, existsByTripId
-│   ├── CityRepository.java            # JOIN FETCH queries, search by name/UF/IBGE
+│   ├── CityRepository.java
 │   ├── StateRepository.java
 │   ├── TravelerRepository.java
-│   └── TripRepository.java            # JOIN FETCH, filter by route/company/active
+│   └── TripRepository.java
+│
+├── security/
+│   ├── JwtFilter.java                 # OncePerRequestFilter — reads Bearer token
+│   ├── JwtService.java                # generateToken(), extractEmail/Role(), isTokenValid()
+│   └── SecurityConfig.java            # Stateless, public routes, JWT filter chain
 │
 ├── service/
+│   ├── AuthService.java               # login() → searches company then traveler, issues JWT
 │   ├── BusCompanyService.java
-│   ├── BusTicketService.java          # buy(), findByCode(), listAllByTraveler(), cancelTicket()
+│   ├── BusTicketService.java
 │   ├── TravelerService.java
-│   └── TripService.java               # existsByTripId guard on delete
+│   └── TripService.java               # OSRM integration, suggestPrice()
 │
 └── validation/
     ├── ValidCpf.java
@@ -95,7 +112,22 @@ src/main/java/br/com/javamastery/busapp_api/
 
 ## Endpoints
 
-### Address — `/address` (read-only)
+### Auth — `/auth`
+
+| Method | Path | Description | Auth |
+|---|---|---|---|
+| `POST` | `/auth/login` | Login (company or traveler) | Public |
+
+#### POST `/auth/login` — Request
+```json
+{ "email": "user@email.com", "password": "senha123" }
+```
+#### POST `/auth/login` — Response `200`
+```json
+{ "token": "eyJ...", "email": "user@email.com", "role": "TRAVELER" }
+```
+
+### Address — `/address` (public, read-only)
 
 | Method | Path | Description |
 |---|---|---|
@@ -105,70 +137,71 @@ src/main/java/br/com/javamastery/busapp_api/
 
 ### Bus Company — `/companies`
 
-| Method | Path | Description | Status |
+| Method | Path | Auth | Status |
 |---|---|---|---|
-| `POST` | `/companies` | Register | `201 Created` |
-| `GET` | `/companies/{id}` | Find by ID | `200 OK` |
-| `PUT` | `/companies/{id}` | Update | `200 OK` |
-| `DELETE` | `/companies/{id}` | Delete | `204 No Content` |
+| `POST` | `/companies` | Public | `201 Created` |
+| `GET` | `/companies/{id}` | Required | `200 OK` |
+| `PUT` | `/companies/{id}` | Required | `200 OK` |
+| `DELETE` | `/companies/{id}` | Required | `204 No Content` |
 
 ### Traveler — `/travelers`
 
-| Method | Path | Description | Status |
+| Method | Path | Auth | Status |
 |---|---|---|---|
-| `POST` | `/travelers` | Register | `201 Created` |
-| `GET` | `/travelers/{id}` | Find by ID | `200 OK` |
-| `PUT` | `/travelers/{id}` | Update | `200 OK` |
-| `DELETE` | `/travelers/{id}` | Delete | `204 No Content` |
-| `PATCH` | `/travelers/{id}/credits` | Add credits | `200 OK` |
+| `POST` | `/travelers` | Public | `201 Created` |
+| `GET` | `/travelers/{id}` | Required | `200 OK` |
+| `PUT` | `/travelers/{id}` | Required | `200 OK` |
+| `DELETE` | `/travelers/{id}` | Required | `204 No Content` |
+| `PATCH` | `/travelers/{id}/credits` | Required | `200 OK` |
 
 ### Trip — `/trips`
 
-| Method | Path | Description | Status |
+| Method | Path | Auth | Status |
 |---|---|---|---|
-| `POST` | `/trips` | Create trip | `201 Created` |
-| `GET` | `/trips` | List all active | `200 OK` |
-| `GET` | `/trips?originCode=X&destinationCode=Y` | Filter by route | `200 OK` |
-| `GET` | `/trips?companyId=X` | Filter by company | `200 OK` |
-| `GET` | `/trips/{code}` | Find by code | `200 OK` |
-| `PUT` | `/trips/{code}` | Update | `200 OK` |
-| `DELETE` | `/trips/{code}` | Soft delete | `204 No Content` |
+| `POST` | `/trips` | Required | `201 Created` |
+| `GET` | `/trips` | Public | `200 OK` |
+| `GET` | `/trips?originCode=X&destinationCode=Y` | Public | `200 OK` |
+| `GET` | `/trips?companyId=X` | Public | `200 OK` |
+| `GET` | `/trips/{code}` | Public | `200 OK` |
+| `GET` | `/trips/suggested-price?originCode=X&destinationCode=Y` | Public | `200 OK` |
+| `PUT` | `/trips/{code}` | Required | `200 OK` |
+| `DELETE` | `/trips/{code}` | Required | `204 No Content` |
 
-### Ticket — `/tickets`
-
-| Method | Path | Description | Status |
-|---|---|---|---|
-| `POST` | `/tickets` | Buy ticket | `201 Created` |
-| `GET` | `/tickets/{code}` | Find by code | `200 OK` |
-| `GET` | `/tickets?traveler_id=X` | List by traveler | `200 OK` |
-| `GET` | `/tickets?traveler_id=X&includeCanceled=true` | Include canceled | `200 OK` |
-| `PATCH` | `/tickets/{code}/cancel` | Cancel ticket | `200 OK` |
-
-#### POST `/tickets` — Request body
+#### GET `/trips/suggested-price` — Response `200`
 ```json
 {
-  "traveler_id": 1,
-  "trip_code": "ABC1234567",
-  "departureDate": "2026-08-15"
+  "originCity": "Rio de Janeiro",
+  "destinationCity": "São Paulo",
+  "suggestedPrice": "89.25",
+  "distanceKM": "255.00"
 }
 ```
 
-#### PATCH `/tickets/{code}/cancel` — Response `200`
-```json
-{
-  "code": "XYZ9876543",
-  "price": 89.90,
-  "departureDate": "2026-08-15",
-  "travelerName": "João Silva",
-  "travelerCreditsBalance": 89.90,
-  "cpf": "123.456.789-09",
-  "originCity": "Rio de Janeiro",
-  "originState": "Rio de Janeiro",
-  "destinationCity": "São Paulo",
-  "destinationState": "São Paulo",
-  "cancelDate": "2026-08-14T10:00:00",
-  "canceled": true
-}
+### Ticket — `/tickets`
+
+| Method | Path | Auth | Status |
+|---|---|---|---|
+| `POST` | `/tickets` | Required | `201 Created` |
+| `GET` | `/tickets/{code}` | Required | `200 OK` |
+| `GET` | `/tickets?traveler_id=X` | Required | `200 OK` |
+| `GET` | `/tickets?traveler_id=X&includeCanceled=true` | Required | `200 OK` |
+| `PATCH` | `/tickets/{code}/cancel` | Required | `200 OK` |
+
+---
+
+## Authentication
+
+All protected endpoints require a Bearer token in the `Authorization` header:
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+```
+
+Tokens encode `email` and `role` (`TRAVELER` or `COMPANY`). Configure secret and expiration in `application.properties`:
+
+```properties
+jwt.secret=your-256-bit-secret-key-here
+jwt.expiration=86400000
 ```
 
 ---
@@ -178,8 +211,10 @@ src/main/java/br/com/javamastery/busapp_api/
 - Tickets can only be canceled up to **1 hour before departure**
 - Cancellation refunds the full ticket price as **credits** to the traveler
 - Trips with associated tickets **cannot be deactivated**
-- Ticket price is **locked at purchase time** (copied from the trip's current price)
+- Ticket price is **locked at purchase time** (copied from trip's current price in `@PrePersist`)
 - Only **active trips** can be booked
+- Distance is calculated via **OSRM API** with automatic **Haversine fallback**
+- Suggested price = distance (km) × R$ 0.35
 
 ---
 
@@ -201,13 +236,11 @@ src/main/java/br/com/javamastery/busapp_api/
 
 ## Error Handling
 
-All errors return a consistent JSON structure:
-
 ```json
 {
-  "TimeStamp": "2026-06-28T10:00:00",
-  "Status": 404,
-  "Message": "TRAVELER NOT FOUND"
+  "TimeStamp": "2026-07-08T10:00:00",
+  "Status": 401,
+  "Message": "Invalid email or password"
 }
 ```
 
@@ -219,6 +252,7 @@ All errors return a consistent JSON structure:
 | Cancellation window expired | `400 Bad Request` |
 | Ticket already canceled | `400 Bad Request` |
 | Trip inactive | `400 Bad Request` |
+| Invalid credentials | `401 Unauthorized` |
 | Validation failure | `400 Bad Request` |
 
 ---
@@ -247,6 +281,9 @@ spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+jwt.secret=your-256-bit-secret-minimum-32-characters-long
+jwt.expiration=86400000
 ```
 
 ### 3. Run
@@ -261,4 +298,4 @@ API available at `http://localhost:8080`.
 
 ## Author
 
-Developed by [Emanoel H](https://github.com/Emanoel-H) as part of a Java learning journey focused on Spring Boot, REST API design, JPA/Hibernate, and professional software architecture.
+Developed by [Emanoel H](https://github.com/Emanoel-H) as part of a Java learning journey focused on Spring Boot, REST API design, JPA/Hibernate, Spring Security, and professional software architecture.
