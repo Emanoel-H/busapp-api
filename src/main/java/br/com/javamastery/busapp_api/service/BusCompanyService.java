@@ -25,7 +25,9 @@ public class BusCompanyService {
         if (repository.existsByCnpj(busCompanyRequest.getCnpj()))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cnpj already exists");
 
-        return toResponse(repository.save(new BusCompany(busCompanyRequest)));
+        String password = passwordEncoder.encode(busCompanyRequest.getPassword());
+
+        return toResponse(repository.save(new BusCompany(busCompanyRequest, password)));
     }
 
     public BusCompanyResponse findById(Long id) {
