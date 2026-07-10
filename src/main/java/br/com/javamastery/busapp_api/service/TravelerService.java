@@ -24,7 +24,9 @@ public class TravelerService {
         if (repository.existsByCpf(travelerRequest.getCpf()))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cpf already exists");
 
-        return toResponse(repository.save(new Traveler(travelerRequest)));
+        String password = passwordEncoder.encode(travelerRequest.getPassword());
+
+        return toResponse(repository.save(new Traveler(travelerRequest, password)));
     }
 
     public TravelerResponse findById(Long id) {
