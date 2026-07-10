@@ -10,6 +10,7 @@ import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import br.com.javamastery.busapp_api.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,7 @@ public class AuthService {
     private final BusCompanyRepository busCompanyRepository;
     private final TravelerRepository travelerRepository;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     public LoginResponse login(LoginRequest request) {
         return busCompanyRepository.findByEmail(request.getEmail())
