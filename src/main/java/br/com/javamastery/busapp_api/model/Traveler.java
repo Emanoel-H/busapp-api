@@ -42,12 +42,12 @@ public class Traveler {
     public Traveler() {
     }
 
-    public Traveler(TravelerRequest  travelerRequest) {
+    public Traveler(TravelerRequest  travelerRequest, String password) {
         this.name = travelerRequest.getName();
         this.birthDate = travelerRequest.getBirthDate();
         this.cpf = travelerRequest.getCpf();
         this.email = travelerRequest.getEmail();
-        this.password = travelerRequest.getPassword();
+        this.password = password;
         this.telephone = travelerRequest.getTelephone();
     }
 
