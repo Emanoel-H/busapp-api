@@ -9,12 +9,14 @@ import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class BusCompanyService {
     private final BusCompanyRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     public BusCompanyResponse register(BusCompanyRequest busCompanyRequest) {
         if (repository.existsByEmail(busCompanyRequest.getEmail()))
