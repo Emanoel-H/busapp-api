@@ -6,6 +6,7 @@ import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class TravelerService {
     private final TravelerRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     public TravelerResponse register(TravelerRequest travelerRequest) {
         if (repository.existsByEmail(travelerRequest.getEmail()))
