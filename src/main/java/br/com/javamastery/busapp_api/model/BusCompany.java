@@ -24,7 +24,7 @@ public class BusCompany {
     private String cnpj;
     @Column(nullable = false,  unique = true)
     private String email;
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false, length = 60)
     private String password;
     @Column(nullable = false,  length = 11)
     private String telephone;
