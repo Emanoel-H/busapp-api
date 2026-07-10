@@ -35,12 +35,12 @@ public class BusCompany {
     public BusCompany() {
     }
 
-    public BusCompany(BusCompanyRequest busCompanyRequest) {
+    public BusCompany(BusCompanyRequest busCompanyRequest, String password) {
         this.legalName = busCompanyRequest.getLegalName();
         this.tradingName = busCompanyRequest.getTradingName();
         this.cnpj = busCompanyRequest.getCnpj();
         this.email = busCompanyRequest.getEmail();
-        this.password = busCompanyRequest.getPassword();
+        this.password = password;
         this.telephone = busCompanyRequest.getTelephone();
     }
 
