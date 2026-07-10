@@ -23,10 +23,10 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
         return busCompanyRepository.findByEmail(request.getEmail())
-                .filter(c -> c.getPassword().equals(request.getPassword()))
+                .filter(c -> passwordEncoder.matches(request.getPassword(), c.getPassword()))
                 .map(this::companyToResponse)
                 .orElseGet(() -> travelerRepository.findByEmail(request.getEmail())
-                        .filter(t -> t.getPassword().equals(request.getPassword()))
+                        .filter(t -> passwordEncoder.matches(request.getPassword(), t.getPassword()))
                         .map(this::travelerToResponse)
                         .orElseThrow(() -> new HandlerConfig(HttpStatus.UNAUTHORIZED, "Invalid email or password")));
     }
