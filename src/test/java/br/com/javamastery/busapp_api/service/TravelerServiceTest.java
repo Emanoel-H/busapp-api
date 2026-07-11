@@ -109,4 +109,14 @@ public class TravelerServiceTest {
 
         verify(repository, times(1)).deleteById(1L);
     }
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when traveler id does not exist")
+    void deleteTraveler_NotFound(){
+        when(repository.findById(0L)).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.deleteById(0L), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }
