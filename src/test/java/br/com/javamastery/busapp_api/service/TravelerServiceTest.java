@@ -69,7 +69,7 @@ public class TravelerServiceTest {
         when(repository.existsByCpf(traveler.getCpf())).thenReturn(false);
         when(repository.existsByEmail(traveler.getEmail())).thenReturn(false);
 
-        traveler.setPassword(passwordEncoder.encode("traveler123"));
+        traveler.setPassword(passwordEncoder.encode("traveler123456"));
 
         when(repository.save(traveler)).thenReturn(traveler);
 
