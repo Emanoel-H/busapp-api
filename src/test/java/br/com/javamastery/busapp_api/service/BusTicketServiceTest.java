@@ -1,5 +1,8 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.model.BusTicket;
+import br.com.javamastery.busapp_api.model.Traveler;
+import br.com.javamastery.busapp_api.model.Trip;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import br.com.javamastery.busapp_api.repository.TripRepository;
@@ -18,6 +21,9 @@ public class BusTicketServiceTest {
     private TravelerRepository travelerRepository;
     @Mock
     private TripRepository tripRepository;
+    private BusTicket busTicket;
+    private Traveler traveler;
+    private Trip trip;
 
 
 }
