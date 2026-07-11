@@ -14,7 +14,6 @@ A RESTful API for bus ticket management built with Spring Boot. This project is 
 - [Validation](#validation)
 - [Error Handling](#error-handling)
 - [Getting Started](#getting-started)
-- [Roadmap](#roadmap)
 
 ---
 
