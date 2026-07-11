@@ -44,5 +44,16 @@ public class BusTicketServiceTest {
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    @DisplayName("Should throw BAD_REQUEST when ticket is already canceled")
+    void ticketAlreadyCanceled_BadRequest(){
+        busTicket.setCanceled(true);
+        when(busTicketRepository.findByCode("TICKET0001")).thenReturn(Optional.of(busTicket));
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.cancelTicket("TICKET0001"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(ex.getMessage()).contains("already canceled");
+    }
 
 }
