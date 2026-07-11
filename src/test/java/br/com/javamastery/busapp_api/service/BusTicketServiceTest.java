@@ -1,5 +1,7 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.dto.BusTicketRequest;
+import br.com.javamastery.busapp_api.dto.BusTicketResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.*;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
@@ -126,5 +128,15 @@ public class BusTicketServiceTest {
         service.cancelTicket("TICKET0001");
 
         assertThat(traveler.getCreditsBalance()).isEqualTo(BigDecimal.valueOf(170.00));
+    }
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when traveler id does not exist")
+    void findTraveler_NotFound(){
+        when(travelerRepository.findById(0L)).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.findTravelerOrThrow(0L), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
