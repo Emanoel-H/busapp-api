@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.dto.TravelerResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -85,5 +87,16 @@ public class TravelerServiceTest {
         HandlerConfig ex = catchThrowableOfType(() -> service.findOrThrow(0L), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("Should find traveler successfully when traveler id exists")
+    void findTraveler_success(){
+        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
+
+        TravelerResponse response = service.toResponse(traveler);
+
+        assertNotNull(response);
+        verify(repository, times(1)).findById(1L);
     }
 }
