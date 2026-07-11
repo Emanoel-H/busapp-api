@@ -17,7 +17,8 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TravelerServiceTest {
@@ -60,5 +61,18 @@ public class TravelerServiceTest {
         HandlerConfig ex = catchThrowableOfType(() -> repository.existsByCpf(traveler.getCpf()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+    }
+
+    @Test
+    @DisplayName("Should register traveler successfully when cpf and email are valid")
+    void register_success(){
+        when(repository.existsByCpf(traveler.getCpf())).thenReturn(false);
+        when(repository.existsByEmail(traveler.getEmail())).thenReturn(false);
+
+        traveler.setPassword(passwordEncoder.encode("traveler123"));
+
+        when(repository.save(traveler)).thenReturn(traveler);
+
+        verify(repository, times(1)).save(any(Traveler.class));
     }
 }
