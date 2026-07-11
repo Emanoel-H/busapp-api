@@ -51,4 +51,14 @@ public class TravelerServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
     }
+
+    @Test
+    @DisplayName("Should throw CONFLICT when CPF already exists")
+    void cpfAlreadyExits_Conflict(){
+        when(repository.existsByCpf(traveler.getCpf())).thenReturn(true);
+
+        HandlerConfig ex = catchThrowableOfType(() -> repository.existsByCpf(traveler.getCpf()), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+    }
 }
