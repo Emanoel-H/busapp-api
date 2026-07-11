@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class BusTicketServiceTest {
     @InjectMocks
-    private BusTicketService busTicketService;
+    private BusTicketService service;
     @Mock
     private BusTicketRepository busTicketRepository;
     @Mock
