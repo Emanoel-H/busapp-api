@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -148,5 +149,34 @@ public class BusTicketServiceTest {
         HandlerConfig ex = catchThrowableOfType(() -> service.findTripOrThrow("INVALID"), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("Should buy ticket successfully when trip and traveler exist")
+    void buy_success(){
+        BusTicketRequest request = new BusTicketRequest();
+        request.setTrip_code("TRIP123");
+        request.setTraveler_id(1L);
+        request.setDepartureDate(LocalDate.now().plusDays(5));
+
+        Trip trip = mock(Trip.class);
+        when(trip.isActive()).thenReturn(true);
+
+        Traveler traveler = mock(Traveler.class);
+
+        BusTicket ticketSaved = mock(BusTicket.class);
+        when(ticketSaved.getCode()).thenReturn("TKT001");
+        when(ticketSaved.getTrip()).thenReturn(trip);
+        when(ticketSaved.getTraveler()).thenReturn(traveler);
+        when(ticketSaved.getDepartureDate()).thenReturn(request.getDepartureDate());
+
+        when(tripRepository.findByCode("TRIP123")).thenReturn(Optional.of(trip));
+        when(travelerRepository.findById(1L)).thenReturn(Optional.of(traveler));
+        when(busTicketRepository.save(any(BusTicket.class))).thenReturn(ticketSaved);
+
+        BusTicketResponse response = service.buy(request);
+
+        assertNotNull(response);
+        verify(busTicketRepository, times(1)).save(any(BusTicket.class));
     }
 }
