@@ -20,7 +20,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BusTicketServiceTest {
@@ -83,4 +83,18 @@ public class BusTicketServiceTest {
         assertThat(ex.getMessage()).contains("already canceled");
     }
 
+    @Test
+    @DisplayName("Should throw BAD_REQUEST when cancellation window is closed")
+    void cancellationWindowClosed_BadRequest(){
+        trip.setDepartureTime(LocalTime.now().plusMinutes(30));
+        busTicket.setDepartureDate(LocalDate.now());
+
+        when(busTicketRepository.findByCode("TICKET0001")).thenReturn(Optional.of(busTicket));
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.cancelTicket("TICKET0001"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(ex.getMessage()).contains("Cancellation window");
+        verify(busTicketRepository, never()).save(any());
+    }
 }
