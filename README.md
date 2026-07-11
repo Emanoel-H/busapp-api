@@ -1,6 +1,6 @@
 # 🚌 busapp-api
 
-A RESTful API for bus ticket management built with Spring Boot. This project is the REST evolution of [BusApp](https://github.com/Emanoel-H/Java-Mastery), rebuilt as a production-grade API with proper layered architecture, JWT authentication, Bean Validation, custom validators, and centralized error handling.
+A RESTful API for bus ticket management built with Spring Boot. This project is the REST evolution of [BusApp](https://github.com/Emanoel-H/Java-Mastery), rebuilt as a production-grade API with JWT authentication, BCrypt password hashing, Bean Validation, custom validators, and centralized error handling.
 
 ---
 
@@ -35,7 +35,7 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 | Framework | Spring Boot 3 |
 | ORM | Spring Data JPA / Hibernate |
 | Database | PostgreSQL |
-| Security | Spring Security + JWT (jjwt) |
+| Security | Spring Security + JWT (jjwt) + BCrypt |
 | Distance API | OSRM (real-route), Haversine fallback |
 | Validation | Jakarta Bean Validation (`@Valid`, custom `@ValidCpf`) |
 | Build | Maven |
@@ -49,13 +49,13 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 src/main/java/br/com/javamastery/busapp_api/
 │
 ├── client/
-│   ├── OsrmClient.java                # @Component: real-route distance + Haversine fallback
+│   ├── OsrmClient.java                # @Component: OSRM distance + Haversine fallback
 │   └── dto/
 │       ├── OsrmResponse.java
 │       └── OsrmRoute.java
 │
 ├── controller/
-│   ├── AddressController.java         # Read-only: states, cities by UF, city search
+│   ├── AddressController.java
 │   ├── AuthController.java            # POST /auth/login
 │   ├── BusCompanyController.java
 │   ├── BusTicketController.java
@@ -72,20 +72,20 @@ src/main/java/br/com/javamastery/busapp_api/
 │
 ├── exception/
 │   ├── GlobalExceptionHandler.java    # @RestControllerAdvice, unified buildResponse
-│   └── HandlerConfig.java             # Base exception with HTTP status
+│   └── HandlerConfig.java
 │
 ├── model/
-│   ├── BusCompany.java
-│   ├── BusTicket.java                 # cancelTicket(), price copied at persist, auto code
+│   ├── BusCompany.java                # Constructor receives pre-encoded password
+│   ├── BusTicket.java                 # cancelTicket(), price locked at persist, auto code
 │   ├── Category.java (enum)
 │   ├── City.java
 │   ├── State.java
-│   ├── Traveler.java                  # @Formula age, creditsBalance, addCredits()
+│   ├── Traveler.java                  # Constructor receives pre-encoded password
 │   └── Trip.java                      # Soft delete, OSRM distance, auto code, category
 │
 ├── repository/
 │   ├── BusCompanyRepository.java
-│   ├── BusTicketRepository.java       # JOIN FETCH, findByCode, findAllByTravelerId, existsByTripId
+│   ├── BusTicketRepository.java       # JOIN FETCH, active/all by traveler, existsByTripId
 │   ├── CityRepository.java
 │   ├── StateRepository.java
 │   ├── TravelerRepository.java
@@ -94,14 +94,14 @@ src/main/java/br/com/javamastery/busapp_api/
 ├── security/
 │   ├── JwtFilter.java                 # OncePerRequestFilter — reads Bearer token
 │   ├── JwtService.java                # generateToken(), extractEmail/Role(), isTokenValid()
-│   └── SecurityConfig.java            # Stateless, public routes, JWT filter chain
+│   └── SecurityConfig.java            # BCryptPasswordEncoder @Bean, stateless filter chain
 │
 ├── service/
-│   ├── AuthService.java               # login() → searches company then traveler, issues JWT
-│   ├── BusCompanyService.java
+│   ├── AuthService.java               # passwordEncoder.matches() for both user types
+│   ├── BusCompanyService.java         # passwordEncoder.encode() on register
 │   ├── BusTicketService.java
-│   ├── TravelerService.java
-│   └── TripService.java               # OSRM integration, suggestPrice()
+│   ├── TravelerService.java           # passwordEncoder.encode() on register
+│   └── TripService.java               # OSRM, suggestPrice()
 │
 └── validation/
     ├── ValidCpf.java
@@ -114,26 +114,26 @@ src/main/java/br/com/javamastery/busapp_api/
 
 ### Auth — `/auth`
 
-| Method | Path | Description | Auth |
+| Method | Path | Auth | Status |
 |---|---|---|---|
-| `POST` | `/auth/login` | Login (company or traveler) | Public |
+| `POST` | `/auth/login` | Public | `200 OK` |
 
-#### POST `/auth/login` — Request
+#### POST `/auth/login`
 ```json
+// Request
 { "email": "user@email.com", "password": "senha123" }
-```
-#### POST `/auth/login` — Response `200`
-```json
+
+// Response
 { "token": "eyJ...", "email": "user@email.com", "role": "TRAVELER" }
 ```
 
-### Address — `/address` (public, read-only)
+### Address — `/address` (public)
 
 | Method | Path | Description |
 |---|---|---|
 | `GET` | `/address/states` | List all states |
-| `GET` | `/address/states/{uf}/cities` | List cities by state UF |
-| `GET` | `/address/cities?city=nome` | Search cities by name prefix |
+| `GET` | `/address/states/{uf}/cities` | List cities by UF |
+| `GET` | `/address/cities?city=nome` | Search by name prefix |
 
 ### Bus Company — `/companies`
 
@@ -167,16 +167,6 @@ src/main/java/br/com/javamastery/busapp_api/
 | `PUT` | `/trips/{code}` | Required | `200 OK` |
 | `DELETE` | `/trips/{code}` | Required | `204 No Content` |
 
-#### GET `/trips/suggested-price` — Response `200`
-```json
-{
-  "originCity": "Rio de Janeiro",
-  "destinationCity": "São Paulo",
-  "suggestedPrice": "89.25",
-  "distanceKM": "255.00"
-}
-```
-
 ### Ticket — `/tickets`
 
 | Method | Path | Auth | Status |
@@ -191,16 +181,14 @@ src/main/java/br/com/javamastery/busapp_api/
 
 ## Authentication
 
-All protected endpoints require a Bearer token in the `Authorization` header:
-
+All protected endpoints require:
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ```
 
-Tokens encode `email` and `role` (`TRAVELER` or `COMPANY`). Configure secret and expiration in `application.properties`:
-
+Tokens encode `email` and `role` (`TRAVELER` or `COMPANY`). Configure in `application.properties`:
 ```properties
-jwt.secret=your-256-bit-secret-key-here
+jwt.secret=your-256-bit-secret-minimum-32-characters-long
 jwt.expiration=86400000
 ```
 
@@ -208,12 +196,13 @@ jwt.expiration=86400000
 
 ## Business Rules
 
+- Passwords are hashed with **BCrypt** on registration and verified with `passwordEncoder.matches()` on login
 - Tickets can only be canceled up to **1 hour before departure**
 - Cancellation refunds the full ticket price as **credits** to the traveler
 - Trips with associated tickets **cannot be deactivated**
-- Ticket price is **locked at purchase time** (copied from trip's current price in `@PrePersist`)
+- Ticket price is **locked at purchase time** via `@PrePersist`
 - Only **active trips** can be booked
-- Distance is calculated via **OSRM API** with automatic **Haversine fallback**
+- Distance calculated via **OSRM API** with **Haversine fallback**
 - Suggested price = distance (km) × R$ 0.35
 
 ---
@@ -230,7 +219,6 @@ jwt.expiration=86400000
 | `birthDate` | `@NotNull` + `@Past` |
 | `departureDate` | `@NotNull` + `@Future` |
 | `price` | `@DecimalMin("0.01")` |
-| text fields | `@NotBlank` |
 
 ---
 
@@ -238,7 +226,7 @@ jwt.expiration=86400000
 
 ```json
 {
-  "TimeStamp": "2026-07-08T10:00:00",
+  "TimeStamp": "2026-07-10T10:00:00",
   "Status": 401,
   "Message": "Invalid email or password"
 }
@@ -251,7 +239,6 @@ jwt.expiration=86400000
 | Trip has associated tickets | `409 Conflict` |
 | Cancellation window expired | `400 Bad Request` |
 | Ticket already canceled | `400 Bad Request` |
-| Trip inactive | `400 Bad Request` |
 | Invalid credentials | `401 Unauthorized` |
 | Validation failure | `400 Bad Request` |
 
@@ -261,32 +248,22 @@ jwt.expiration=86400000
 
 ### Prerequisites
 
-- Java 21+
-- Maven 3.8+
-- PostgreSQL 14+
+- Java 21+, Maven 3.8+, PostgreSQL 14+
 
-### 1. Clone
-
-```bash
-git clone https://github.com/Emanoel-H/busapp-api.git
-cd busapp-api
-```
-
-### 2. Configure `application.properties`
+### Configure `application.properties`
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/busapp
 spring.datasource.username=your_user
 spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
 jwt.secret=your-256-bit-secret-minimum-32-characters-long
 jwt.expiration=86400000
 ```
 
-### 3. Run
+### Run
 
 ```bash
 mvn spring-boot:run
@@ -298,4 +275,4 @@ API available at `http://localhost:8080`.
 
 ## Author
 
-Developed by [Emanoel H](https://github.com/Emanoel-H) as part of a Java learning journey focused on Spring Boot, REST API design, JPA/Hibernate, Spring Security, and professional software architecture.
+Developed by [Emanoel H](https://github.com/Emanoel-H) as part of a Java learning journey focused on Spring Boot, REST API design, Spring Security, and professional software architecture.
