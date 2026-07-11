@@ -139,4 +139,14 @@ public class BusTicketServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when trip code does not exist")
+    void findTrip_NotFound(){
+        when(tripRepository.findByCode("INVALID")).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.findTripOrThrow("INVALID"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }
