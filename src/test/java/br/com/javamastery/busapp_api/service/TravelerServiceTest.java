@@ -99,4 +99,14 @@ public class TravelerServiceTest {
         assertNotNull(response);
         verify(repository, times(1)).findById(1L);
     }
+
+    @Test
+    @DisplayName("Should delete traveler successfully when traveler id exists")
+    void deleteTraveler_success(){
+        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
+
+        service.deleteById(1L);
+
+        verify(repository, times(1)).deleteById(1L);
+    }
 }
