@@ -1,15 +1,24 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusTicket;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.model.Trip;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import br.com.javamastery.busapp_api.repository.TripRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BusTicketServiceTest {
@@ -24,6 +33,16 @@ public class BusTicketServiceTest {
     private BusTicket busTicket;
     private Traveler traveler;
     private Trip trip;
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when ticket code does not exist")
+    void cancelTicket_NotFound(){
+        when(busTicketRepository.findByCode("INVALID")).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> busTicketService.cancelTicket("INVALID"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 
 
 }
