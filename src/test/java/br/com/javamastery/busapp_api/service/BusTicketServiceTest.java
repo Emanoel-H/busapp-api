@@ -112,4 +112,19 @@ public class BusTicketServiceTest {
         assertThat(busTicket.getCancelDate()).isNotNull();
         assertThat(traveler.getCreditsBalance()).isEqualTo(BigDecimal.valueOf(120.00));
     }
+
+    @Test
+    @DisplayName("Should cancel ticket and accumulate credits when traveler has existing balance")
+    void cancelTicket_AccumulateCredits(){
+        traveler.setCreditsBalance(BigDecimal.valueOf(50.00));
+
+        when(busTicketRepository.findByCode("TICKET0001")).thenReturn(Optional.of(busTicket));
+        when(travelerRepository.findById(any())).thenReturn(Optional.of(traveler));
+        when(busTicketRepository.save(busTicket)).thenReturn(busTicket);
+        when(travelerRepository.save(traveler)).thenReturn(traveler);
+
+        service.cancelTicket("TICKET0001");
+
+        assertThat(traveler.getCreditsBalance()).isEqualTo(BigDecimal.valueOf(170.00));
+    }
 }
