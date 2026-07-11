@@ -97,4 +97,19 @@ public class BusTicketServiceTest {
         assertThat(ex.getMessage()).contains("Cancellation window");
         verify(busTicketRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should cancel ticket and refund credits when cancellation window is opened")
+    void cancelTicket_RefundCredits(){
+        when(busTicketRepository.findByCode("TICKET0001")).thenReturn(Optional.of(busTicket));
+        when(travelerRepository.findById(any())).thenReturn(Optional.of(traveler));
+        when(busTicketRepository.save(busTicket)).thenReturn(busTicket);
+        when(travelerRepository.save(traveler)).thenReturn(traveler);
+
+        service.cancelTicket("TICKET0001");
+
+        assertThat(busTicket.isCanceled()).isTrue();
+        assertThat(busTicket.getCancelDate()).isNotNull();
+        assertThat(traveler.getCreditsBalance()).isEqualTo(BigDecimal.valueOf(120.00));
+    }
 }
