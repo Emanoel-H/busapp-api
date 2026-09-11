@@ -129,5 +129,14 @@ public class TravelerServiceTest {
         verify(repository, never()).save(any());
     }
 
-    
+    @Test
+    @DisplayName("Should add credits successfully when credits amount is greater than zero")
+    void addCredits_success(){
+        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
+        when(repository.save(traveler)).thenReturn(traveler);
+
+        service.addCredits(1L, BigDecimal.valueOf(50.00));
+
+        assertThat(traveler.getCreditsBalance()).isEqualByComparingTo(BigDecimal.valueOf(150.00));
+    }
 }
