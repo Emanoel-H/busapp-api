@@ -119,4 +119,15 @@ public class TravelerServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    @DisplayName("Should throw BAD_REQUEST when credits amount is not greater than zero")
+    void addCredits_BadRequest(){
+        HandlerConfig ex = catchThrowableOfType(() -> service.addCredits(0L, BigDecimal.ZERO),
+                                                                                HandlerConfig.class);
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+        verify(repository, never()).save(any());
+    }
+
+    
 }
