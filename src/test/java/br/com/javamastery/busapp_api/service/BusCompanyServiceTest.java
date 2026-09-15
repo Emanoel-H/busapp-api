@@ -57,4 +57,14 @@ public class BusCompanyServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
     }
+
+    @Test
+    @DisplayName("Should throw CONFLICT when CPF already exists")
+    void cpfAlreadyExits_Conflict(){
+        when(repository.existsByCnpj(busCompany.getCnpj())).thenReturn(true);
+
+        HandlerConfig ex = catchThrowableOfType(() -> repository.existsByCnpj(busCompany.getCnpj()), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+    }
 }
