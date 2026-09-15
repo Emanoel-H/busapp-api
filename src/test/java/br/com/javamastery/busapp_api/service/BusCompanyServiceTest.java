@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
@@ -81,5 +82,15 @@ public class BusCompanyServiceTest {
         when(repository.save(busCompany)).thenReturn(busCompany);
 
         verify(repository, times(1)).save(any(BusCompany.class));
+    }
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when busCompany id does not exist")
+    void findCompany_NotFound(){
+        when(repository.findById(0L)).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.findOrThrow(0L), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
