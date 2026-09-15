@@ -93,4 +93,14 @@ public class BusCompanyServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    @DisplayName("Should delete busCompany successfully when busCompany id exists")
+    void deleteBusCompany_success(){
+        when(repository.findById(1L)).thenReturn(Optional.of(busCompany));
+
+        service.deleteById(1L);
+
+        verify(repository, times(1)).deleteById(1L);
+    }
 }
