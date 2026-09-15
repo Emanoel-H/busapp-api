@@ -54,9 +54,10 @@ public class BusCompanyServiceTest {
     @Test
     @DisplayName("Should throw CONFLICT when email already exists")
     void emailAlreadyExits_Conflict(){
-        when(repository.existsByEmail(busCompany.getEmail())).thenReturn(true);
+        when(repository.existsByEmail(validRequest.getEmail())).thenReturn(true);
 
-        HandlerConfig ex = catchThrowableOfType(() -> repository.existsByEmail(busCompany.getEmail()), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.register(validRequest), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
     }
