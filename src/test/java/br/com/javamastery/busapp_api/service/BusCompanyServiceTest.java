@@ -3,6 +3,7 @@ package br.com.javamastery.busapp_api.service;
 import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
+import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,8 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BusCompanyServiceTest {
@@ -67,6 +69,17 @@ public class BusCompanyServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
     }
-    
 
+    @Test
+    @DisplayName("Should register busCompany successfully when cnpj and email are valid")
+    void register_success(){
+        when(repository.existsByCnpj(busCompany.getCnpj())).thenReturn(false);
+        when(repository.existsByEmail(busCompany.getEmail())).thenReturn(false);
+
+        busCompany.setPassword(passwordEncoder.encode("Itapemirim123456"));
+
+        when(repository.save(busCompany)).thenReturn(busCompany);
+
+        verify(repository, times(1)).save(any(BusCompany.class));
+    }
 }
