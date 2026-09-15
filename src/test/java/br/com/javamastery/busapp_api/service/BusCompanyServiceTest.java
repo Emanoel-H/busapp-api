@@ -1,4 +1,4 @@
 package br.com.javamastery.busapp_api.service;
 
-public class BusCompanyService {
+public class BusCompanyServiceTest {
 }
