@@ -1,5 +1,6 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.dto.TravelerRequest;
 import br.com.javamastery.busapp_api.dto.TravelerResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.Traveler;
@@ -34,6 +35,7 @@ public class TravelerServiceTest {
 
     @Mock
     private Traveler traveler;
+    private TravelerRequest validRequest;
 
     @BeforeEach
     void setUp(){
