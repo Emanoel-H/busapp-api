@@ -39,13 +39,15 @@ public class TravelerServiceTest {
 
     @BeforeEach
     void setUp(){
-        traveler = new Traveler();
+        validRequest = new TravelerRequest();
+        validRequest.setName("Traveler");
+        validRequest.setCpf("12345678902");
+        validRequest.setEmail("traveler@gmail.com");
+        validRequest.setPassword(passwordEncoder.encode("traveler123"));
+
+        traveler = new Traveler(validRequest, validRequest.getPassword());
         traveler.setId(1L);
-        traveler.setName("Traveler");
-        traveler.setCpf("12345678902");
         traveler.setCreditsBalance(BigDecimal.valueOf(100.00));
-        traveler.setEmail("traveler@gmail.com");
-        traveler.setPassword(passwordEncoder.encode("traveler123"));
     }
 
     @Test
