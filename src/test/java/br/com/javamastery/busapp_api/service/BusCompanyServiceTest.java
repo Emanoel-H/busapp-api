@@ -102,7 +102,7 @@ public class BusCompanyServiceTest {
 
         service.deleteById(1L);
 
-        verify(repository, times(1)).deleteById(1L);
+        verify(repository, times(1)).delete(busCompany);
     }
 
     @Test
