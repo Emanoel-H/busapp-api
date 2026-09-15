@@ -1,4 +1,44 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
+import br.com.javamastery.busapp_api.model.BusCompany;
+import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDateTime;
+
+@ExtendWith(MockitoExtension.class)
 public class BusCompanyServiceTest {
+    @InjectMocks
+    private BusCompanyService service;
+    @Mock
+    private BusCompanyRepository repository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    private BusCompany busCompany;
+    private BusCompanyRequest validRequest;
+
+    @BeforeEach
+    void setUp(){
+        validRequest = new BusCompanyRequest();
+        validRequest.setLegalName("Itapemirim Ltda");
+        validRequest.setTradingName("Viação Itapemirim");
+        validRequest.setCnpj("12345678000195");
+        validRequest.setEmail("itapemirim.trips@gmail.com");
+        validRequest.setPassword(passwordEncoder.encode("ItapemirimCompany123"));
+        validRequest.setTelephone("71983569425");
+
+        busCompany = new BusCompany(validRequest, validRequest.getPassword());
+
+        busCompany.setCreatedAt(LocalDateTime.now());
+        busCompany.setUpdatedAt(LocalDateTime.now());
+    }
+
+    
 }
