@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -75,13 +76,15 @@ public class BusCompanyServiceTest {
     @Test
     @DisplayName("Should register busCompany successfully when cnpj and email are valid")
     void register_success(){
-        when(repository.existsByCnpj(busCompany.getCnpj())).thenReturn(false);
-        when(repository.existsByEmail(busCompany.getEmail())).thenReturn(false);
+        when(repository.existsByCnpj(validRequest.getCnpj())).thenReturn(false);
+        when(repository.existsByEmail(validRequest.getEmail())).thenReturn(false);
+        when(passwordEncoder.encode(validRequest.getPassword())).thenReturn("hashed");
+        when(repository.save(any())).thenReturn(busCompany);
 
-        busCompany.setPassword(passwordEncoder.encode("Itapemirim123456"));
+        var response = service.register(validRequest);
 
-        when(repository.save(busCompany)).thenReturn(busCompany);
-
+        assertNotNull(response);
+        verify(passwordEncoder, times(1)).encode(validRequest.getPassword());
         verify(repository, times(1)).save(any(BusCompany.class));
     }
 
