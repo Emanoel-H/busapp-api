@@ -74,13 +74,15 @@ public class TravelerServiceTest {
     @Test
     @DisplayName("Should register traveler successfully when cpf and email are valid")
     void register_success(){
-        when(repository.existsByCpf(traveler.getCpf())).thenReturn(false);
-        when(repository.existsByEmail(traveler.getEmail())).thenReturn(false);
+        when(repository.existsByCpf(validRequest.getCpf())).thenReturn(false);
+        when(repository.existsByEmail(validRequest.getEmail())).thenReturn(false);
+        when(passwordEncoder.encode(validRequest.getPassword())).thenReturn("hashed");
+        when(repository.save(any())).thenReturn(traveler);
 
-        traveler.setPassword(passwordEncoder.encode("traveler123456"));
+        var response = service.register(validRequest);
 
-        when(repository.save(traveler)).thenReturn(traveler);
-
+        assertNotNull(response);
+        verify(passwordEncoder, times(1)).encode(validRequest.getPassword());
         verify(repository, times(1)).save(any(Traveler.class));
     }
 
