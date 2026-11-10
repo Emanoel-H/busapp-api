@@ -42,7 +42,7 @@ public class TravelerServiceTest {
         validRequest.setName("Traveler");
         validRequest.setCpf("12345678902");
         validRequest.setEmail("traveler@gmail.com");
-        validRequest.setPassword(passwordEncoder.encode("traveler123"));
+        validRequest.setPassword("traveler123");
 
         traveler = new Traveler(validRequest, validRequest.getPassword());
         traveler.setId(1L);
