@@ -33,7 +33,6 @@ public class TravelerServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Mock
     private Traveler traveler;
     private TravelerRequest validRequest;
 
