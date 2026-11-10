@@ -157,7 +157,9 @@ public class BusTicketServiceTest {
         State state = mock(State.class);
         when(state.getName()).thenReturn("Rio de Janeiro");
 
-        
+        City origin = mock(City.class);
+        when(origin.getCity()).thenReturn("Rio de Janeiro");
+        when(origin.getState()).thenReturn(state);
 
         BusTicketRequest request = new BusTicketRequest();
         request.setTrip_code("TRIP123");
