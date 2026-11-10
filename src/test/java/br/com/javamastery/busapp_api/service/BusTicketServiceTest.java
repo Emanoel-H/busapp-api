@@ -154,6 +154,11 @@ public class BusTicketServiceTest {
     @Test
     @DisplayName("Should buy ticket successfully when trip and traveler exist")
     void buy_success(){
+        State state = mock(State.class);
+        when(state.getName()).thenReturn("Rio de Janeiro");
+
+        
+
         BusTicketRequest request = new BusTicketRequest();
         request.setTrip_code("TRIP123");
         request.setTraveler_id(1L);
