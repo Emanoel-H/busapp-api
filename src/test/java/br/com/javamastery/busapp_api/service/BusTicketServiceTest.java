@@ -53,7 +53,7 @@ public class BusTicketServiceTest {
         trip.setActive(true);
 
         traveler = new Traveler();
-        traveler.addCredits(BigDecimal.ZERO);
+        traveler.setCreditsBalance(BigDecimal.ZERO);
 
         busTicket = new BusTicket();
         busTicket.setCode("TICKET0001");
