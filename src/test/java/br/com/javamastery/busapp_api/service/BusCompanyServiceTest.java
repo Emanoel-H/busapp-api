@@ -69,7 +69,7 @@ public class BusCompanyServiceTest {
     void cnpjAlreadyExits_Conflict(){
         when(repository.existsByCnpj(busCompany.getCnpj())).thenReturn(true);
 
-        HandlerConfig ex = catchThrowableOfType(() -> repository.existsByCnpj(busCompany.getCnpj()), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() -> service.register(validRequest), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
     }
