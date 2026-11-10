@@ -1,6 +1,7 @@
 package br.com.javamastery.busapp_api.service;
 
 import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
+import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.model.Traveler;
@@ -116,5 +117,24 @@ public class BusCompanyServiceTest {
         HandlerConfig ex = catchThrowableOfType(() -> service.deleteById(0L), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("Should update BusCompany successfully when id exists")
+    void update_success(){
+        BusCompanyUpdateRequest updateRequest = new BusCompanyUpdateRequest();
+        updateRequest.setLegalName("Pirajá Viação Ltda");
+        updateRequest.setTradingName("Viagens Pirajá");
+        updateRequest.setCnpj("12345678000196");
+        updateRequest.setTelephone("71983569425");
+
+        when(repository.findById(1L)).thenReturn(Optional.of(busCompany));
+        when(repository.save(any(BusCompany.class))).thenReturn(busCompany);
+
+        var response = service.update(1L, updateRequest);
+
+        assertNotNull(response);
+        verify(repository, times(1)).save(any(BusCompany.class));
+        assertThat(busCompany.getLegalName()).isEqualTo("Pirajá Viação Ltda");
     }
 }
