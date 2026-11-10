@@ -161,6 +161,10 @@ public class BusTicketServiceTest {
         when(origin.getCity()).thenReturn("Rio de Janeiro");
         when(origin.getState()).thenReturn(state);
 
+        City destination = mock(City.class);
+        when(destination.getCity()).thenReturn("Niteroi");
+        when(destination.getState()).thenReturn(state);
+
         BusTicketRequest request = new BusTicketRequest();
         request.setTrip_code("TRIP123");
         request.setTraveler_id(1L);
