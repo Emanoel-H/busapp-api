@@ -72,6 +72,7 @@ public class BusCompanyServiceTest {
         HandlerConfig ex = catchThrowableOfType(() -> service.register(validRequest), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+        verify(repository, never()).save(any());
     }
 
     @Test
