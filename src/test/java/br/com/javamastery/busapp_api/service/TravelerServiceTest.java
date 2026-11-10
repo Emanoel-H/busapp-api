@@ -66,7 +66,7 @@ public class TravelerServiceTest {
     void cpfAlreadyExits_Conflict(){
         when(repository.existsByCpf(traveler.getCpf())).thenReturn(true);
 
-        HandlerConfig ex = catchThrowableOfType(() -> repository.existsByCpf(traveler.getCpf()), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() -> service.register(validRequest), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
     }
