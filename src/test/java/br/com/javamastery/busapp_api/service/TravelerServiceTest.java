@@ -100,11 +100,10 @@ public class TravelerServiceTest {
     @Test
     @DisplayName("Should find traveler successfully when traveler id exists")
     void findTraveler_success(){
-        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
+        TravelerResponse response = service.findById(1L);
 
-        TravelerResponse response = service.toResponse(traveler);
-
-        assertNotNull(response);
+        assertThat(response.getId()).isEqualTo(1L);
+        assertThat(response.getName()).isEqualTo("Traveler");
         verify(repository, times(1)).findById(1L);
     }
 
