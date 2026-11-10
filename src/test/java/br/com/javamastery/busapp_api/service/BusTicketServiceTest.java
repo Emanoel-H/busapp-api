@@ -172,6 +172,8 @@ public class BusTicketServiceTest {
 
         Trip trip = mock(Trip.class);
         when(trip.isActive()).thenReturn(true);
+        when(trip.getOrigin()).thenReturn(origin);
+        when(trip.getDestination()).thenReturn(destination);
 
         Traveler traveler = mock(Traveler.class);
 
