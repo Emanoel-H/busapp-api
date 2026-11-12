@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,8 +43,16 @@ public class BusTicketServiceTest {
     @BeforeEach
     void setUp(){
         State state = new  State();
+        ReflectionTestUtils.setField(state, "name", "Rio de Janeiro");
+
         City origin = new  City();
+        ReflectionTestUtils.setField(origin, "city", "Rio de Janeiro");
+        ReflectionTestUtils.setField(origin, "state", state);
+
         City destination = new  City();
+        ReflectionTestUtils.setField(destination, "city", "Niteroi");
+        ReflectionTestUtils.setField(destination, "state", state);
+
 
         trip = new  Trip();
         trip.setOrigin(origin);
