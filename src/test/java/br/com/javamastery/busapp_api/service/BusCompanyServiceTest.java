@@ -4,7 +4,6 @@ import br.com.javamastery.busapp_api.dto.BusCompanyRequest;
 import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
-import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
