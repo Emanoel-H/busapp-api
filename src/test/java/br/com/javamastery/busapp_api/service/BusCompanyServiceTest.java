@@ -44,7 +44,7 @@ public class BusCompanyServiceTest {
         validRequest.setTradingName("Viação Itapemirim");
         validRequest.setCnpj("12345678000195");
         validRequest.setEmail("itapemirim.trips@gmail.com");
-        validRequest.setPassword(passwordEncoder.encode("ItapemirimCompany123"));
+        validRequest.setPassword("ItapemirimCompany123");
         validRequest.setTelephone("71983569425");
 
         busCompany = new BusCompany(validRequest, validRequest.getPassword());
