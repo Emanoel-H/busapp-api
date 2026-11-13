@@ -143,7 +143,7 @@ public class TripServiceTest {
 
     @Test
     @DisplayName("Should throw NOT_FOUND when origin city does not exist")
-    void update_NotFound(){
+    void update_originCityNotFound(){
         TripUpdateRequest updateRequest = new TripUpdateRequest();
         updateRequest.setOriginCityIbgeCode(3303000L);
 
