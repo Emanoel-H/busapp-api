@@ -199,8 +199,13 @@ public class TripServiceTest {
         var response = service.update("TRIP000001", updateRequest);
 
         assertNotNull(response);
+        assertThat(trip.getOrigin()).isSameAs(rio);
+        assertThat(trip.getDestination()).isSameAs(angra);
+        assertThat(trip.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(70.00));
+        assertThat(trip.getDepartureTime()).isEqualTo(LocalTime.of(13, 0));
+        assertThat(trip.getDistanceKM()).isEqualTo(150.0);
+        assertThat(response.getDistanceKM()).isEqualTo(150.0);
         verify(repository, times(1)).save(any(Trip.class));
-        assertThat(trip.getDestination().getIbgeCode()).isEqualTo(3300100L);
     }
 
     private City setCity (Long ibge_code, String name, String stateName, String uf){
