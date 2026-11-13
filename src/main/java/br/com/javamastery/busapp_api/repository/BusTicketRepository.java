@@ -16,8 +16,9 @@ public interface BusTicketRepository extends JpaRepository<BusTicket, Long> {
             "JOIN FETCH oc.state " +
             "JOIN FETCH t.destination dc " +
             "JOIN FETCH dc.state " +
-            "JOIN FETCH t.busCompany ")
-    Optional<BusTicket> findByCode(String code);
+            "JOIN FETCH t.busCompany " +
+            "WHERE bt.code = :code")
+    Optional<BusTicket> findByCode(@Param("code") String code);
 
     @Query("SELECT bt FROM BusTicket bt " +
             "JOIN FETCH bt.traveler " +
