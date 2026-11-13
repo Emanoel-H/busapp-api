@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -167,6 +168,25 @@ public class TripServiceTest {
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
         verifyNoInteractions(osrmClient);
         verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should update Trip successfully when id exists")
+    void update_success(){
+        TripUpdateRequest updateRequest = new TripUpdateRequest();
+        updateRequest.setOriginCityIbgeCode(3304557L);
+        updateRequest.setDestinationCityIbgeCode(3300100L);
+        updateRequest.setDepartureTime(LocalTime.of(13, 0));
+        updateRequest.setPrice(BigDecimal.valueOf(70.00));
+
+        when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
+        when(repository.save(any(Trip.class))).thenReturn(trip);
+
+        var response = service.update("TRIP000001", updateRequest);
+
+        assertNotNull(response);
+        verify(repository, times(1)).save(any(Trip.class));
+        assertThat(trip.getDestination().getIbgeCode()).isEqualTo(3300100L);
     }
 
     private City setCity (Long ibge_code, String name, String stateName, String uf){
