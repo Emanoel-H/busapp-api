@@ -167,9 +167,14 @@ public class TripServiceTest {
         request.setDestinationCityIbgeCode(3303302L);
         request.setBusCompanyId(0L);
 
+        when(cityRepository.findByIBGECode(3304557L)).thenReturn(Optional.of(rio));
+        when(cityRepository.findByIBGECode(3303302L)).thenReturn(Optional.of(niteroi));
+        when(busCompanyRepository.findById(0L)).thenReturn(Optional.empty());
+
         HandlerConfig ex = catchThrowableOfType(() -> service.create(request), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(ex.getMessage()).contains("Company not found");
         verifyNoInteractions(osrmClient);
         verify(repository, never()).save(any());
     }
