@@ -115,6 +115,18 @@ public class TripServiceTest {
         verify(repository, never()).save(any());
     }
 
+    @Test
+    @DisplayName("Should delete trip successfully when it does not exist in a Bus Ticket")
+    void delete_success(){
+        when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
+        when(busTicketRepository.existsByTripId(1L)).thenReturn(false);
+
+        service.delete("TRIP000001");
+
+        assertThat(trip.isActive()).isFalse();
+        verify(repository, times(1)).save(any(Trip.class));
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
