@@ -127,6 +127,18 @@ public class TripServiceTest {
         verify(repository, times(1)).save(any(Trip.class));
     }
 
+    @Test
+    @DisplayName("Should throw NOT_FOUND when trip is not found")
+    void deleteTrip_NotFound(){
+        when(repository.findByCode("TRIP000002")).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.delete("TRIP000002"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        verifyNoInteractions(busTicketRepository);
+        verify(repository, never()).save(any());
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
