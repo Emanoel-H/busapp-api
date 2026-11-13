@@ -188,6 +188,8 @@ public class TripServiceTest {
         updateRequest.setDepartureTime(LocalTime.of(13, 0));
         updateRequest.setPrice(BigDecimal.valueOf(70.00));
 
+        City angra = setCity(3300100L, "Angra dos Reis", "Rio de Janeiro", "RJ");
+
         when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
         when(repository.save(any(Trip.class))).thenReturn(trip);
 
