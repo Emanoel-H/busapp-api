@@ -26,8 +26,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -259,6 +258,18 @@ public class TripServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(ex.getMessage()).contains("No trips found for the company");
+    }
+
+    @Test
+    @DisplayName("Should suggest price as 0.35 per KM using the OSRM distance")
+    void suggestPrice_success(){
+        when(cityRepository.findByIBGECode(3304557L)).thenReturn(Optional.of(rio));
+        when(cityRepository.findByIBGECode(3303302L)).thenReturn(Optional.of(niteroi));
+        when(osrmClient.getRealDistanceKM(rio, niteroi)).thenReturn(100.0);
+
+        double price = service.suggestPrice(3304557L, 3303302L);
+
+        assertThat(price).isCloseTo(35.0, within(0.001));
     }
 
     private City setCity (Long ibge_code, String name, String stateName, String uf){
