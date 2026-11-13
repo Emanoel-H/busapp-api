@@ -154,6 +154,21 @@ public class TripServiceTest {
         verify(repository, never()).save(any());
     }
 
+    @Test
+    @DisplayName("Should throw not found when BusCompany does not exist")
+    void create_NotFound(){
+        TripRequest request = new TripRequest();
+        request.setOriginCityIbgeCode(3304557L);
+        request.setDestinationCityIbgeCode(3303302L);
+        request.setBusCompanyId(0L);
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.create(request), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        verifyNoInteractions(osrmClient);
+        verify(repository, never()).save(any());
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
