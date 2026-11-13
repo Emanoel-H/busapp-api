@@ -147,10 +147,14 @@ public class TripServiceTest {
         TripUpdateRequest updateRequest = new TripUpdateRequest();
         updateRequest.setOriginCityIbgeCode(3303000L);
 
+        when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
+        when(cityRepository.findByIBGECode(3303000L)).thenReturn(Optional.empty());
+
         HandlerConfig ex = catchThrowableOfType(() ->
                 service.update("TRIP000001", updateRequest), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(ex.getMessage()).contains("City not found");
         verifyNoInteractions(osrmClient);
         verify(repository, never()).save(any());
     }
