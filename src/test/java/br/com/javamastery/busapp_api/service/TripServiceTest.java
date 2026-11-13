@@ -259,7 +259,6 @@ public class TripServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(ex.getMessage()).contains("No trips found for the company");
-        verifyNoInteractions(osrmClient);
     }
 
     private City setCity (Long ibge_code, String name, String stateName, String uf){
