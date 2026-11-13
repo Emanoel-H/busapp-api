@@ -249,6 +249,19 @@ public class TripServiceTest {
         assertThat(ex.getMessage()).contains("No trips found for this route");
     }
 
+    @Test
+    @DisplayName("Should return NOT_FOUND when no trips exist for this BusCompany")
+    void listByCompany_empty(){
+        when(repository.findAllByBusCompanyId(0L)).thenReturn(List.of());
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.listByCompany(0L), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(ex.getMessage()).contains("No trips found for the company");
+        verifyNoInteractions(osrmClient);
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
