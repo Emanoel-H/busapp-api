@@ -237,6 +237,18 @@ public class TripServiceTest {
         assertThat(response.getCategory()).isEqualTo("INTERSTATE");
     }
 
+    @Test
+    @DisplayName("Should return NOT_FOUND when no trips exist for this route")
+    void listByRoute_empty(){
+        when(repository.findAllByOriginAndDestination(3304557L, 3550308L)).thenReturn(List.of());
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.listByRoute(3304557L, 3550308L), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(ex.getMessage()).contains("No trips found for this route");
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
