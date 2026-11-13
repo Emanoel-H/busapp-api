@@ -23,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -206,6 +207,18 @@ public class TripServiceTest {
         assertThat(trip.getDistanceKM()).isEqualTo(150.0);
         assertThat(response.getDistanceKM()).isEqualTo(150.0);
         verify(repository, times(1)).save(any(Trip.class));
+    }
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when there are no active trips")
+    void listAll_empty(){
+        when(repository.findAllActive()).thenReturn(List.of());
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.listAll(), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(ex.getMessage()).contains("no active trips");
     }
 
     private City setCity (Long ibge_code, String name, String stateName, String uf){
