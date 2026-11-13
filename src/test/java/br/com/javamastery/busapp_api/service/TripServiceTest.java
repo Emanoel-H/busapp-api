@@ -195,7 +195,7 @@ public class TripServiceTest {
         ReflectionTestUtils.setField(state, "uf", uf);
 
         City city = new City();
-        ReflectionTestUtils.setField(city, "name", name);
+        ReflectionTestUtils.setField(city, "city", name);
         ReflectionTestUtils.setField(city, "ibgeCode", ibge_code);
         ReflectionTestUtils.setField(city, "state", state);
 
