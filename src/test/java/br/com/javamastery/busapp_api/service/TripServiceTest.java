@@ -223,7 +223,7 @@ public class TripServiceTest {
     @Test
     @DisplayName("Should return one TripResponse when there is one trip active")
     void listAll_oneTrip(){
-        when(repository.findAllActive()).thenReturn(List.of());
+        when(repository.findAllActive()).thenReturn(List.of(trip));
 
         List<TripResponse> result = service.listAll();
 
