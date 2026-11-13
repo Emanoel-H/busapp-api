@@ -3,6 +3,7 @@ package br.com.javamastery.busapp_api.service;
 import br.com.javamastery.busapp_api.client.OsrmClient;
 import br.com.javamastery.busapp_api.dto.TripRequest;
 import br.com.javamastery.busapp_api.dto.TripResponse;
+import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.*;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
@@ -136,6 +137,20 @@ public class TripServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
         verifyNoInteractions(busTicketRepository);
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when origin city does not exist")
+    void update_NotFound(){
+        TripUpdateRequest updateRequest = new TripUpdateRequest();
+        updateRequest.setOriginCityIbgeCode(3303000L);
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.update("TRIP000001", updateRequest), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        verifyNoInteractions(osrmClient);
         verify(repository, never()).save(any());
     }
 
