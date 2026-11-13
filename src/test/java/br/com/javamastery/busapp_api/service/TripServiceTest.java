@@ -191,6 +191,9 @@ public class TripServiceTest {
         City angra = setCity(3300100L, "Angra dos Reis", "Rio de Janeiro", "RJ");
 
         when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
+        when(cityRepository.findByIBGECode(3304557L)).thenReturn(Optional.of(rio));
+        when(cityRepository.findByIBGECode(3300100L)).thenReturn(Optional.of(angra));
+        when(osrmClient.getRealDistanceKM(rio, angra)).thenReturn(150.0);
         when(repository.save(any(Trip.class))).thenReturn(trip);
 
         var response = service.update("TRIP000001", updateRequest);
