@@ -1,13 +1,18 @@
 package br.com.javamastery.busapp_api.service;
 
 import br.com.javamastery.busapp_api.client.OsrmClient;
+import br.com.javamastery.busapp_api.dto.TripRequest;
+import br.com.javamastery.busapp_api.dto.TripResponse;
 import br.com.javamastery.busapp_api.model.*;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
 import br.com.javamastery.busapp_api.repository.CityRepository;
 import br.com.javamastery.busapp_api.repository.TripRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,6 +20,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TripServiceTest {
@@ -56,6 +67,36 @@ public class TripServiceTest {
         trip.setDistanceKM(430.0);
         trip.setCategory(Category.INTERSTATE);
         trip.setActive(true);
+    }
+
+    @Test
+    @DisplayName("Should create trip using the distance returned by OSRM")
+    void create_success(){
+        TripRequest request = new TripRequest();
+        request.setOriginCityIbgeCode(3304557L);
+        request.setDestinationCityIbgeCode(3303302L);
+        request.setBusCompanyId(1L);
+        request.setDepartureTime(LocalTime.of(14, 30));
+        request.setPrice(BigDecimal.valueOf(25.00));
+
+        when(cityRepository.findByIBGECode(3304557L)).thenReturn(Optional.of(rio));
+        when(cityRepository.findByIBGECode(3303302L)).thenReturn(Optional.of(niteroi));
+        when(busCompanyRepository.findById(1L)).thenReturn(Optional.of(company));
+        when(osrmClient.getRealDistanceKM(rio, niteroi)).thenReturn(23.4);
+        when(repository.save(any(Trip.class))).thenAnswer(inv -> {
+            Trip saved = inv.getArgument(0);
+            saved.setCategory(Category.INTERCITY);
+            return saved;
+        });
+
+        TripResponse response = service.create(request);
+
+        ArgumentCaptor<Trip> captor = ArgumentCaptor.forClass(Trip.class);
+        verify(repository).save(captor.capture());
+        assertThat(captor.getValue().getDistanceKM()).isEqualTo(23.4);
+        assertThat(captor.getValue().getBusCompany()).isSameAs(company);
+        assertThat(response.getDistanceKM()).isEqualTo(23.4);
+        assertThat(response.getBusCompany()).isEqualTo("Viação Teste");
     }
 
     private City setCity (Long ibge_code, String name, String stateName, String uf){
