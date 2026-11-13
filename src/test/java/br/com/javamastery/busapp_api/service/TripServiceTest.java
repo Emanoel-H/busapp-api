@@ -272,6 +272,18 @@ public class TripServiceTest {
         assertThat(price).isCloseTo(35.0, within(0.001));
     }
 
+    @Test
+    @DisplayName("Should throw NOT_FOUND and skip OSRM when a city does not exist")
+    void suggestPrice_cityNotFound(){
+        when(cityRepository.findByIBGECode(3304557L)).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.suggestPrice(3304557L, 3303302L), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        verifyNoInteractions(osrmClient);
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
