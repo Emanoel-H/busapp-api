@@ -161,7 +161,7 @@ public class TripServiceTest {
 
     @Test
     @DisplayName("Should throw not found when BusCompany does not exist")
-    void create_NotFound(){
+    void create_busCompanyNotFound(){
         TripRequest request = new TripRequest();
         request.setOriginCityIbgeCode(3304557L);
         request.setDestinationCityIbgeCode(3303302L);
