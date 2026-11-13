@@ -14,6 +14,7 @@ A RESTful API for bus ticket management built with Spring Boot. This project is 
 - [Validation](#validation)
 - [Error Handling](#error-handling)
 - [Getting Started](#getting-started)
+- [Testing](#testing)
 
 ---
 
@@ -31,12 +32,13 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 | Layer | Technology |
 |---|---|
 | Language | Java 21+ |
-| Framework | Spring Boot 3 |
+| Framework | Spring Boot 4 |
 | ORM | Spring Data JPA / Hibernate |
 | Database | PostgreSQL |
 | Security | Spring Security + JWT (jjwt) + BCrypt |
 | Distance API | OSRM (real-route), Haversine fallback |
 | Validation | Jakarta Bean Validation (`@Valid`, custom `@ValidCpf`) |
+| Testing | JUnit 5, Mockito, AssertJ |
 | Build | Maven |
 | Utilities | Lombok, Jackson |
 
@@ -105,6 +107,15 @@ src/main/java/br/com/javamastery/busapp_api/
 └── validation/
     ├── ValidCpf.java
     └── CpfValidator.java
+
+src/test/java/br/com/javamastery/busapp_api/
+│
+├── BusappApiApplicationTests.java     # contextLoads (needs a running PostgreSQL)
+└── service/
+    ├── BusCompanyServiceTest.java
+    ├── BusTicketServiceTest.java
+    ├── TravelerServiceTest.java
+    └── TripServiceTest.java
 ```
 
 ---
@@ -269,6 +280,39 @@ mvn spring-boot:run
 ```
 
 API available at `http://localhost:8080`.
+
+---
+
+## Testing
+
+Unit tests cover the service layer, where the business rules live. Repositories, the `PasswordEncoder` and the `OsrmClient` are mocked with Mockito, so the tests run in milliseconds and do not need a database or network.
+
+```bash
+mvn test
+```
+
+| Test class | Tests | What it covers |
+|---|---|---|
+| `BusCompanyServiceTest` | 7 | email/CNPJ conflicts, register (encode + save), update, delete, not found |
+| `TravelerServiceTest` | 9 | email/CPF conflicts, register, find, delete, `addCredits` rules |
+| `BusTicketServiceTest` | 8 | buy, cancel (already canceled, 1-hour window, credit refund and accumulation), lookups |
+| `TripServiceTest` | 13 | create with OSRM distance, update, soft delete blocked by tickets, list filters, `suggestPrice` |
+| `BusappApiApplicationTests` | 1 | Spring context loads (requires PostgreSQL running locally) |
+
+**Total: 38 tests passing.**
+
+### Conventions
+
+- `given / when / then` structure and descriptive `@DisplayName`.
+- Failure tests assert both the `HttpStatus` and the message, so a test cannot pass for the wrong reason (an unstubbed `Optional` returns empty and would also give a 404).
+- `verify(..., never()).save(...)` on every rejected path, to prove nothing was persisted.
+- `City` and `State` have no setters, so fixtures are built with `ReflectionTestUtils.setField`.
+- `ArgumentCaptor` checks what the service actually put inside the saved entity (for example, the distance coming from OSRM).
+
+### Known limits
+
+- Mocked repositories do not execute the JPQL. A query bug (such as a missing `WHERE`) is invisible to these tests.
+- `BusappApiApplicationTests` depends on a real database and on `jwt.secret` being configured.
 
 ---
 
