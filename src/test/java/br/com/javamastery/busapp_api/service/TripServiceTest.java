@@ -3,6 +3,7 @@ package br.com.javamastery.busapp_api.service;
 import br.com.javamastery.busapp_api.client.OsrmClient;
 import br.com.javamastery.busapp_api.dto.TripRequest;
 import br.com.javamastery.busapp_api.dto.TripResponse;
+import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.*;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import br.com.javamastery.busapp_api.repository.BusTicketRepository;
@@ -16,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
@@ -23,9 +25,9 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TripServiceTest {
@@ -97,6 +99,20 @@ public class TripServiceTest {
         assertThat(captor.getValue().getBusCompany()).isSameAs(company);
         assertThat(response.getDistanceKM()).isEqualTo(23.4);
         assertThat(response.getBusCompany()).isEqualTo("Viação Teste");
+    }
+
+    @Test
+    @DisplayName("Should throw CONFLICT and keep trip active when it has tickets")
+    void delete_hasTickets_conflict(){
+        when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
+        when(busTicketRepository.existsByTripId(1L)).thenReturn(true);
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                                        service.delete("TRIP000001"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(trip.isActive()).isTrue();
+        verify(repository, never()).save(any());
     }
 
     private City setCity (Long ibge_code, String name, String stateName, String uf){
