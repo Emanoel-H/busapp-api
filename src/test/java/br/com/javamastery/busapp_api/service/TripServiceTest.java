@@ -221,6 +221,22 @@ public class TripServiceTest {
         assertThat(ex.getMessage()).contains("no active trips");
     }
 
+    @Test
+    @DisplayName("Should return one TripResponse when there is one trip active")
+    void listAll_oneTrip(){
+        when(repository.findAllActive()).thenReturn(List.of());
+
+        List<TripResponse> result = service.listAll();
+
+        assertThat(result).hasSize(1);
+        TripResponse response = result.get(0);
+        assertThat(response.getCode()).isEqualTo("TRIP000001");
+        assertThat(response.getOriginCity()).isEqualTo(rio.getCity());
+        assertThat(response.getDestinationCity()).isEqualTo(saoPaulo.getCity());
+        assertThat(response.getBusCompany()).isEqualTo(company.getTradingName());
+        assertThat(response.getCategory()).isEqualTo("INTERSTATE");
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
