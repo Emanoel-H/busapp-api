@@ -111,11 +111,16 @@ src/main/java/br/com/javamastery/busapp_api/
 src/test/java/br/com/javamastery/busapp_api/
 │
 ├── BusappApiApplicationTests.java     # contextLoads (needs a running PostgreSQL)
-└── service/
-    ├── BusCompanyServiceTest.java
-    ├── BusTicketServiceTest.java
-    ├── TravelerServiceTest.java
-    └── TripServiceTest.java
+├── security/
+│   └── JwtServiceTest.java
+├── service/
+│   ├── AuthServiceTest.java
+│   ├── BusCompanyServiceTest.java
+│   ├── BusTicketServiceTest.java
+│   ├── TravelerServiceTest.java
+│   └── TripServiceTest.java
+└── validation/
+    └── CpfValidatorTest.java
 ```
 
 ---
@@ -285,7 +290,7 @@ API available at `http://localhost:8080`.
 
 ## Testing
 
-Unit tests cover the service layer, where the business rules live. Repositories, the `PasswordEncoder` and the `OsrmClient` are mocked with Mockito, so the tests run in milliseconds and do not need a database or network.
+Unit tests cover the service layer, where the business rules live, plus the pure-logic classes (`JwtService`, `CpfValidator`). Repositories, the `PasswordEncoder` and the `OsrmClient` are mocked with Mockito, so the tests run in milliseconds and do not need a database or network.
 
 ```bash
 mvn test
@@ -293,13 +298,16 @@ mvn test
 
 | Test class | Tests | What it covers |
 |---|---|---|
+| `AuthServiceTest` | 4 | company login, traveler login, unknown email, wrong password (no token issued) |
 | `BusCompanyServiceTest` | 7 | email/CNPJ conflicts, register (encode + save), update, delete, not found |
-| `TravelerServiceTest` | 9 | email/CPF conflicts, register, find, delete, `addCredits` rules |
 | `BusTicketServiceTest` | 8 | buy, cancel (already canceled, 1-hour window, credit refund and accumulation), lookups |
+| `TravelerServiceTest` | 9 | email/CPF conflicts, register, find, delete, `addCredits` rules |
 | `TripServiceTest` | 13 | create with OSRM distance, update, soft delete blocked by tickets, list filters, `suggestPrice` |
+| `JwtServiceTest` | 6 | token round trip, expired token, wrong secret, garbage input |
+| `CpfValidatorTest` | 9 | valid and masked CPFs, wrong check digit, repeated digits, wrong length, non-numeric, `null` |
 | `BusappApiApplicationTests` | 1 | Spring context loads (requires PostgreSQL running locally) |
 
-**Total: 38 tests passing.**
+**Total: 57 tests passing.**
 
 ### Conventions
 
@@ -308,6 +316,7 @@ mvn test
 - `verify(..., never()).save(...)` on every rejected path, to prove nothing was persisted.
 - `City` and `State` have no setters, so fixtures are built with `ReflectionTestUtils.setField`.
 - `ArgumentCaptor` checks what the service actually put inside the saved entity (for example, the distance coming from OSRM).
+- Pure-logic classes (`CpfValidator`, `JwtService`) are tested without Mockito; `@ParameterizedTest` covers many inputs in a few lines.
 
 ### Known limits
 
