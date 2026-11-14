@@ -46,7 +46,7 @@ public class AuthServiceTest {
         request.setPassword("teste123");
 
         when(companyRepository.findByEmail("empresa@teste.com")).thenReturn(Optional.of(company));
-        when(passwordEncoder.matches("senha123", "hash")).thenReturn(true);
+        when(passwordEncoder.matches("teste123", "hash")).thenReturn(true);
         when(jwtService.generateToken("empresa@teste.com", "COMPANY")).thenReturn("token-company");
 
         LoginResponse response = service.login(request);
