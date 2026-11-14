@@ -37,4 +37,12 @@ public class JwtServiceTest {
 
         assertThat(service.extractEmail(token)).isEqualTo("viajante@teste.com");
     }
+
+    @Test
+    @DisplayName("Should return valid token when role is correct")
+    void validToken_correctRole(){
+        String token = service.generateToken("viajante@teste.com", "TRAVELER");
+
+        assertThat(service.extractRole(token)).isEqualTo("TRAVELER");
+    }
 }
