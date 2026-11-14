@@ -57,4 +57,16 @@ public class JwtServiceTest {
 
         assertThat(jwtServiceTeste.isTokenValid(token)).isFalse();
     }
+
+    @Test
+    @DisplayName("Should return invalid token when token secret is incorrect")
+    void invalidToken_incorrectSecret(){
+        JwtService jwtServiceTeste = new JwtService();
+        ReflectionTestUtils.setField(jwtServiceTeste, "secret", "outra-chave-de-teste-com-mais-de-32-caracteres!");
+        ReflectionTestUtils.setField(jwtServiceTeste, "expiration", 3_600_000L);
+
+        String token = jwtServiceTeste.generateToken("empresa@teste.com", "COMPANY");
+
+        assertThat(jwtServiceTeste.isTokenValid(token)).isFalse();
+    }
 }
