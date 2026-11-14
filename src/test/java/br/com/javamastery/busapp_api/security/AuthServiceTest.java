@@ -101,4 +101,26 @@ public class AuthServiceTest {
         assertThat(ex.getMessage()).isEqualTo("Invalid email or password");
         verifyNoInteractions(jwtService);
     }
+
+    @Test
+    @DisplayName("Should throw UNAUTHORIZED when the password is incorrect")
+    void login_unauthorizedPassword(){
+        BusCompany company = new BusCompany();
+        company.setEmail("empresa@teste.com");
+        company.setPassword("hash");
+
+        LoginRequest request = new LoginRequest();
+        request.setEmail("empresa@teste.com");
+        request.setPassword("wrongPassword123");
+
+        when(companyRepository.findByEmail("empresa@teste.com")).thenReturn(Optional.of(company));
+        when(passwordEncoder.matches("wrongPassword123", "hash")).thenReturn(false);
+        when(travelerRepository.findByEmail("empresa@teste.com")).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.login(request), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(ex.getMessage()).isEqualTo("Invalid email or password");
+        verifyNoInteractions(jwtService);
+    }
 }
