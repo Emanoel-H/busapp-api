@@ -1,9 +1,13 @@
 package br.com.javamastery.busapp_api.security;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceTest {
@@ -14,5 +18,15 @@ public class JwtServiceTest {
         service = new JwtService();
         ReflectionTestUtils.setField(service, "secret", "uma-chave-de-teste-com-mais-de-32-caracteres!");
         ReflectionTestUtils.setField(service, "expiration", 3_600_000L);
+    }
+
+    @Test
+    @DisplayName("Should return valid token when token is generated")
+    void validToken(){
+        String token = service.generateToken("empresa@teste.com", "COMPANY");
+
+        assertThat(token).isNotBlank();
+        assertThat(token.split("\\.")).hasSize(3);
+        assertThat(service.isTokenValid(token)).isTrue();
     }
 }
