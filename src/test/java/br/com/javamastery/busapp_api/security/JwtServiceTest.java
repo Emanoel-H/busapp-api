@@ -68,7 +68,7 @@ public class JwtServiceTest {
 
         String token = jwtServiceTeste.generateToken("empresa@teste.com", "COMPANY");
 
-        assertThat(jwtServiceTeste.isTokenValid(token)).isFalse();
+        assertThat(service.isTokenValid(token)).isFalse();
     }
 
     @Test
