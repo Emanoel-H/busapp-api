@@ -2,6 +2,7 @@ package br.com.javamastery.busapp_api.security;
 
 import br.com.javamastery.busapp_api.dto.LoginRequest;
 import br.com.javamastery.busapp_api.dto.LoginResponse;
+import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
@@ -13,11 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
@@ -80,4 +83,22 @@ public class AuthServiceTest {
         assertThat(response.getEmail()).isEqualTo("viajante@teste.com");
     }
 
+    @Test
+    @DisplayName("Should throw UNAUTHORIZED when there is no traveler or busCompany for this email")
+    void login_unauthorizedEmail(){
+        String email = "wrong@email.com";
+
+        LoginRequest request = new LoginRequest();
+        request.setEmail(email);
+        request.setPassword("wrongPassword123");
+
+        when(companyRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(travelerRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.login(request), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(ex.getMessage()).isEqualTo("Invalid email or password");
+        verifyNoInteractions(jwtService);
+    }
 }
