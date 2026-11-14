@@ -29,4 +29,12 @@ public class JwtServiceTest {
         assertThat(token.split("\\.")).hasSize(3);
         assertThat(service.isTokenValid(token)).isTrue();
     }
+
+    @Test
+    @DisplayName("Should return valid token when email is correct")
+    void validToken_correctEmail(){
+        String token = service.generateToken("viajante@teste.com", "TRAVELER");
+
+        assertThat(service.extractEmail(token)).isEqualTo("viajante@teste.com");
+    }
 }
