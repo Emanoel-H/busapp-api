@@ -1,6 +1,7 @@
 package br.com.javamastery.busapp_api.validation;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -24,5 +25,11 @@ public class CpfValidatorTest {
     @DisplayName("Should reject CPFs wrong digit, repeated digits, wrong length and non-numerics")
     void invalidCpf(String cpf){
         assertThat(validator.isValid(cpf, null)).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should not blow up on null (the @NotBlank annotation reports it)")
+    void nullCpf(){
+        assertThat(validator.isValid(null, null)).isTrue();
     }
 }
