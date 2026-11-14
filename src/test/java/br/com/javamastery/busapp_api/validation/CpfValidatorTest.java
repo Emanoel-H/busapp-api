@@ -18,4 +18,11 @@ public class CpfValidatorTest {
     void validCpf(String cpf){
         assertThat(validator.isValid(cpf, null)).isTrue();
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"52998224726", "11111111111", "1234567890", "123456789012", "abc"})
+    @DisplayName("Should reject CPFs wrong digit, repeated digits, wrong length and non-numerics")
+    void invalidCpf(String cpf){
+        assertThat(validator.isValid(cpf, null)).isFalse();
+    }
 }
