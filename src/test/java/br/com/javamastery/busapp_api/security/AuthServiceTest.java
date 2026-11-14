@@ -3,6 +3,7 @@ package br.com.javamastery.busapp_api.security;
 import br.com.javamastery.busapp_api.dto.LoginRequest;
 import br.com.javamastery.busapp_api.dto.LoginResponse;
 import br.com.javamastery.busapp_api.model.BusCompany;
+import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
 import br.com.javamastery.busapp_api.service.AuthService;
@@ -54,6 +55,29 @@ public class AuthServiceTest {
         assertThat(response.getToken()).isEqualTo("token-company");
         assertThat(response.getEmail()).isEqualTo("empresa@teste.com");
         verifyNoInteractions(travelerRepository);
+    }
+
+    @Test
+    @DisplayName("Should login a traveler when a busCompany is not found for this email")
+    void login_traveler_success(){
+        Traveler traveler = new Traveler();
+        traveler.setEmail("viajante@teste.com");
+        traveler.setPassword("hash-traveler");
+
+        LoginRequest request = new LoginRequest();
+        request.setEmail("viajante@teste.com");
+        request.setPassword("senha123");
+
+        when(companyRepository.findByEmail("viajante@teste.com")).thenReturn(Optional.empty());
+        when(travelerRepository.findByEmail("viajante@teste.com")).thenReturn(Optional.of(traveler));
+        when(passwordEncoder.matches("senha123", "hash-traveler")).thenReturn(true);
+        when(jwtService.generateToken("viajante@teste.com", "TRAVELER")).thenReturn("token-traveler");
+
+        LoginResponse response = service.login(request);
+
+        assertThat(response.getRole()).isEqualTo("TRAVELER");
+        assertThat(response.getToken()).isEqualTo("token-traveler");
+        assertThat(response.getEmail()).isEqualTo("viajante@teste.com");
     }
 
 }
