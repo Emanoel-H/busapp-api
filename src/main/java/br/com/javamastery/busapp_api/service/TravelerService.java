@@ -21,7 +21,7 @@ public class TravelerService {
         if (repository.existsByEmail(travelerRequest.getEmail()))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Email already exists");
 
-        if (repository.existsByCpf(travelerRequest.getCpf()))
+        if (repository.existsByCpf(travelerRequest.getCpf().replaceAll("\\D", "")))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cpf already exists");
 
         String password = passwordEncoder.encode(travelerRequest.getPassword());
