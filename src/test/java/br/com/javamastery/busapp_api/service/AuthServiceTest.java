@@ -1,4 +1,4 @@
-package br.com.javamastery.busapp_api.security;
+package br.com.javamastery.busapp_api.service;
 
 import br.com.javamastery.busapp_api.dto.LoginRequest;
 import br.com.javamastery.busapp_api.dto.LoginResponse;
@@ -7,7 +7,7 @@ import br.com.javamastery.busapp_api.model.BusCompany;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
-import br.com.javamastery.busapp_api.service.AuthService;
+import br.com.javamastery.busapp_api.security.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
