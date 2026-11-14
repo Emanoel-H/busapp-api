@@ -6,6 +6,9 @@ import jakarta.validation.ConstraintValidatorContext;
 public class CpfValidator implements ConstraintValidator<ValidCpf, String> {
     @Override
     public boolean isValid(String cpf, ConstraintValidatorContext context) {
+        if (cpf == null)
+            return true;
+        
         String digits = cpf.replaceAll("\\D", "");
 
         if (digits.length() != 11)
