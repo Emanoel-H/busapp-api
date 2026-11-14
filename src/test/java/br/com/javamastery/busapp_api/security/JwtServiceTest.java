@@ -69,4 +69,12 @@ public class JwtServiceTest {
 
         assertThat(jwtServiceTeste.isTokenValid(token)).isFalse();
     }
+
+    @Test
+    @DisplayName("Should return invalid token when role is incorrect")
+    void invalidToken_incorrectRole(){
+        String token = service.generateToken("viajante@teste.com", "lixo");
+
+        assertThat(service.isTokenValid(token)).isFalse();
+    }
 }
