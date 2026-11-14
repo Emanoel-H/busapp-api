@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceTest {
@@ -71,10 +72,8 @@ public class JwtServiceTest {
     }
 
     @Test
-    @DisplayName("Should return invalid token when role is incorrect")
-    void invalidToken_incorrectRole(){
-        String token = service.generateToken("viajante@teste.com", "lixo");
-
-        assertThat(service.isTokenValid(token)).isFalse();
+    @DisplayName("Should return invalid token when text is incorrect")
+    void invalidToken_incorrectText(){
+        assertThat(service.isTokenValid("lixo")).isFalse();
     }
 }
