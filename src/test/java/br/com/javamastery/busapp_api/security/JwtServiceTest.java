@@ -28,7 +28,7 @@ public class JwtServiceTest {
     }
 
     @Test
-    @DisplayName("Should return valid token when email is correct")
+    @DisplayName("Should extract the email from the token")
     void validToken_correctEmail(){
         String token = service.generateToken("viajante@teste.com", "TRAVELER");
 
@@ -36,7 +36,7 @@ public class JwtServiceTest {
     }
 
     @Test
-    @DisplayName("Should return valid token when role is correct")
+    @DisplayName("Should extract the role from the token")
     void validToken_correctRole(){
         String token = service.generateToken("viajante@teste.com", "TRAVELER");
 
