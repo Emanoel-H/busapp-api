@@ -45,4 +45,16 @@ public class JwtServiceTest {
 
         assertThat(service.extractRole(token)).isEqualTo("TRAVELER");
     }
+
+    @Test
+    @DisplayName("Should return invalid token when token is expired")
+    void invalidToken_expired(){
+        JwtService jwtServiceTeste = new JwtService();
+        ReflectionTestUtils.setField(jwtServiceTeste, "secret", "uma-chave-de-teste-com-mais-de-32-caracteres!");
+        ReflectionTestUtils.setField(jwtServiceTeste, "expiration", -1000L);
+
+        String token = jwtServiceTeste.generateToken("empresa@teste.com", "COMPANY");
+
+        assertThat(jwtServiceTeste.isTokenValid(token)).isFalse();
+    }
 }
