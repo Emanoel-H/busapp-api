@@ -54,7 +54,7 @@ public class Traveler {
     public void travelerUpdateRequest(TravelerUpdateRequest travelerUpdateRequest) {
         this.name = travelerUpdateRequest.getName();
         this.birthDate = travelerUpdateRequest.getBirthDate();
-        this.cpf = travelerUpdateRequest.getCpf();
+        this.cpf = travelerUpdateRequest.getCpf().replaceAll("\\D", "");
         this.telephone = travelerUpdateRequest.getTelephone();
     }
 
