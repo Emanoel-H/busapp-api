@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
       - ./docker/initdb:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
@@ -14,7 +14,7 @@ services:
       timeout: 3s
       retries: 10
   api:
-    build:
+    build: .
     depends_on:
       db:
         condition: service_healthy
@@ -24,7 +24,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
-    ports
+    ports:
       - "8080:8080" 
 volumes:
-  pg_data:
+  pgdata:
