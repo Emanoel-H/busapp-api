@@ -45,7 +45,7 @@ public class Traveler {
     public Traveler(TravelerRequest  travelerRequest, String password) {
         this.name = travelerRequest.getName();
         this.birthDate = travelerRequest.getBirthDate();
-        this.cpf = travelerRequest.getCpf();
+        this.cpf = travelerRequest.getCpf().replaceAll("\\D", "gi");
         this.email = travelerRequest.getEmail();
         this.password = password;
         this.telephone = travelerRequest.getTelephone();
