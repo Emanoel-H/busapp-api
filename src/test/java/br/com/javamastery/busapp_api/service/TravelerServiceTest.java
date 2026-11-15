@@ -159,4 +159,12 @@ public class TravelerServiceTest {
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
         verify(repository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should store CPF without mask")
+    void constructor_normalizesCpf(){
+        validRequest.setCpf("529.982.247-25");
+
+        assertThat(new Traveler(validRequest, "hash").getCpf()).isEqualTo("52998224725");
+    }
 }
