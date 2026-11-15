@@ -47,7 +47,7 @@ public class BusCompany {
     public void busCompanyUpdateRequest(BusCompanyUpdateRequest busCompanyUpdateRequest) {
         this.legalName = busCompanyUpdateRequest.getLegalName();
         this.tradingName = busCompanyUpdateRequest.getTradingName();
-        this.cnpj = busCompanyUpdateRequest.getCnpj();
+        this.cnpj = busCompanyUpdateRequest.getCnpj().replaceAll("\\D", "");
         this.telephone = busCompanyUpdateRequest.getTelephone();
     }
 
