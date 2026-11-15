@@ -38,7 +38,7 @@ public class BusCompany {
     public BusCompany(BusCompanyRequest busCompanyRequest, String password) {
         this.legalName = busCompanyRequest.getLegalName();
         this.tradingName = busCompanyRequest.getTradingName();
-        this.cnpj = busCompanyRequest.getCnpj();
+        this.cnpj = busCompanyRequest.getCnpj().replaceAll("\\D", "");
         this.email = busCompanyRequest.getEmail();
         this.password = password;
         this.telephone = busCompanyRequest.getTelephone();
