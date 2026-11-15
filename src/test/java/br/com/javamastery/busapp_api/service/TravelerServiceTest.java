@@ -147,4 +147,16 @@ public class TravelerServiceTest {
 
         assertThat(traveler.getCreditsBalance()).isEqualByComparingTo(BigDecimal.valueOf(150.00));
     }
+
+    @Test
+    @DisplayName("Should throw CONFLICT when a masked CPF matches an existing one")
+    void maskedCPF_matchesExisting_conflict(){
+        validRequest.setCpf("529.982.247-25");
+        when(repository.existsByCpf("52998224725")).thenReturn(true);
+
+        HandlerConfig ex = catchThrowableOfType(() -> service.register(validRequest), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+        verify(repository, never()).save(any());
+    }
 }
