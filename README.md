@@ -15,6 +15,7 @@ A RESTful API for bus ticket management built with Spring Boot. This project is 
 - [Error Handling](#error-handling)
 - [Getting Started](#getting-started)
 - [Testing](#testing)
+- [Known Limitations](#known-limitations)
 
 ---
 
@@ -39,6 +40,7 @@ busapp-api manages bus trips and tickets through a REST interface. Two user type
 | Distance API | OSRM (real-route), Haversine fallback |
 | Validation | Jakarta Bean Validation (`@Valid`, custom `@ValidCpf`) |
 | Testing | JUnit 5, Mockito, AssertJ |
+| Containers | Docker, Docker Compose |
 | Build | Maven |
 | Utilities | Lombok, Jackson |
 
@@ -226,7 +228,7 @@ jwt.expiration=86400000
 
 | Field | Rule |
 |---|---|
-| `cpf` | `@ValidCpf` — length, all-same-digit rejection, both verifier digits |
+| `cpf` | `@ValidCpf` — accepts masked or plain input; length, all-same-digit rejection, both verifier digits. Stored as 11 digits |
 | `cnpj` | `@Pattern(regexp = "\\d{14}")` |
 | `telephone` | `@Pattern(regexp = "\\d{10,11}")` |
 | `email` | `@Email` |
@@ -261,11 +263,54 @@ jwt.expiration=86400000
 
 ## Getting Started
 
-### Prerequisites
+### Option A — Docker Compose (recommended)
+
+**Prerequisites:** Docker Desktop (Compose v2).
+
+1. Copy `.env.example` to `.env` and fill in the values (the `.env` file is git-ignored):
+
+   | Variable | Meaning |
+   |---|---|
+   | `DB_NAME`, `DB_USER`, `DB_PASSWORD` | PostgreSQL database and credentials |
+   | `JWT_SECRET` | HMAC secret, **at least 32 characters** |
+   | `JWT_EXPIRATION` | token lifetime in milliseconds (for example `86400000`) |
+
+2. Build and start everything:
+
+   ```bash
+   docker compose up --build
+   ```
+
+3. Check it:
+
+   ```bash
+   curl http://localhost:8080/address/states   # 27 states
+   ```
+
+The stack has two services:
+
+| Service | What it does |
+|---|---|
+| `db` | PostgreSQL with a named volume (`pgdata`) and a `pg_isready` healthcheck. On the first run it executes the scripts in `docker/initdb/`, which create and seed the `states` and `cities` tables (IBGE data). The port is **not** published to the host. |
+| `api` | Built from the multi-stage `Dockerfile` (Maven + JDK to build with `-DskipTests`, then a slim JRE image). Starts only when `db` is healthy (`depends_on` with `condition: service_healthy`). Receives the datasource URL (host `db`), credentials and JWT settings from environment variables, and runs with `TZ=America/Sao_Paulo`. |
+
+Useful commands:
+
+```bash
+docker compose logs -f api   # follow the API logs
+docker compose down          # stop and remove containers, KEEPS the database volume
+docker compose down -v       # also deletes the volume: empty database, seed runs again
+```
+
+The seed scripts only run when the data volume is empty.
+
+### Option B — Run locally (without Docker)
+
+#### Prerequisites
 
 - Java 21+, Maven 3.8+, PostgreSQL 14+
 
-### Configure `application.properties`
+#### Configure `application.properties`
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/busapp
@@ -278,7 +323,7 @@ jwt.secret=your-256-bit-secret-minimum-32-characters-long
 jwt.expiration=86400000
 ```
 
-### Run
+#### Run
 
 ```bash
 mvn spring-boot:run
@@ -301,13 +346,13 @@ mvn test
 | `AuthServiceTest` | 4 | company login, traveler login, unknown email, wrong password (no token issued) |
 | `BusCompanyServiceTest` | 7 | email/CNPJ conflicts, register (encode + save), update, delete, not found |
 | `BusTicketServiceTest` | 8 | buy, cancel (already canceled, 1-hour window, credit refund and accumulation), lookups |
-| `TravelerServiceTest` | 9 | email/CPF conflicts, register, find, delete, `addCredits` rules |
+| `TravelerServiceTest` | 11 | email/CPF conflicts (including masked CPF), register, find, delete, `addCredits` rules, CPF stored without mask |
 | `TripServiceTest` | 13 | create with OSRM distance, update, soft delete blocked by tickets, list filters, `suggestPrice` |
 | `JwtServiceTest` | 6 | token round trip, expired token, wrong secret, garbage input |
 | `CpfValidatorTest` | 9 | valid and masked CPFs, wrong check digit, repeated digits, wrong length, non-numeric, `null` |
 | `BusappApiApplicationTests` | 1 | Spring context loads (requires PostgreSQL running locally) |
 
-**Total: 57 tests passing.**
+**Total: 59 tests passing.**
 
 ### Conventions
 
@@ -320,8 +365,18 @@ mvn test
 
 ### Known limits
 
-- Mocked repositories do not execute the JPQL. A query bug (such as a missing `WHERE`) is invisible to these tests.
+- Mocked repositories do not execute the JPQL. A query bug (such as a missing `WHERE`) is invisible to these tests. Integration tests with Testcontainers are on the roadmap.
 - `BusappApiApplicationTests` depends on a real database and on `jwt.secret` being configured.
+
+---
+
+## Known Limitations
+
+- **Traveler `age` in create/update responses.** `age` is computed by the database (`@Formula`) when a row is read. `POST /travelers` and `PUT /travelers/{id}` return the entity that was just saved, so their response shows a stale `age` (`0` right after creation). `GET` returns the correct value. The formula also uses PostgreSQL-specific SQL.
+- **Update endpoints do not check duplicates.** `PUT /travelers/{id}` and `PUT /companies/{id}` do not verify whether the new CPF or CNPJ already belongs to someone else, so a clash surfaces as a database error (500) instead of `409`. Registration does check.
+- **Email is unique per table, not across them.** The same email can exist as a company and as a traveler. Login tries the company first.
+- **The cancellation window uses the server clock.** `departureDate` and `departureTime` are entered in local (Brasília) time, so the server timezone must match. The compose file sets `TZ=America/Sao_Paulo`; running the jar elsewhere requires the same.
+- **Unit tests do not run JPQL or hit a database**, and `BusappApiApplicationTests` needs a running PostgreSQL. Integration tests are on the roadmap.
 
 ---
 
