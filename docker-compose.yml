@@ -24,6 +24,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
+      TZ: America/Sao_Paulo
     ports:
       - "8080:8080" 
 volumes:
