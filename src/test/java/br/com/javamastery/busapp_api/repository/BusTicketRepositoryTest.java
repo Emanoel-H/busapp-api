@@ -77,4 +77,15 @@ public class BusTicketRepositoryTest {
         trip.setDistanceKM(116.0);
         em.persist(trip);
     }
+
+    private BusTicket persistTicket(String code){
+        BusTicket ticket = new BusTicket();
+        ticket.setCode(code);
+        ticket.setTraveler(traveler);
+        ticket.setTrip(trip);
+        ticket.setPrice(BigDecimal.valueOf(100));
+        ticket.setDepartureDate(LocalDate.now().plusDays(3));
+        em.persist(ticket);
+        return ticket;
+    }
 }
