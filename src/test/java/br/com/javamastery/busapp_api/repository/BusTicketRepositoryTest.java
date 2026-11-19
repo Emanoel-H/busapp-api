@@ -19,6 +19,7 @@ import org.testcontainers.utility.DockerImageName;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -129,5 +130,20 @@ public class BusTicketRepositoryTest {
         Optional<BusTicket> found = repository.findByCode("TICKET0000");
 
         assertThat(found).isEmpty();
+    }
+
+    @Test
+    @DisplayName("findAllActiveByTravelerId must return only the active tickets")
+    void findAllActiveByTravelerId_returnsActiveOnes(){
+        Optional<Traveler> foundTraveler = travelerRepository.findByEmail("julia.roberts@gmail.com");
+        when(repository.findAllActiveByTravelerId(foundTraveler.get().getId())).thenReturn(List.of(new BusTicket()));
+
+        cancelTicket("TICKET0002");
+
+        List<BusTicket> activeTickets = repository.findAllActiveByTravelerId(foundTraveler.get().getId());
+
+        assertThat(activeTickets).hasSize(1);
+        BusTicket ticket = activeTickets.get(0);
+        assertThat(ticket.getCode()).isEqualTo("TICKET0001");
     }
 }
