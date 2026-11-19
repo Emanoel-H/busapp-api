@@ -37,6 +37,9 @@ public class BusCompanyService {
     public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest) {
         BusCompany busCompany = findOrThrow(id);
 
+        if (repository.existsByCnpjAndIdNot(busCompanyUpdateRequest.getCnpj(), id))
+            throw new HandlerConfig(HttpStatus.CONFLICT, "Cnpj already exists");
+        
         busCompany.busCompanyUpdateRequest(busCompanyUpdateRequest);
 
         return toUpdateResponse(repository.save(busCompany));
