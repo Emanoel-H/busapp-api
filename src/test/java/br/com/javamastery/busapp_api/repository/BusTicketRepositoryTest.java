@@ -40,7 +40,8 @@ public class BusTicketRepositoryTest {
     private EntityManager em;
     @Autowired
     private TravelerRepository travelerRepository;
-
+    @Autowired
+    private TripRepository tripRepository;
 
     private Trip trip;
     private Traveler traveler;
