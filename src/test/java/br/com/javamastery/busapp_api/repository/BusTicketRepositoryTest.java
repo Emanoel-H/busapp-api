@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest(properties = "spring.jpa.hibernate.ddl-auto=create-drop")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -109,5 +110,15 @@ public class BusTicketRepositoryTest {
         assertThat(found).isPresent();
         assertThat(found.get().getCode()).isEqualTo("TICKET0002");
         assertThat(Hibernate.isInitialized(found.get().getTrip())).isTrue();
+    }
+
+    @Test
+    @DisplayName("findbycode must return empty when the given code does not exist")
+    void findByNonExistingCode_returnsEmpty(){
+        when(repository.findByCode("TICKET0000")).thenReturn(Optional.empty());
+
+        Optional<BusTicket> found = repository.findByCode("TICKET0000");
+
+        assertThat(found).isEmpty();
     }
 }
