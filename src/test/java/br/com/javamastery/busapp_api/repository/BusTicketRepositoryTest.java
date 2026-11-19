@@ -37,6 +37,9 @@ public class BusTicketRepositoryTest {
     private BusTicketRepository repository;
     @Autowired
     private EntityManager em;
+    @Autowired
+    private TravelerRepository travelerRepository;
+
 
     private Trip trip;
     private Traveler traveler;
@@ -127,6 +130,4 @@ public class BusTicketRepositoryTest {
 
         assertThat(found).isEmpty();
     }
-
-
 }
