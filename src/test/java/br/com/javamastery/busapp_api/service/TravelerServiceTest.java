@@ -1,7 +1,9 @@
 package br.com.javamastery.busapp_api.service;
 
+import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
 import br.com.javamastery.busapp_api.dto.TravelerRequest;
 import br.com.javamastery.busapp_api.dto.TravelerResponse;
+import br.com.javamastery.busapp_api.dto.TravelerUpdateRequest;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.TravelerRepository;
@@ -166,5 +168,21 @@ public class TravelerServiceTest {
         validRequest.setCpf("529.982.247-25");
 
         assertThat(new Traveler(validRequest, "hash").getCpf()).isEqualTo("52998224725");
+    }
+
+    @Test
+    @DisplayName("Should throw CONFLICT when CPF already exists while updating")
+    void update_cpfAlreadyExists_Conflict(){
+        when(repository.existsByCpfAndIdNot(traveler.getCpf(), 1L)).thenReturn(true);
+
+        TravelerUpdateRequest updateRequest = new TravelerUpdateRequest();
+        updateRequest.setName("João da Silva");
+        updateRequest.setCpf("12345678902");
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.updateById(1L, updateRequest), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+        verify(repository, never()).save(any());
     }
 }
