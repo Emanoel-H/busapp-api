@@ -11,4 +11,6 @@ public interface TravelerRepository extends JpaRepository<Traveler, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByCpf(String cpf);
+
+    boolean existsByCpfAndIdNot(String cpf, Long id);
 }
