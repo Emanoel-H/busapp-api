@@ -146,4 +146,15 @@ public class BusTicketRepositoryTest {
         BusTicket ticket = activeTickets.get(0);
         assertThat(ticket.getCode()).isEqualTo("TICKET0001");
     }
+
+    @Test
+    @DisplayName("findAllByTravelerId must return all tickets")
+    void findAllByTravelerId_returnsAllTickets(){
+        Optional<Traveler> foundTraveler = travelerRepository.findByEmail("julia.roberts@gmail.com");
+        when(repository.findAllByTravelerId(foundTraveler.get().getId())).thenReturn(List.of(new BusTicket()));
+
+        List<BusTicket> activeTickets = repository.findAllActiveByTravelerId(foundTraveler.get().getId());
+
+        assertThat(activeTickets).hasSize(2);
+    }
 }
