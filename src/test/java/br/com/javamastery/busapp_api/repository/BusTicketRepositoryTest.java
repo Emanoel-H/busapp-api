@@ -2,7 +2,10 @@ package br.com.javamastery.busapp_api.repository;
 
 import br.com.javamastery.busapp_api.model.*;
 import jakarta.persistence.EntityManager;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
@@ -16,6 +19,9 @@ import org.testcontainers.utility.DockerImageName;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(properties = "spring.jpa.hibernate.ddl-auto=create-drop")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -87,5 +93,21 @@ public class BusTicketRepositoryTest {
         ticket.setDepartureDate(LocalDate.now().plusDays(3));
         em.persist(ticket);
         return ticket;
+    }
+
+    @Test
+    @DisplayName("findbycode must return only the ticket with the given code")
+    void findByCode_returnsRightTicket(){
+        persistTicket("TICKET0001");
+        persistTicket("TICKET0002");
+        em.flush();
+        em.clear();
+
+        Optional<BusTicket> found = repository.findByCode("TICKET0002");
+
+
+        assertThat(found).isPresent();
+        assertThat(found.get().getCode()).isEqualTo("TICKET0002");
+        assertThat(Hibernate.isInitialized(found.get().getTrip())).isTrue();
     }
 }
