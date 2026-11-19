@@ -137,4 +137,21 @@ public class BusCompanyServiceTest {
         verify(repository, times(1)).save(any(BusCompany.class));
         assertThat(busCompany.getLegalName()).isEqualTo("Pirajá Viação Ltda");
     }
+
+    @Test
+    @DisplayName("Should throw CONFLICT when CNPJ already exists while updating")
+    void update_cnpjAlreadyExists_Conflict(){
+        when(repository.existsByCnpjAndIdNot(busCompany.getCnpj(), 1L)).thenReturn(true);
+
+        BusCompanyUpdateRequest updateRequest = new BusCompanyUpdateRequest();
+        updateRequest.setLegalName("Pirajá Viação Ltda");
+        updateRequest.setTradingName("Viagens Pirajá");
+        updateRequest.setCnpj("12345678000195");
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.update(1L, updateRequest), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+        verify(repository, never()).save(any());
+    }
 }

@@ -39,7 +39,7 @@ public class BusCompanyService {
 
         if (repository.existsByCnpjAndIdNot(busCompanyUpdateRequest.getCnpj(), id))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cnpj already exists");
-        
+
         busCompany.busCompanyUpdateRequest(busCompanyUpdateRequest);
 
         return toUpdateResponse(repository.save(busCompany));
