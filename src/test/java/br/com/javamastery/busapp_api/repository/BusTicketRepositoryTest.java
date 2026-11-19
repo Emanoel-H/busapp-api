@@ -169,4 +169,14 @@ public class BusTicketRepositoryTest {
 
         assertThat(exists).isTrue();
     }
+
+    @Test
+    @DisplayName("existsByTripId must return false when there is no ticket related to this trip id")
+    void existsByTrip_returnsFalse(){
+        when(repository.existsByTripId(0L)).thenReturn(false);
+
+        boolean exists = repository.existsByTripId(0l);
+
+        assertThat(exists).isFalse();
+    }
 }
