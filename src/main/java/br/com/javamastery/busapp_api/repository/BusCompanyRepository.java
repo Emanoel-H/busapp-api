@@ -11,4 +11,6 @@ public interface BusCompanyRepository extends JpaRepository<BusCompany, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByCnpj(String cnpj);
+    
+    boolean existsByCnpjAndIdNot(String cnpj, Long id);
 }
