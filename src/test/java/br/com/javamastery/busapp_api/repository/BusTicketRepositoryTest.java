@@ -158,4 +158,15 @@ public class BusTicketRepositoryTest {
 
         assertThat(activeTickets).hasSize(2);
     }
+
+    @Test
+    @DisplayName("existsByTripId must return true when there is a ticket related to a trip")
+    void existsByExistingTrip_returnsTrue(){
+        Optional<Trip> foundTrip = tripRepository.findByCode("TRIP000001");
+        when(repository.existsByTripId(foundTrip.get().getId())).thenReturn(true);
+
+        boolean exists = repository.existsByTripId(foundTrip.get().getId());
+
+        assertThat(exists).isTrue();
+    }
 }
