@@ -36,9 +36,4 @@ public class TravelerController {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-    @PatchMapping("/{id}/credits")
-    public ResponseEntity<TravelerCreditsResponse> addCredits(@PathVariable Long id, @RequestParam BigDecimal credits) {
-        return ResponseEntity.ok(service.addCredits(id, credits));
-    }
 }
