@@ -5,6 +5,7 @@ import br.com.javamastery.busapp_api.dto.TripResponse;
 import br.com.javamastery.busapp_api.dto.TripUpdateRequest;
 import br.com.javamastery.busapp_api.dto.TripUpdateResponse;
 import br.com.javamastery.busapp_api.service.TripService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class TripController {
     private final TripService service;
 
     @PostMapping
-    public ResponseEntity<TripResponse> create(@RequestBody TripRequest tripRequest) {
+    public ResponseEntity<TripResponse> create(@RequestBody @Valid TripRequest tripRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(tripRequest));
     }
 
