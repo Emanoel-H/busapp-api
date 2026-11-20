@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/trips/**").hasRole("COMPANY")
                         .requestMatchers("/companies/**").hasRole("COMPANY")
                         .requestMatchers("/travelers/**", "/tickets/**").hasRole("TRAVELER")
-                        .anyRequest().authenticated())
+                        .anyRequest().denyAll())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
