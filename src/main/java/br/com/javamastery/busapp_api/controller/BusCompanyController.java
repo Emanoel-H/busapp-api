@@ -28,7 +28,7 @@ public class BusCompanyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BusCompanyUpdateResponse> updateById(@PathVariable Long id, @RequestBody BusCompanyUpdateRequest busCompanyUpdateRequest) {
+    public ResponseEntity<BusCompanyUpdateResponse> updateById(@PathVariable Long id, @RequestBody @Valid BusCompanyUpdateRequest busCompanyUpdateRequest) {
         return ResponseEntity.ok(service.update(id, busCompanyUpdateRequest));
     }
 
