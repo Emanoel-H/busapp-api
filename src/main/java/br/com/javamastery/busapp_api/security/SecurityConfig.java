@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/companies", "/travelers", "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/address/**", "/trips/**", "/trips/").permitAll()
                         .requestMatchers(HttpMethod.POST, "/trips/").hasRole("COMPANY")
+                        .requestMatchers(HttpMethod.PUT, "/trips/**").hasRole("COMPANY")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
