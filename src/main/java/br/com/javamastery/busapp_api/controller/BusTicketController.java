@@ -4,6 +4,7 @@ import br.com.javamastery.busapp_api.dto.BusTicketCanceledResponse;
 import br.com.javamastery.busapp_api.dto.BusTicketRequest;
 import br.com.javamastery.busapp_api.dto.BusTicketResponse;
 import br.com.javamastery.busapp_api.service.BusTicketService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class BusTicketController {
     private final BusTicketService busTicketService;
 
     @PostMapping
-    public ResponseEntity<BusTicketResponse> buy(@RequestBody BusTicketRequest busTicketRequest) {
+    public ResponseEntity<BusTicketResponse> buy(@RequestBody @Valid BusTicketRequest busTicketRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(busTicketService.buy(busTicketRequest));
     }
 
