@@ -51,7 +51,7 @@ public class TripController {
     }
 
     @PutMapping("/{code}")
-    public ResponseEntity<TripUpdateResponse> update(@PathVariable String code, @RequestBody TripUpdateRequest tripUpdateRequest) {
+    public ResponseEntity<TripUpdateResponse> update(@PathVariable String code, @RequestBody @Valid TripUpdateRequest tripUpdateRequest) {
         return ResponseEntity.ok(service.update(code, tripUpdateRequest));
     }
 
