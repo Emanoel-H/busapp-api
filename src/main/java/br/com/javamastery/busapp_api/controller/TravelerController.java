@@ -27,7 +27,7 @@ public class TravelerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TravelerUpdateResponse> updateById(@PathVariable Long id, @RequestBody TravelerUpdateRequest travelerUpdateRequest) {
+    public ResponseEntity<TravelerUpdateResponse> updateById(@PathVariable Long id, @RequestBody @Valid TravelerUpdateRequest travelerUpdateRequest) {
         return ResponseEntity.ok(service.updateById(id, travelerUpdateRequest));
     }
 
