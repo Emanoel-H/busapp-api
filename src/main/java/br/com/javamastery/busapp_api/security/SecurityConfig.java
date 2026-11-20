@@ -30,12 +30,8 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/companies").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/travelers").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/address/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/trips/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/trips/").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/companies", "/travelers", "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/address/**", "/trips/**", "/trips/").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
