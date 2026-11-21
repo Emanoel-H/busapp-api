@@ -4,6 +4,7 @@ import br.com.javamastery.busapp_api.dto.*;
 import br.com.javamastery.busapp_api.service.TravelerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,9 @@ public class TravelerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TravelerUpdateResponse> updateById(@PathVariable Long id, @RequestBody @Valid TravelerUpdateRequest travelerUpdateRequest) {
+    public ResponseEntity<TravelerUpdateResponse> updateById(@PathVariable Long id,
+                                                             @RequestBody @Valid TravelerUpdateRequest travelerUpdateRequest,
+                                                             Authentication authentication) {
         return ResponseEntity.ok(service.updateById(id, travelerUpdateRequest));
     }
 
