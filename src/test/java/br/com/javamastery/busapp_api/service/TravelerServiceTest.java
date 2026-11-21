@@ -115,7 +115,7 @@ public class TravelerServiceTest {
     void deleteTraveler_success(){
         when(repository.findById(1L)).thenReturn(Optional.of(traveler));
 
-        service.deleteById(1L);
+        service.deleteById(1L, traveler.getEmail());
 
         verify(repository, times(1)).delete(traveler);
     }
