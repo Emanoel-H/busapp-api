@@ -37,7 +37,7 @@ public class TravelerService {
     public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest, String requesterEmail) {
         Traveler traveler = findOrThrow(id);
 
-        assertOwner(traveler, authentication.name());
+        assertOwner(traveler, requesterEmail);
 
         if (repository.existsByCpfAndIdNot(travelerUpdateRequest.getCpf().replaceAll("\\D", ""), id))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cpf already exists");
