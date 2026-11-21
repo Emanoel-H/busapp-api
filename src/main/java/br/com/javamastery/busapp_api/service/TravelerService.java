@@ -60,6 +60,11 @@ public class TravelerService {
         return toCreditsResponse(repository.save(traveler));
     }
 
+    private void assertOwner(Traveler traveler, String requesterEmail){
+        if (!traveler.getEmail().equals(requesterEmail))
+            throw new HandlerConfig(HttpStatus.FORBIDDEN, "You can only access your own data");
+    }
+
     public TravelerUpdateResponse toUpdateResponse(Traveler  traveler) {
         return TravelerUpdateResponse.builder()
                 .id(traveler.getId())
