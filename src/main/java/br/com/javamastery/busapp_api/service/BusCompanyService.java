@@ -54,6 +54,9 @@ public class BusCompanyService {
 
     public void deleteById(Long id, String requesterEmail){
         BusCompany  busCompany = findOrThrow(id);
+
+        assertOwner(busCompany, requesterEmail);
+
         repository.delete(busCompany);
     }
 
