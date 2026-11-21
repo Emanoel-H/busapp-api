@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class TripController {
     private final TripService service;
 
     @PostMapping
-    public ResponseEntity<TripResponse> create(@RequestBody @Valid TripRequest tripRequest) {
+    public ResponseEntity<TripResponse> create(@RequestBody @Valid TripRequest tripRequest, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(tripRequest));
     }
 
