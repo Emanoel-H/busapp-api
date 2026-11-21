@@ -30,7 +30,7 @@ public class TravelerService {
         return toResponse(repository.save(new Traveler(travelerRequest, password)));
     }
 
-    public TravelerResponse findById(Long id) {
+    public TravelerResponse findById(Long id, String requesterEmail) {
         return toResponse(findOrThrow(id));
     }
 
