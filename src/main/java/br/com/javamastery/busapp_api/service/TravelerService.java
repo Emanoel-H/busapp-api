@@ -49,6 +49,9 @@ public class TravelerService {
 
     public void deleteById(Long id, String requesterEmail) {
         Traveler traveler = findOrThrow(id);
+
+        assertOwner(traveler, requesterEmail);
+
         repository.delete(traveler);
     }
 
