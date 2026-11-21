@@ -30,7 +30,7 @@ public class BusCompanyService {
         return toResponse(repository.save(new BusCompany(busCompanyRequest, password)));
     }
 
-    public BusCompanyResponse findById(Long id) {
+    public BusCompanyResponse findById(Long id, String requesterEmail) {
         return toResponse(findOrThrow(id));
     }
 
