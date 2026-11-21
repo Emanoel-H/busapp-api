@@ -39,7 +39,7 @@ public class BusCompanyService {
         return toResponse(company);
     }
 
-    public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest) {
+    public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest, String requesterEmail) {
         BusCompany busCompany = findOrThrow(id);
 
         if (repository.existsByCnpjAndIdNot(busCompanyUpdateRequest.getCnpj(), id))
