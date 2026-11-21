@@ -47,7 +47,7 @@ public class TravelerService {
         return toUpdateResponse(repository.save(traveler));
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String requesterEmail) {
         Traveler traveler = findOrThrow(id);
         repository.delete(traveler);
     }
