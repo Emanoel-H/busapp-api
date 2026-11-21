@@ -34,7 +34,7 @@ public class TravelerService {
         return toResponse(findOrThrow(id));
     }
 
-    public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest, Authentication authentication) {
+    public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest, String requesterEmail) {
         Traveler traveler = findOrThrow(id);
 
         assertOwner(traveler, authentication.name());
