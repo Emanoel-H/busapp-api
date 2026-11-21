@@ -6,6 +6,7 @@ import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
 import br.com.javamastery.busapp_api.dto.BusCompanyUpdateResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
+import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,11 @@ public class BusCompanyService {
     public void deleteById(Long id){
         BusCompany  busCompany = findOrThrow(id);
         repository.delete(busCompany);
+    }
+
+    private void assertOwner(BusCompany company, String requesterEmail){
+        if (!company.getEmail().equals(requesterEmail))
+            throw new HandlerConfig(HttpStatus.FORBIDDEN, "You can only access your own data");
     }
 
     public BusCompanyUpdateResponse toUpdateResponse(BusCompany busCompany){
