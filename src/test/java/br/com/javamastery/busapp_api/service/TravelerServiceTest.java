@@ -103,7 +103,7 @@ public class TravelerServiceTest {
     void findTraveler_success(){
         when(repository.findById(1L)).thenReturn(Optional.of(traveler));
 
-        TravelerResponse response = service.findById(1L);
+        TravelerResponse response = service.findById(1L, traveler.getEmail());
 
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getName()).isEqualTo("Traveler");
