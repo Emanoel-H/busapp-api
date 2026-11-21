@@ -31,7 +31,9 @@ public class TravelerService {
     }
 
     public TravelerResponse findById(Long id, String requesterEmail) {
-        return toResponse(findOrThrow(id));
+        Traveler traveler = findOrThrow(id);
+        
+        return toResponse(traveler);
     }
 
     public TravelerUpdateResponse updateById(Long id, TravelerUpdateRequest travelerUpdateRequest, String requesterEmail) {
