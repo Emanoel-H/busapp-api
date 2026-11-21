@@ -149,7 +149,7 @@ public class BusCompanyServiceTest {
         updateRequest.setCnpj("12345678000195");
 
         HandlerConfig ex = catchThrowableOfType(() ->
-                service.update(1L, updateRequest), HandlerConfig.class);
+                service.update(1L, updateRequest, busCompany.getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
         verify(repository, never()).save(any());
