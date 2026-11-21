@@ -36,7 +36,7 @@ public class BusCompanyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id, Authentication authentication) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
