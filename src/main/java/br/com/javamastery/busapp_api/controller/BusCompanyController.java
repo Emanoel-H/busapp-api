@@ -32,7 +32,7 @@ public class BusCompanyController {
     public ResponseEntity<BusCompanyUpdateResponse> updateById(@PathVariable Long id,
                                                                @RequestBody @Valid BusCompanyUpdateRequest busCompanyUpdateRequest,
                                                                Authentication authentication) {
-        return ResponseEntity.ok(service.update(id, busCompanyUpdateRequest));
+        return ResponseEntity.ok(service.update(id, busCompanyUpdateRequest, authentication.getName()));
     }
 
     @DeleteMapping("/{id}")
