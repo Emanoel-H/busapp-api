@@ -31,7 +31,9 @@ public class BusCompanyService {
     }
 
     public BusCompanyResponse findById(Long id, String requesterEmail) {
-        return toResponse(findOrThrow(id));
+        BusCompany company = findOrThrow(id);
+
+        return toResponse(company);
     }
 
     public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest) {
