@@ -131,7 +131,7 @@ public class BusCompanyServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(busCompany));
         when(repository.save(any(BusCompany.class))).thenReturn(busCompany);
 
-        var response = service.update(1L, updateRequest);
+        var response = service.update(1L, updateRequest, busCompany.getEmail());
 
         assertNotNull(response);
         verify(repository, times(1)).save(any(BusCompany.class));
