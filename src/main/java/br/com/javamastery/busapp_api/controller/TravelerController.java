@@ -24,7 +24,7 @@ public class TravelerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TravelerResponse> getById(@PathVariable Long id, Authentication authentication) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findById(id, authentication.getName()));
     }
 
     @PutMapping("/{id}")
