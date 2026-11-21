@@ -25,7 +25,7 @@ public class BusCompanyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BusCompanyResponse> findById(@PathVariable Long id, Authentication authentication) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findById(id, authentication.getName()));
     }
 
     @PutMapping("/{id}")
