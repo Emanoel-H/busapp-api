@@ -42,6 +42,8 @@ public class BusCompanyService {
     public BusCompanyUpdateResponse update(Long id, BusCompanyUpdateRequest busCompanyUpdateRequest, String requesterEmail) {
         BusCompany busCompany = findOrThrow(id);
 
+        assertOwner(busCompany, requesterEmail);
+
         if (repository.existsByCnpjAndIdNot(busCompanyUpdateRequest.getCnpj(), id))
             throw new HandlerConfig(HttpStatus.CONFLICT, "Cnpj already exists");
 
