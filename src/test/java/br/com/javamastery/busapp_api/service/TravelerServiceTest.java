@@ -180,7 +180,7 @@ public class TravelerServiceTest {
         updateRequest.setCpf("12345678902");
 
         HandlerConfig ex = catchThrowableOfType(() ->
-                service.updateById(1L, updateRequest), HandlerConfig.class);
+                service.updateById(1L, updateRequest, traveler.getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
         verify(repository, never()).save(any());
