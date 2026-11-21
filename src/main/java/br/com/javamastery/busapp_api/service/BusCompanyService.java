@@ -34,6 +34,8 @@ public class BusCompanyService {
     public BusCompanyResponse findById(Long id, String requesterEmail) {
         BusCompany company = findOrThrow(id);
 
+        assertOwner(company, requesterEmail);
+
         return toResponse(company);
     }
 
