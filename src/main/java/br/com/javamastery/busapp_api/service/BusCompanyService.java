@@ -52,7 +52,7 @@ public class BusCompanyService {
         return toUpdateResponse(repository.save(busCompany));
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id, String requesterEmail){
         BusCompany  busCompany = findOrThrow(id);
         repository.delete(busCompany);
     }
