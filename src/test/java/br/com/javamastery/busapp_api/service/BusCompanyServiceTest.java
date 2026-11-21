@@ -104,7 +104,7 @@ public class BusCompanyServiceTest {
     void deleteBusCompany_success(){
         when(repository.findById(1L)).thenReturn(Optional.of(busCompany));
 
-        service.deleteById(1L);
+        service.deleteById(1L, busCompany.getEmail());
 
         verify(repository, times(1)).delete(busCompany);
     }
