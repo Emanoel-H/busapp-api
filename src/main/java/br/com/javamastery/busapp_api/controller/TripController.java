@@ -23,7 +23,7 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<TripResponse> create(@RequestBody @Valid TripRequest tripRequest, Authentication authentication) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(tripRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(tripRequest, authentication.getName()));
     }
 
     @GetMapping
