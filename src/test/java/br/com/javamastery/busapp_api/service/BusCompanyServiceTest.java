@@ -114,7 +114,7 @@ public class BusCompanyServiceTest {
     void deleteBusCompany_NotFound(){
         when(repository.findById(0L)).thenReturn(Optional.empty());
 
-        HandlerConfig ex = catchThrowableOfType(() -> service.deleteById(0L), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() -> service.deleteById(0L, busCompany.getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
