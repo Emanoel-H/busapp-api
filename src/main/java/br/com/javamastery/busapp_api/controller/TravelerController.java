@@ -31,7 +31,7 @@ public class TravelerController {
     public ResponseEntity<TravelerUpdateResponse> updateById(@PathVariable Long id,
                                                              @RequestBody @Valid TravelerUpdateRequest travelerUpdateRequest,
                                                              Authentication authentication) {
-        return ResponseEntity.ok(service.updateById(id, travelerUpdateRequest));
+        return ResponseEntity.ok(service.updateById(id, travelerUpdateRequest, authentication));
     }
 
     @DeleteMapping("/{id}")
