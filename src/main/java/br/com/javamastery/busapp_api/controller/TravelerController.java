@@ -23,7 +23,7 @@ public class TravelerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TravelerResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<TravelerResponse> getById(@PathVariable Long id, Authentication authentication) {
         return ResponseEntity.ok(service.findById(id));
     }
 
