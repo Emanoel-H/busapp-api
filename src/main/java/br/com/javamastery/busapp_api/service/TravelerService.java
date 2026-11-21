@@ -32,7 +32,9 @@ public class TravelerService {
 
     public TravelerResponse findById(Long id, String requesterEmail) {
         Traveler traveler = findOrThrow(id);
-        
+
+        assertOwner(traveler, requesterEmail);
+
         return toResponse(traveler);
     }
 
