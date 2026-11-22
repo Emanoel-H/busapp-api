@@ -111,7 +111,7 @@ public class TripServiceTest {
         when(busTicketRepository.existsByTripId(1L)).thenReturn(true);
 
         HandlerConfig ex = catchThrowableOfType(() ->
-                                        service.delete("TRIP000001"), HandlerConfig.class);
+                                        service.delete("TRIP000001", trip.getBusCompany().getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(trip.isActive()).isTrue();
