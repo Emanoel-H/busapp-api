@@ -197,7 +197,7 @@ public class TripServiceTest {
         when(osrmClient.getRealDistanceKM(rio, angra)).thenReturn(150.0);
         when(repository.save(any(Trip.class))).thenReturn(trip);
 
-        var response = service.update("TRIP000001", updateRequest);
+        var response = service.update("TRIP000001", updateRequest, trip.getBusCompany().getEmail());
 
         assertNotNull(response);
         assertThat(trip.getOrigin()).isSameAs(rio);
