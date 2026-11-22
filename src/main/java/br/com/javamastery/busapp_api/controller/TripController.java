@@ -55,7 +55,7 @@ public class TripController {
     public ResponseEntity<TripUpdateResponse> update(@PathVariable String code,
                                                      @RequestBody @Valid TripUpdateRequest tripUpdateRequest,
                                                      Authentication authentication) {
-        return ResponseEntity.ok(service.update(code, tripUpdateRequest));
+        return ResponseEntity.ok(service.update(code, tripUpdateRequest, authentication.getName()));
     }
 
     @DeleteMapping("/{code}")
