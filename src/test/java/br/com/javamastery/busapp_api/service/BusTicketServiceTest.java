@@ -197,7 +197,7 @@ public class BusTicketServiceTest {
         when(travelerRepository.findById(1L)).thenReturn(Optional.of(traveler));
         when(busTicketRepository.save(any(BusTicket.class))).thenReturn(ticketSaved);
 
-        BusTicketResponse response = service.buy(request);
+        BusTicketResponse response = service.buy(request, busTicket.getTraveler().getEmail());
 
         assertNotNull(response);
         verify(busTicketRepository, times(1)).save(any(BusTicket.class));
