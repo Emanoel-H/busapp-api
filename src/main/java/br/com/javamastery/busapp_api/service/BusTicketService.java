@@ -24,7 +24,7 @@ public class BusTicketService {
     private final TravelerRepository travelerRepository;
     private final TripRepository tripRepository;
 
-    public BusTicketResponse buy(BusTicketRequest busTicketRequest){
+    public BusTicketResponse buy(BusTicketRequest busTicketRequest, String requesterEmail){
         Trip trip = findTripOrThrow(busTicketRequest.getTrip_code());
         Traveler traveler = findTravelerOrThrow(busTicketRequest.getTraveler_id());
 
