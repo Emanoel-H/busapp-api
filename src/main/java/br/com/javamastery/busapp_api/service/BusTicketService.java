@@ -69,6 +69,11 @@ public class BusTicketService {
         return toCanceledResponse(busTicketRepository.save(busTicket));
     }
 
+    private void assertOwner(Traveler traveler, String requesterEmail){
+        if (!traveler.getEmail().equals(requesterEmail))
+            throw new HandlerConfig(HttpStatus.FORBIDDEN, "You can only access your own data");
+    }
+
     public Traveler findTravelerOrThrow(Long traveler_id) {
         return travelerRepository.findById(traveler_id)
                 .orElseThrow(() -> new HandlerConfig(HttpStatus.NOT_FOUND, "Traveler not found!"));
