@@ -135,7 +135,7 @@ public class TripServiceTest {
     void deleteTrip_NotFound(){
         when(repository.findByCode("TRIP000002")).thenReturn(Optional.empty());
 
-        HandlerConfig ex = catchThrowableOfType(() -> service.delete("TRIP000002"), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() -> service.delete("TRIP000002", trip.getBusCompany().getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
         verifyNoInteractions(busTicketRepository);
