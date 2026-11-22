@@ -124,7 +124,7 @@ public class TripServiceTest {
         when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
         when(busTicketRepository.existsByTripId(1L)).thenReturn(false);
 
-        service.delete("TRIP000001");
+        service.delete("TRIP000001", trip.getBusCompany().getEmail());
 
         assertThat(trip.isActive()).isFalse();
         verify(repository, times(1)).save(any(Trip.class));
