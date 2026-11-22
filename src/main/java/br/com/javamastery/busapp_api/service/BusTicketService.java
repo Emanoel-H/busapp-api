@@ -50,6 +50,8 @@ public class BusTicketService {
     public BusTicketResponse findByCode(String code, String requesterEmail){
         BusTicket ticket = findBusTicketOrThrow(code);
 
+        assertOwner(ticket.getTraveler(), requesterEmail);
+
         return toResponse(ticket);
     }
 
