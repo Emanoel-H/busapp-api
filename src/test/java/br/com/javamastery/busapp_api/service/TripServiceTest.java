@@ -94,7 +94,7 @@ public class TripServiceTest {
             return saved;
         });
 
-        TripResponse response = service.create(request);
+        TripResponse response = service.create(request, trip.getBusCompany().getEmail());
 
         ArgumentCaptor<Trip> captor = ArgumentCaptor.forClass(Trip.class);
         verify(repository).save(captor.capture());
