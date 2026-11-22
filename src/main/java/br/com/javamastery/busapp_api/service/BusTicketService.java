@@ -71,7 +71,7 @@ public class BusTicketService {
 
     private void assertOwner(Traveler traveler, String requesterEmail){
         if (!traveler.getEmail().equals(requesterEmail))
-            throw new HandlerConfig(HttpStatus.FORBIDDEN, "You can only access your own data");
+            throw new HandlerConfig(HttpStatus.FORBIDDEN, "You can only access your own tickets");
     }
 
     public Traveler findTravelerOrThrow(Long traveler_id) {
