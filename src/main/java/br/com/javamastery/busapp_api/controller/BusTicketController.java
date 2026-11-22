@@ -33,7 +33,7 @@ public class BusTicketController {
     public ResponseEntity<List<BusTicketResponse>> listAllByTraveler(@RequestParam Long traveler_id,
                                                                      @RequestParam(defaultValue = "false") boolean includeCanceled,
                                                                      Authentication authentication) {
-        return ResponseEntity.ok(busTicketService.listAllByTraveler(traveler_id, includeCanceled));
+        return ResponseEntity.ok(busTicketService.listAllByTraveler(traveler_id, includeCanceled, authentication.getName()));
     }
 
     @PatchMapping("/{code}/cancel")
