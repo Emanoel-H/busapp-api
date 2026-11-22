@@ -47,7 +47,7 @@ public class BusTicketService {
         return tickets.stream().map(this::toResponse).toList();
     }
 
-    public BusTicketResponse findByCode(String code){
+    public BusTicketResponse findByCode(String code, String requesterEmail){
         BusTicket ticket = findBusTicketOrThrow(code);
 
         return toResponse(ticket);
