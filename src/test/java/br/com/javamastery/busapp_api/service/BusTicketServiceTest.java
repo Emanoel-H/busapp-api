@@ -79,7 +79,7 @@ public class BusTicketServiceTest {
     void cancelTicket_NotFound(){
         when(busTicketRepository.findByCode("INVALID")).thenReturn(Optional.empty());
 
-        HandlerConfig ex = catchThrowableOfType(() -> service.cancelTicket("INVALID"), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() -> service.cancelTicket("INVALID", busTicket.getTraveler().getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
