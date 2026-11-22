@@ -60,6 +60,8 @@ public class BusTicketService {
     public BusTicketCanceledResponse cancelTicket(String code, String requesterEmail){
         BusTicket busTicket = findBusTicketOrThrow(code);
 
+        assertOwner(busTicket.getTraveler(), requesterEmail);
+
         if (busTicket.isCanceled())
             throw new HandlerConfig(HttpStatus.BAD_REQUEST, "Ticket is already canceled");
 
