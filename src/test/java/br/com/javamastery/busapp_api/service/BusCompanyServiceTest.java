@@ -142,6 +142,7 @@ public class BusCompanyServiceTest {
     @DisplayName("Should throw CONFLICT when CNPJ already exists while updating")
     void update_cnpjAlreadyExists_Conflict(){
         when(repository.existsByCnpjAndIdNot(busCompany.getCnpj(), 1L)).thenReturn(true);
+        when(repository.findById(1L)).thenReturn(Optional.of(busCompany));
 
         BusCompanyUpdateRequest updateRequest = new BusCompanyUpdateRequest();
         updateRequest.setLegalName("Pirajá Viação Ltda");
