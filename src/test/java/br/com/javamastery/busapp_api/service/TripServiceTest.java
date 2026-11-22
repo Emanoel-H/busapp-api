@@ -172,7 +172,7 @@ public class TripServiceTest {
         when(cityRepository.findByIBGECode(3303302L)).thenReturn(Optional.of(niteroi));
         when(busCompanyRepository.findById(0L)).thenReturn(Optional.empty());
 
-        HandlerConfig ex = catchThrowableOfType(() -> service.create(request), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() -> service.create(request, trip.getBusCompany().getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(ex.getMessage()).contains("Company not found");
