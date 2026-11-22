@@ -37,7 +37,7 @@ public class BusTicketController {
     }
 
     @PatchMapping("/{code}/cancel")
-    public ResponseEntity<BusTicketCanceledResponse> cancelTicket(@PathVariable String code) {
+    public ResponseEntity<BusTicketCanceledResponse> cancelTicket(@PathVariable String code, Authentication authentication) {
         return ResponseEntity.ok(busTicketService.cancelTicket(code));
     }
 }
