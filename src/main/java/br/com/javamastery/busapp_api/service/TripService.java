@@ -28,7 +28,7 @@ public class TripService {
     private final BusTicketRepository busTicketRepository;
     private final OsrmClient osrmClient;
 
-    public TripResponse create(TripRequest tripRequest) {
+    public TripResponse create(TripRequest tripRequest, String requesterEmail) {
         City origin = findCityOrThrow(tripRequest.getOriginCityIbgeCode());
         City destination = findCityOrThrow(tripRequest.getDestinationCityIbgeCode());
         BusCompany busCompany = findBusCompanyOrThrow(tripRequest.getBusCompanyId());
