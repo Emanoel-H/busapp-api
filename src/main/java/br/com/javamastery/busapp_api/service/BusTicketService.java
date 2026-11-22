@@ -48,7 +48,9 @@ public class BusTicketService {
     }
 
     public BusTicketResponse findByCode(String code){
-        return toResponse(findBusTicketOrThrow(code));
+        BusTicket ticket = findBusTicketOrThrow(code);
+
+        return toResponse(ticket);
     }
 
     public BusTicketCanceledResponse cancelTicket(String code){
