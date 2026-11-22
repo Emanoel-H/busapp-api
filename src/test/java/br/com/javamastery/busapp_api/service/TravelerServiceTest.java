@@ -174,6 +174,7 @@ public class TravelerServiceTest {
     @DisplayName("Should throw CONFLICT when CPF already exists while updating")
     void update_cpfAlreadyExists_Conflict(){
         when(repository.existsByCpfAndIdNot(traveler.getCpf(), 1L)).thenReturn(true);
+        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
 
         TravelerUpdateRequest updateRequest = new TravelerUpdateRequest();
         updateRequest.setName("João da Silva");
