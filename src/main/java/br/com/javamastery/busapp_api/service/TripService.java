@@ -36,7 +36,6 @@ public class TripService {
         return toResponse(tripRepository.save(new Trip(tripRequest, origin, destination, busCompany,  distanceKm)));
     }
 
-
     public List<TripResponse> listByRoute(Long originCode, Long destinationCode) {
         List<Trip> trips = tripRepository.findAllByOriginAndDestination(originCode, destinationCode);
 
@@ -92,6 +91,11 @@ public class TripService {
         City origin = findCityOrThrow(originCode);
         City destination = findCityOrThrow(destinationCode);
         return osrmClient.getRealDistanceKM(origin, destination) * 0.35;
+    }
+
+    private void assertOwner(BusCompany company, String requesterEmail){
+        if (!company.getEmail().equals(requesterEmail))
+            throw new HandlerConfig(HttpStatus.FORBIDDEN, "You can only manage your own trips");
     }
 
     public City findCityOrThrow (Long ibgeCode) {
