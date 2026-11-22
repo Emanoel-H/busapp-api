@@ -70,7 +70,7 @@ public class TripService {
         return toResponse(findTripOrThrow(code));
     }
 
-    public TripUpdateResponse update(String code, TripUpdateRequest tripUpdateRequest){
+    public TripUpdateResponse update(String code, TripUpdateRequest tripUpdateRequest, String requesterEmail){
         Trip trip  = findTripOrThrow(code);
         City origin = findCityOrThrow(tripUpdateRequest.getOriginCityIbgeCode());
         City destination = findCityOrThrow(tripUpdateRequest.getDestinationCityIbgeCode());
