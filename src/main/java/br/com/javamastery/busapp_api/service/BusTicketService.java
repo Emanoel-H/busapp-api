@@ -57,7 +57,7 @@ public class BusTicketService {
         return toResponse(ticket);
     }
 
-    public BusTicketCanceledResponse cancelTicket(String code){
+    public BusTicketCanceledResponse cancelTicket(String code, String requesterEmail){
         BusTicket busTicket = findBusTicketOrThrow(code);
 
         if (busTicket.isCanceled())
