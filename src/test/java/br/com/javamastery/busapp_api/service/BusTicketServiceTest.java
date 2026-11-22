@@ -119,7 +119,7 @@ public class BusTicketServiceTest {
         when(busTicketRepository.save(busTicket)).thenReturn(busTicket);
         when(travelerRepository.save(traveler)).thenReturn(traveler);
 
-        service.cancelTicket("TICKET0001");
+        service.cancelTicket("TICKET0001", busTicket.getTraveler().getEmail());
 
         assertThat(busTicket.isCanceled()).isTrue();
         assertThat(busTicket.getCancelDate()).isNotNull();
