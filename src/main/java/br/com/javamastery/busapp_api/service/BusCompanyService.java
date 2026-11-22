@@ -6,7 +6,6 @@ import br.com.javamastery.busapp_api.dto.BusCompanyUpdateRequest;
 import br.com.javamastery.busapp_api.dto.BusCompanyUpdateResponse;
 import br.com.javamastery.busapp_api.exception.HandlerConfig;
 import br.com.javamastery.busapp_api.model.BusCompany;
-import br.com.javamastery.busapp_api.model.Traveler;
 import br.com.javamastery.busapp_api.repository.BusCompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
