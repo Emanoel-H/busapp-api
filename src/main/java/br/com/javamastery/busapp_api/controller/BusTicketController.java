@@ -21,7 +21,7 @@ public class BusTicketController {
 
     @PostMapping
     public ResponseEntity<BusTicketResponse> buy(@RequestBody @Valid BusTicketRequest busTicketRequest, Authentication authentication) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(busTicketService.buy(busTicketRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(busTicketService.buy(busTicketRequest, authentication.getName()));
     }
 
     @GetMapping("/{code}")
