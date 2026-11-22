@@ -104,7 +104,7 @@ public class BusTicketServiceTest {
 
         when(busTicketRepository.findByCode("TICKET0001")).thenReturn(Optional.of(busTicket));
 
-        HandlerConfig ex = catchThrowableOfType(() -> service.cancelTicket("TICKET0001"), HandlerConfig.class);
+        HandlerConfig ex = catchThrowableOfType(() -> service.cancelTicket("TICKET0001", busTicket.getTraveler().getEmail()), HandlerConfig.class);
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(ex.getMessage()).contains("Cancellation window");
