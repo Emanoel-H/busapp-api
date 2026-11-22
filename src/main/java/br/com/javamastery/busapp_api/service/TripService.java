@@ -32,6 +32,9 @@ public class TripService {
         City origin = findCityOrThrow(tripRequest.getOriginCityIbgeCode());
         City destination = findCityOrThrow(tripRequest.getDestinationCityIbgeCode());
         BusCompany busCompany = findBusCompanyOrThrow(tripRequest.getBusCompanyId());
+
+        assertOwner(busCompany, requesterEmail);
+
         double distanceKm = osrmClient.getRealDistanceKM(origin, destination);
         return toResponse(tripRepository.save(new Trip(tripRequest, origin, destination, busCompany,  distanceKm)));
     }
