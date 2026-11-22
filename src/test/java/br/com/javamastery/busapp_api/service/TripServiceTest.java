@@ -59,6 +59,7 @@ public class TripServiceTest {
         company = new BusCompany();
         company.setId(1L);
         company.setTradingName("Viação Teste");
+        company.setEmail("empresa.teste@gmail.com");
 
         trip = new Trip();
         trip.setId(1L);
