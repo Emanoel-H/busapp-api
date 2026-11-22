@@ -26,7 +26,7 @@ public class BusTicketController {
 
     @GetMapping("/{code}")
     public ResponseEntity<BusTicketResponse> findByCode(@PathVariable String code, Authentication authentication) {
-        return ResponseEntity.ok(busTicketService.findByCode(code));
+        return ResponseEntity.ok(busTicketService.findByCode(code, authentication.getName()));
     }
 
     @GetMapping
