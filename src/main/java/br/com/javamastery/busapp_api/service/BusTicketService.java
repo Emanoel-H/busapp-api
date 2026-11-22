@@ -36,10 +36,12 @@ public class BusTicketService {
         return toResponse(busTicketRepository.save(new BusTicket(busTicketRequest, traveler, trip)));
     }
 
-    public List<BusTicketResponse> listAllByTraveler(Long traveler_id, boolean includeCanceled){
+    public List<BusTicketResponse> listAllByTraveler(Long traveler_id, boolean includeCanceled, String requesterEmail){
         List<BusTicket> tickets = includeCanceled
                 ? busTicketRepository.findAllByTravelerId(traveler_id)
                 : busTicketRepository.findAllActiveByTravelerId(traveler_id);
+
+        assertOwner(tickets.getFirst().getTraveler(), requesterEmail);
 
         if (tickets.isEmpty())
            throw new HandlerConfig(HttpStatus.NOT_FOUND, "Tickets not found for the traveler id: " + traveler_id);
