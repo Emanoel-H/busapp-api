@@ -63,6 +63,7 @@ public class BusTicketServiceTest {
 
         traveler = new Traveler();
         traveler.setCreditsBalance(BigDecimal.ZERO);
+        traveler.setEmail("viajante.teste@gmail.com");
 
         busTicket = new BusTicket();
         busTicket.setCode("TICKET0001");
