@@ -60,7 +60,7 @@ public class TripController {
 
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> delete(@PathVariable String code, Authentication authentication) {
-        service.delete(code);
+        service.delete(code, authentication.getName());
         return ResponseEntity.noContent().build();
     }
 }
