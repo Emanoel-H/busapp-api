@@ -166,9 +166,6 @@ public class BusTicketRepositoryTest {
     @Test
     @DisplayName("existsByTripId must return true when there is a ticket related to this trip id")
     void existsByExistingTrip_returnsTrue(){
-        Optional<Trip> foundTrip = tripRepository.findByCode("TRIP000001");
-        when(repository.existsByTripId(foundTrip.get().getId())).thenReturn(true);
-
         boolean exists = repository.existsByTripId(trip.getId());
 
         assertThat(exists).isTrue();
