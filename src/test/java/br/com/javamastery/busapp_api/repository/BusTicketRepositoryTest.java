@@ -105,12 +105,6 @@ public class BusTicketRepositoryTest {
         return ticket;
     }
 
-    private void cancelTicket(String code){
-        Optional<BusTicket> ticket = repository.findByCode(code);
-        ticket.get().setCanceled(true);
-        em.flush();
-    }
-
     @Test
     @DisplayName("findbycode must return only the ticket with the given code")
     void findByCode_returnsRightTicket(){
