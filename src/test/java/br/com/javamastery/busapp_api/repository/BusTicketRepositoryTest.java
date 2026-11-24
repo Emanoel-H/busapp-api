@@ -140,6 +140,11 @@ public class BusTicketRepositoryTest {
     @Test
     @DisplayName("findAllActiveByTravelerId must return only the active tickets")
     void findAllActiveByTravelerId_returnsActiveOnes(){
+        persistTicket("TICKET0001");
+        persistTicket("TICKET0002");
+        em.flush();
+        em.clear();
+
         Optional<Traveler> foundTraveler = travelerRepository.findByEmail("julia.roberts@gmail.com");
         when(repository.findAllActiveByTravelerId(foundTraveler.get().getId())).thenReturn(List.of(new BusTicket()));
 
