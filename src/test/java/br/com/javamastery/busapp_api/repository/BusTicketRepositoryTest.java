@@ -128,7 +128,7 @@ public class BusTicketRepositoryTest {
     }
 
     @Test
-    @DisplayName("findbycode must return empty when the given code does not exist")
+    @DisplayName("findByCode must return empty when the given code does not exist")
     void findByNonExistingCode_returnsEmpty(){
         when(repository.findByCode("TICKET0000")).thenReturn(Optional.empty());
 
