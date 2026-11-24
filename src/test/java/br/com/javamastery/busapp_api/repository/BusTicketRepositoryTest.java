@@ -169,7 +169,7 @@ public class BusTicketRepositoryTest {
         Optional<Trip> foundTrip = tripRepository.findByCode("TRIP000001");
         when(repository.existsByTripId(foundTrip.get().getId())).thenReturn(true);
 
-        boolean exists = repository.existsByTripId(foundTrip.get().getId());
+        boolean exists = repository.existsByTripId(trip.getId());
 
         assertThat(exists).isTrue();
     }
