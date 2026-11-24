@@ -151,7 +151,7 @@ public class BusTicketRepositoryTest {
 
         cancelTicket("TICKET0002");
 
-        List<BusTicket> activeTickets = repository.findAllActiveByTravelerId(foundTraveler.get().getId());
+        List<BusTicket> activeTickets = repository.findAllActiveByTravelerId(traveler.getId());
 
         assertThat(activeTickets).hasSize(1);
         BusTicket ticket = activeTickets.get(0);
