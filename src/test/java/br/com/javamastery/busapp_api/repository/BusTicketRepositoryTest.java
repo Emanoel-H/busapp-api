@@ -142,6 +142,7 @@ public class BusTicketRepositoryTest {
     void findAllActiveByTravelerId_returnsActiveOnes(){
         persistTicket("TICKET0001");
         BusTicket second = persistTicket("TICKET0002");
+        second.setCanceled(true);
         em.flush();
         em.clear();
 
