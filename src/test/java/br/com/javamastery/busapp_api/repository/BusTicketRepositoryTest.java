@@ -141,7 +141,7 @@ public class BusTicketRepositoryTest {
     @DisplayName("findAllActiveByTravelerId must return only the active tickets")
     void findAllActiveByTravelerId_returnsActiveOnes(){
         persistTicket("TICKET0001");
-        persistTicket("TICKET0002");
+        BusTicket second = persistTicket("TICKET0002");
         em.flush();
         em.clear();
 
