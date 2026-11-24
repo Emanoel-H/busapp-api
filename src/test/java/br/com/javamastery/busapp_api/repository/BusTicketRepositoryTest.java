@@ -79,6 +79,7 @@ public class BusTicketRepositoryTest {
         traveler.setEmail("julia.roberts@gmail.com");
         traveler.setPassword("julinha123");
         traveler.setCpf("12345678901");
+        traveler.setTelephone("71981983522");
         traveler.setBirthDate(LocalDate.of(2003, 06, 19));
         em.persist(traveler);
 
