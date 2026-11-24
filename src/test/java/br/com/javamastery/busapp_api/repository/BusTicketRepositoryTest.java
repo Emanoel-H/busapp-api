@@ -71,6 +71,7 @@ public class BusTicketRepositoryTest {
         company.setLegalName("Jequié Viações Ltda");
         company.setCnpj("12345678000114");
         company.setTelephone("73988369725");
+        company.setPassword("cidadesol123");
         em.persist(company);
 
         traveler = new Traveler();
