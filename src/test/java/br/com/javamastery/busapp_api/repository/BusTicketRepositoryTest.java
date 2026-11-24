@@ -108,7 +108,7 @@ public class BusTicketRepositoryTest {
     private void cancelTicket(String code){
         Optional<BusTicket> ticket = repository.findByCode(code);
         ticket.get().setCanceled(true);
-        em.persist(ticket);
+        em.flush();
     }
 
     @Test
