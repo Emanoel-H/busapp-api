@@ -149,8 +149,7 @@ public class BusTicketRepositoryTest {
         List<BusTicket> activeTickets = repository.findAllActiveByTravelerId(traveler.getId());
 
         assertThat(activeTickets).hasSize(1);
-        BusTicket ticket = activeTickets.get(0);
-        assertThat(ticket.getCode()).isEqualTo("TICKET0001");
+        assertThat(activeTickets.get(0).getCode()).isEqualTo("TICKET0001");
     }
 
     @Test
