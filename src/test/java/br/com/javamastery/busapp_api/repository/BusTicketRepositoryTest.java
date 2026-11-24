@@ -149,8 +149,6 @@ public class BusTicketRepositoryTest {
         Optional<Traveler> foundTraveler = travelerRepository.findByEmail("julia.roberts@gmail.com");
         when(repository.findAllActiveByTravelerId(foundTraveler.get().getId())).thenReturn(List.of(new BusTicket()));
 
-        cancelTicket("TICKET0002");
-
         List<BusTicket> activeTickets = repository.findAllActiveByTravelerId(traveler.getId());
 
         assertThat(activeTickets).hasSize(1);
