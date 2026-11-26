@@ -37,14 +37,15 @@ public class BusTicketService {
     }
 
     public List<BusTicketResponse> listAllByTraveler(Long traveler_id, boolean includeCanceled, String requesterEmail){
+        assertOwner(findTravelerOrThrow(traveler_id), requesterEmail);
+
         List<BusTicket> tickets = includeCanceled
                 ? busTicketRepository.findAllByTravelerId(traveler_id)
                 : busTicketRepository.findAllActiveByTravelerId(traveler_id);
 
-        assertOwner(tickets.getFirst().getTraveler(), requesterEmail);
-
-        if (tickets.isEmpty())
-           throw new HandlerConfig(HttpStatus.NOT_FOUND, "Tickets not found for the traveler id: " + traveler_id);
+        if (tickets.isEmpty()) {
+            throw new HandlerConfig(HttpStatus.NOT_FOUND, "Tickets not found for the traveler id: " + traveler_id);
+        }
 
         return tickets.stream().map(this::toResponse).toList();
     }
