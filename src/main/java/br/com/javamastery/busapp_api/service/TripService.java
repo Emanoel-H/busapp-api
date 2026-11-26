@@ -74,7 +74,7 @@ public class TripService {
         Trip trip  = findTripOrThrow(code);
 
         assertOwner(trip.getBusCompany(), requesterEmail);
-        
+
         City origin = findCityOrThrow(tripUpdateRequest.getOriginCityIbgeCode());
         City destination = findCityOrThrow(tripUpdateRequest.getDestinationCityIbgeCode());
 
