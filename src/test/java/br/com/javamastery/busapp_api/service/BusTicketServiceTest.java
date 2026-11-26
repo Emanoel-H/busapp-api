@@ -186,7 +186,7 @@ public class BusTicketServiceTest {
         when(trip.getDestination()).thenReturn(destination);
 
         Traveler traveler = mock(Traveler.class);
-        when(traveler.getEmail()).thenReturn("traveler.test@gmal.com");
+        when(traveler.getEmail()).thenReturn("viajante.teste@gmail.com");
 
         BusTicket ticketSaved = mock(BusTicket.class);
         when(ticketSaved.getCode()).thenReturn("TKT001");
