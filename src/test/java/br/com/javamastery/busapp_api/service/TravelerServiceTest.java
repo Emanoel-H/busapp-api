@@ -213,4 +213,15 @@ public class TravelerServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
     }
+
+    @Test
+    @DisplayName("Should throw FORBIDDEN when a forbidden traveler tries to search for another traveler")
+    void findTraveler_otherTraveler_forbidden(){
+        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.findById(1L, "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
 }
