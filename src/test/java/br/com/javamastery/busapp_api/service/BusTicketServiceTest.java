@@ -217,4 +217,22 @@ public class BusTicketServiceTest {
         verify(busTicketRepository, never()).save(any());
         verifyNoInteractions(travelerRepository);
     }
+
+    @Test
+    @DisplayName("Should throw FORBIDDEN when buying a ticket in the name of another traveler")
+    void buy_otherTraveler_forbidden(){
+        BusTicketRequest request = new BusTicketRequest();
+        request.setTrip_code("TRIP123");
+        request.setTraveler_id(1L);
+        request.setDepartureDate(LocalDate.now().plusDays(5));
+
+        when(tripRepository.findByCode("TRIP123")).thenReturn(Optional.of(trip));
+        when(travelerRepository.findById(1L)).thenReturn(Optional.of(traveler));
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.buy(request, "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+        verify(busTicketRepository, never()).save(any());
+    }
 }
