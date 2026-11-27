@@ -1,0 +1,23 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/tickets"
+method: POST
+body:
+  type: json
+  content: '{ "traveler_id": {{travelerAId}}, "trip_code": "{{tripCode}}", "departureDate": "{{departureDate}}" }'
+auth:
+  type: bearer
+  credentials:
+    token: "{{tokenTravelerA}}"
+scripts:
+  - type: beforeRequest
+    code: "const d = new Date(); \r
+
+      d.setDate(d.getDate() + 3);\r
+
+      pm.environment.set(\"departureDate\", d.toISOString().slice(0, 10));"
+    language: text/javascript
+  - type: afterResponse
+    code: pm.environment.set("ticketCode", pm.response.json().code);
+    language: text/javascript
+order: 5000
