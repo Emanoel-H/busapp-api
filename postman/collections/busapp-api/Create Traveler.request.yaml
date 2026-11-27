@@ -1,0 +1,14 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/travelers"
+method: POST
+body:
+  type: json
+  content: "{ \"name\": \"Juan Costa\", \"birthDate\": \"2002-05-20\", \"cpf\": \"11144477735\",\r
+
+    \  \"telephone\": \"73988256397\", \"email\": \"viajante.b@teste.com\", \"password\": \"password123\" }"
+scripts:
+  - type: afterResponse
+    code: //pm.environment.set("travelerAId", pm.response.json().id);
+    language: text/javascript
+order: 1000

@@ -1,0 +1,22 @@
+name: local
+values:
+  - key: baseUrl
+    value: 'http://localhost:8080'
+  - key: tokenCompanyA
+    value: ''
+  - key: tokenCompanyB
+    value: ''
+  - key: tokenTravelerA
+    value: ''
+  - key: tokenTravelerB
+    value: ''
+  - key: companyAId
+    value: ''
+  - key: travelerAId
+    value: ''
+  - key: tripCode
+    value: ''
+  - key: ticketCode
+    value: ''
+  - key: departureDate
+    value: ''
