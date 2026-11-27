@@ -155,4 +155,21 @@ public class BusCompanyServiceTest {
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
         verify(repository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should throw FORBIDDEN when a forbidden company tries to update another's company data")
+    void update_otherCompany_forbidden(){
+        when(repository.findById(1L)).thenReturn(Optional.of(busCompany));
+
+        BusCompanyUpdateRequest updateRequest = new BusCompanyUpdateRequest();
+        updateRequest.setLegalName("Pirajá Viação Ltda");
+        updateRequest.setTradingName("Viagens Pirajá");
+        updateRequest.setCnpj("12345678000195");
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.update(1L, updateRequest, "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+        verify(repository, never()).save(any());
+    }
 }
