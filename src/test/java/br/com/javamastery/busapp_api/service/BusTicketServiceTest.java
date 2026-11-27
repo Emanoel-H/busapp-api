@@ -20,6 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -246,5 +247,18 @@ public class BusTicketServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
         verifyNoInteractions(busTicketRepository);
+    }
+
+    @Test
+    @DisplayName("Should throw NOT_FOUND when the owner has no active tickets")
+    void listAllByTraveler_empty_notFound(){
+        when(travelerRepository.findById(1L)).thenReturn(Optional.of(traveler));
+        when(busTicketRepository.findAllActiveByTravelerId(1L)).thenReturn(List.of());
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.listAllByTraveler(1L, false, traveler.getEmail()), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+
     }
 }
