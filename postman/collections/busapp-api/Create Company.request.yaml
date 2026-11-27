@@ -1,0 +1,16 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/companies"
+method: POST
+body:
+  type: json
+  content: "{ \"legalName\": \"Rota Viações Ltda\", \"tradingName\": \"Rota\", \"cnpj\": \"11444777000161\",\r
+
+    \  \"telephone\": \"73922223333\", \"email\": \"empresa.b@teste.com\", \"password\": \"password123\" }"
+auth:
+  type: bearer
+scripts:
+  - type: afterResponse
+    code: //pm.environment.set("companyAId", pm.response.json().id);
+    language: text/javascript
+order: 2000
