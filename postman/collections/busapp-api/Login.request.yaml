@@ -4,9 +4,9 @@ url: "{{baseUrl}}/auth/login"
 method: POST
 body:
   type: json
-  content: '{ "email": "viajante.a@teste.com", "password": "senha123" }'
+  content: '{ "email": "viajante.b@teste.com", "password": "password123" }'
 scripts:
   - type: afterResponse
-    code: pm.environment.set("tokenTravelerA", pm.response.json().token);
+    code: pm.environment.set("tokenTravelerB", pm.response.json().token);
     language: text/javascript
 order: 3000
