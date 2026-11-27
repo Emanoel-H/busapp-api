@@ -186,4 +186,20 @@ public class TravelerServiceTest {
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.CONFLICT);
         verify(repository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should throw FORBIDDEN when another traveler tries to update your data")
+    void update_otherTraveler_forbidden(){
+        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
+
+        TravelerUpdateRequest updateRequest = new TravelerUpdateRequest();
+        updateRequest.setName("João da Silva");
+        updateRequest.setCpf("12345678902");
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.updateById(1L, updateRequest, "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+        verify(repository, never()).save(any());
+    }
 }
