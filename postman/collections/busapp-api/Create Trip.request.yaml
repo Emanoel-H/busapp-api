@@ -1,0 +1,18 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/trips"
+method: POST
+body:
+  type: json
+  content: "{ \"originCityIbgeCode\": 2927408, \"destinationCityIbgeCode\": 2910800,\r
+
+    \  \"busCompanyId\": {{companyAId}}, \"price\": 39.00, \"departureTime\": \"13:30\" }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{tokenCompanyA}}"
+scripts:
+  - type: afterResponse
+    code: pm.environment.set("tripCode", pm.response.json().code);
+    language: text/javascript
+order: 4000
