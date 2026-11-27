@@ -172,4 +172,15 @@ public class BusCompanyServiceTest {
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
         verify(repository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should throw FORBIDDEN when a forbidden company tries to delete another's company")
+    void delete_otherCompany_forbidden(){
+        when(repository.findById(1L)).thenReturn(Optional.of(busCompany));
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.deleteById(1L, "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
 }
