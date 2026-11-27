@@ -285,6 +285,20 @@ public class TripServiceTest {
         verifyNoInteractions(osrmClient);
     }
 
+    @Test
+    @DisplayName("should throw FORBIDDEN when another company tries to delete the trip")
+    void delete_otherCompany_forbidden(){
+        when(repository.findByCode("TRIP000001")).thenReturn(Optional.of(trip));
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.delete("TRIP000001", "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(trip.isActive()).isTrue();
+        verifyNoInteractions(busTicketRepository);
+        verify(repository, never()).save(any());
+    }
+
     private City setCity (Long ibge_code, String name, String stateName, String uf){
         State state = new  State();
         ReflectionTestUtils.setField(state, "name", stateName);
