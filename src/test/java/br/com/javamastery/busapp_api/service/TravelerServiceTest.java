@@ -188,7 +188,7 @@ public class TravelerServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw FORBIDDEN when another traveler tries to update your data")
+    @DisplayName("Should throw FORBIDDEN when a forbidden traveler tries to update another traveler's data")
     void update_otherTraveler_forbidden(){
         when(repository.findById(1L)).thenReturn(Optional.of(traveler));
 
@@ -201,5 +201,16 @@ public class TravelerServiceTest {
 
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
         verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw FORBIDDEN when a forbidden traveler tries to delete another traveler")
+    void delete_otherTraveler_forbidden(){
+        when(repository.findById(1L)).thenReturn(Optional.of(traveler));
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.deleteById(1L, "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }
