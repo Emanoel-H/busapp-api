@@ -235,4 +235,16 @@ public class BusTicketServiceTest {
         assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
         verify(busTicketRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should throw FORBIDDEN when listing tickets of another traveler")
+    void listAllByTraveler_otherTraveler_forbidden(){
+        when(travelerRepository.findById(1L)).thenReturn(Optional.of(traveler));
+
+        HandlerConfig ex = catchThrowableOfType(() ->
+                service.listAllByTraveler(1L, false, "intruso@gmail.com"), HandlerConfig.class);
+
+        assertThat(ex.getStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+        verifyNoInteractions(busTicketRepository);
+    }
 }
