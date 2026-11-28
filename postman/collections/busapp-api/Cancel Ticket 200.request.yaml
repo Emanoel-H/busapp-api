@@ -1,0 +1,16 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/tickets/{{ticketCode}}/cancel"
+method: PATCH
+body:
+  type: json
+  content: ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{tokenTravelerA}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 16000
