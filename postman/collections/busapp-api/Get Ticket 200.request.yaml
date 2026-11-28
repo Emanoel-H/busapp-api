@@ -1,0 +1,13 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/tickets/{{ticketCode}}"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{tokenTravelerA}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 13000
