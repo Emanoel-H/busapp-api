@@ -18,6 +18,8 @@ scripts:
       pm.environment.set(\"departureDate\", d.toISOString().slice(0, 10));"
     language: text/javascript
   - type: afterResponse
-    code: pm.environment.set("ticketCode", pm.response.json().code);
+    code: "//pm.environment.set(\"ticketCode\", pm.response.json().code);\r
+
+      pm.test(\"201\", () => pm.response.to.have.status(201));"
     language: text/javascript
 order: 5000
