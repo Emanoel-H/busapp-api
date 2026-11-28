@@ -1,0 +1,16 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/tickets"
+method: POST
+body:
+  type: json
+  content: '{ "traveler_id": {{travelerAId}}, "trip_code": "{{tripCode}}", "departureDate": "{{departureDate}}" }'
+auth:
+  type: bearer
+  credentials:
+    token: "{{tokenTravelerB}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("403", () => pm.response.to.have.status(403));
+    language: text/javascript
+order: 11000
