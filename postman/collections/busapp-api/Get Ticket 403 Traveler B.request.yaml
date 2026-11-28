@@ -1,7 +1,9 @@
 $kind: http-request
 description: ""
-url: "{{baseUrl}}/tickets/{{ticketCode}}"
+url: "{{baseUrl}}/tickets?traveler_id={{travelerAId}}"
 method: GET
+queryParams:
+  traveler_id: "{{travelerAId}}"
 auth:
   type: bearer
   credentials:
