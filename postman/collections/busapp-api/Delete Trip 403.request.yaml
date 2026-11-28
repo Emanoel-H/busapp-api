@@ -1,0 +1,13 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/trips/{{tripCode}}"
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{tokenCompanyB}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("403", () => pm.response.to.have.status(403));
+    language: text/javascript
+order: 10000
