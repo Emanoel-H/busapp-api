@@ -65,6 +65,7 @@ public class BusTicketRepositoryTest {
         BusCompany company = new BusCompany();
         company.setTradingName("Cidade Sol");
         company.setLegalName("Jequié Viações Ltda");
+        company.setEmail("cidade.sol@gmail.com");
         company.setCnpj("12345678000114");
         company.setTelephone("73988369725");
         company.setPassword("cidadesol123");
